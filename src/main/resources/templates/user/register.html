@@ -15,7 +15,7 @@
             integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
             crossorigin="anonymous"
     />
-    <link th:rel="stylesheet" th:href="@{/css/userlogin.css}">
+    <link th:rel="stylesheet" th:href="@{/css/usersignup.css}">
     <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
@@ -29,21 +29,34 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-6" th:id="loginimg">
-            <img th:src="@{/img/change-password.png}"   alt="">
+            <img th:src="@{/img/sign-up.png}"   alt="">
         </div>
         <div class="col-lg-6">
             <div id="loginform">
                 <div class="text-center">
-                    <h3>Change Password</h3>
+                    <h3>Sign Up</h3>
                 </div>
-                <form th:action="@{/}">
+                <form th:method="post" th:action="@{/register}">
                     <div class="form-group">
-                        <input type="text" class="form-control" id="password" placeholder="Enter New Password">
+                        <input required type="text" class="form-control" id="username" name="username" placeholder="Enter Your Username">
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" id="cpassword" placeholder="Confirm New Password">
+                        <input required type="text" class="form-control" id="email" name="email" placeholder="Enter Your email">
+                    </div>
+                    <div class="form-group">
+                        <input required type="text" class="form-control" id="phonenumber"  name="phoneNumber" placeholder="Enter Your Mobile Number">
+                    </div>
+                    <div class="form-group">
+                        <label for="password"></label>
+                        <input required type="text" class="form-control"   id="password" placeholder="Enter Your Password">
+                    </div>
+                    <div class="form-group">
+                        <label for="cpassword"></label><input required type="text" name="password" class="form-control" id="cpassword"  placeholder="Confirm Your Password">
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Confirm</button>
+                    <div class="text-center form-group">
+                        <p>Already Have an Account ? <a th:href="@{/login}">Sign In</a></p>
+                    </div>
                 </form>
             </div>
         </div>

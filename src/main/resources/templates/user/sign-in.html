@@ -26,24 +26,28 @@
   <div class="p-5">
       <h6>Shoose</h6>
   </div>
+
       <div class="container-fluid">
         <div class="row">
             <div class="col-lg-6" th:id="loginimg">
-                <img th:src="@{/img/login.png}"   alt="">
+                <img th:src="@{/img/login.png}"   alt="" src="">
             </div>
             <div class="col-lg-6">
                 <div id="loginform">
                     <div class="text-center">
                             <h3>Sign In</h3>
                     </div>
-                    <form th:action="@{user/home}">
+                    <form th:action="@{/login}" method="post">
                         <div class="form-group">
-                            <input type="text" class="form-control" id="username" placeholder="Enter your Username">
+                            <input required type="text" class="form-control" name="username" id="username" placeholder="Enter your Username">
                         </div>
                         <div class="form-group">
-                            <input type="password" class="form-control" id="password" placeholder="Enter your Password">
+                            <label for="password"></label><input required type="password" name="password" class="form-control" id="password" placeholder="Enter your Password">
                         </div>
                         <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        <div th:if="${param.error}">
+                            <p class="text-danger">Invalid username or password. Please try again.</p>
+                        </div>
                         <div id="forgotpassword" class="text-right">
                             <a class="text-danger" th:href="@{/recoverAccount}">Forgot Password?</a>
                         </div>
@@ -53,7 +57,7 @@
                                 </button>
                         </div>
                         <div class="text-center form-group">
-                            <p>Don't Have an Account ? <a th:href="@{/signUp}">Sign In</a></p>
+                            <p>Don't Have an Account ? <a th:href="@{/register}">Sign Up</a></p>
                         </div>
                     </form>
                 </div>

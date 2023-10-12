@@ -29,7 +29,7 @@
                     </a>
                 </div>
                 <div>
-                    <a class="text-decoration-none text-dark" href="">
+                    <a class="text-decoration-none text-dark" th:href="@{/shop}">
                         <i class="fa-solid fa-cart-shopping"></i><span> Shop</span>
                     </a>
                 </div>
@@ -38,9 +38,14 @@
                         <i class="fa-solid fa-cart-shopping"></i><span> Profile</span>
                     </a>
                 </div>
-                <div>
-                    <a class="btn btn-info text-light" th:href="@{/login}"><b>Sign in</b></a>
-                </div>
+                    <div>
+                                <form th:if=" ${#authorization.expression('isAuthenticated()')}" th:method="post"  th:action="@{/logout}">
+                                    <input class="btn btn-danger text-white"  type="submit" value="Logout">
+                                </form>
+                              <a class="btn btn-into" th:href="@{/login}" th:if="not ${#authorization.expression('isAuthenticated()')}">Sign in</a>
+
+                    </div>
+
             </div>
         </div>
     </div>
