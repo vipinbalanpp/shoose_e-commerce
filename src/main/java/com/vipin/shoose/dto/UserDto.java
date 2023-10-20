@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,4 +17,7 @@ public class UserDto {
     private String email;
     private String phoneNumber;
     private String password;
+    private String otp;
+    private LocalDateTime otpGeneratedTime;
+
 }

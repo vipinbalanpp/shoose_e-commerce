@@ -1,5 +1,6 @@
 package com.vipin.shoose.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +16,8 @@ import java.net.http.HttpRequest;
 
 @Configuration
 public class Webconfig {
+    @Autowired
+    SuccessHandler successHandler;
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity http,UserDetailsService userDetailsService)throws Exception{
         http.authorizeHttpRequests(request->
@@ -23,7 +26,7 @@ public class Webconfig {
                         requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
                                 .anyRequest().authenticated())
                 .formLogin(formLogin->
-                        formLogin.loginPage("/login").permitAll())
+                        formLogin.loginPage("/login").successHandler(successHandler).permitAll())
                 .logout(logout->
                         logout.logoutUrl("/logout").logoutSuccessUrl("/login?logout")
                                 .invalidateHttpSession(true).deleteCookies("JSESSIONID"))

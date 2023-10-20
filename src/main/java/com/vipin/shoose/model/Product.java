@@ -1,19 +1,27 @@
 package com.vipin.shoose.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int productId;
-
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private  Long productId;
     private String productName;
     private String description;
-    private String prize;
+    private  String gender;
+    private  String brand;
+    private Double price;
+    private Integer quantity;
+    private LocalDateTime lastUpdated;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    List<Variant>variants;
 }

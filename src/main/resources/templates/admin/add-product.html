@@ -2,12 +2,92 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Shoose</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <title>Shoes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
 </head>
 <body>
-<div th:include="~{fragment::admin-navbar}"></div>
+<div th:replace="fragment::admin-navbar"></div>
+<h1 class="m-5">Add Product</h1>
 
+<form class="ms-5 pe-5" th:action="@{/admin/add-product}" th:object="${product}" method="post">
+    <label class="ms-5" for="productName">Product Name:</label>
+    <input type="text" id="productName" name="productName" required="required" />
+
+    <label class="ms-5" for="description">Description:</label>
+    <input type="text" id="description" name="description" required="required" />
+
+    <label class="ms-5" for="price">Price:</label>
+    <input type="text" id="price" name="price" required="required" />
+
+    <label class="ms-5" for="brand">Brand:</label>
+    <input type="text" id="brand" name="brand" required="required" />
+    <br />
+
+
+    <div class="ms-5">
+        <label for="gender">Gender:</label><br>
+        <select id="gender" name="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+    </div>
+
+    <br/>
+    <div class="ms-5">
+        <label for="category">Category:</label>
+        <select id="category" name="categoryId">
+            <option value="">Select a Category</option>
+            <th:block th:each="cat : ${categories}">
+                <option th:value="${cat.categoryId}" th:text="${cat.categoryName}"></option>
+            </th:block>
+        </select>
+    </div>
+    <br />
+    <div class="mx-5 mt-5 p-5">
+        <h3>Select Variant</h3>
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-primary ms-5" th:onclick="addVariant()">Add Variant</button>
+        </div>
+        <div id="variants">
+            <!-- This is where we will dynamically add variants -->
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary ms-5 form-">Continue</button>
+    </div>
+</form>
+
+<script th:inline="javascript">
+      function addVariant() {
+          var variantDiv = document.createElement('div');
+          variantDiv.className = 'mb-3';
+
+          variantDiv.innerHTML = `
+               <label for="color">Color:</label>
+ <input type="text" name="variants.color" required="required">
+              <label for="size">Size:</label>
+        <select id="size" name="variants.size">
+            <option value="">Select a Size</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
+
+              <label for="variantQuantity">Quantity:</label>
+              <input type="text" name="variants.quantity" required="required">
+          `;
+
+          document.getElementById('variants').appendChild(variantDiv);
+      }
+</script>
 </body>
 </html>

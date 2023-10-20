@@ -1,0 +1,9 @@
+.dropdown-menu{
+width:500px;
+height:100px;
+border:none;
+}
+
+.no-arrow::after {
+    content: none;
+}

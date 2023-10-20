@@ -1,5 +1,6 @@
 package com.vipin.shoose.util;
 
+import com.vipin.shoose.dto.UserDto;
 import com.vipin.shoose.model.User;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
@@ -48,20 +49,30 @@ public class OtpService {
             SimpleMailMessage message=new SimpleMailMessage();
             message.setTo(recipientEmail);
             message.setSubject("Your OTP Code");
-            message.setText("Thank you for registering on our website. To complete your registration, please enter the following OTP: "
-                    + otp
-            +"This OTP is valid for a limited time. Please do not share it with anyone.     If you did not sign up for our service, please ignore this email."+
-                    "If you have any questions or need assistance, please contact our support team at team.shoose@gmail.com." + "Thank you for choosing our service.        " +
-                            "       Best regards," +
-                            "                     Shoose");
+            message.setText("Your otp for registering in to shoose app is:  "
+                    + otp);
             javaMailSender.send(message);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public boolean isOtpValid(User user, String otp) {
-        LocalDateTime otpGeneratedTime = user.getOtpGeneratedTime();
+    public void resendOTPEmail(String recipientEmail, String otp) {
+        try {
+
+            SimpleMailMessage message=new SimpleMailMessage();
+            message.setTo(recipientEmail);
+            message.setSubject("Your OTP Code");
+            message.setText("Your new otp for registering in to shoose app is:  "
+                    + otp);
+            javaMailSender.send(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isOtpValid(UserDto userDto, String otp) {
+        LocalDateTime otpGeneratedTime = userDto.getOtpGeneratedTime();
         LocalDateTime currentTimestamp = LocalDateTime.now();
-        return user.getOtp().equals(otp) && currentTimestamp.isBefore(otpGeneratedTime.plusMinutes(2));
+        return userDto.getOtp().equals(otp) && currentTimestamp.isBefore(otpGeneratedTime.plusMinutes(2));
     }
 }

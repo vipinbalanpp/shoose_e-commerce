@@ -8,8 +8,11 @@ import java.util.List;
 
 @Service
 public interface UserService {
-   public void register(UserDto userDto);
 
     List<User> getAllUsers();
-    public void  verifyOtp(String otp);
+    public boolean verifyOtp(UserDto userDto, String otp);
+
+    void blockUser(Long id);
+
+    void unBlockUser(Long id);
 }

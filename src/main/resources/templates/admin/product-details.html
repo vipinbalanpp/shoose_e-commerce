@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Shoose</title>
+    <link th:rel="stylesheet" th:href="@{/css/product-list.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</head>
+<body>
+<div th:include="~{fragment::admin-navbar}"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <h1>Product Name:<span th:text="${product.productName}"></span></h1>
+                <p>Product Details:<span th:text="${product.description}"></span></p>
+                <h3>Price:<span th:text="${product.price}"></span></h3>
+                <h1>Stock:<span th:text="${product.quantity}"></span></h1>
+
+                <table class="table m-5 text-center">
+                    <h1 class="m-5">Variants</h1>
+                    <thead>
+                    <tr>
+                        <th>Color</th>
+                        <th>Size</th>
+                        <th>Quantity</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="variant : ${variants}">
+                        <td th:text="${variant.color}"></td>
+                        <td th:text="${variant.size}"></td>
+                        <td th:text="${variant.quantity}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

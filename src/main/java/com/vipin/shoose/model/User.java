@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long userId;
     @NotNull
     @Column(unique = true)
     private String username;
@@ -24,8 +24,5 @@ public class User {
     private  String password;
     private  String roles;
     private  boolean isEnabled=false;
-    private LocalDateTime createdDate;
-    private String otp;
-    private LocalDateTime otpGeneratedTime;
-    private boolean verified=false;
+    private  LocalDateTime createdTime;
 }

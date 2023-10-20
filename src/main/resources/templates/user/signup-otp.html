@@ -29,18 +29,27 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-6" th:id="loginimg">
-            <img th:src="@{/img/recover-account.png}"   alt="">
+            <img class="p-5" th:src="@{/img/recover-account.png}"   alt="">
         </div>
         <div class="col-lg-6">
             <div id="loginform">
                 <div class="text-center">
-                    <h3>Enter OTP To Sign In</h3>
+                    <h3>Enter otp To Register</h3>
                 </div>
+                <div><p class="text-danger"> Otp valid for 2 minutes only</p></div>
                 <form th:action="@{/verify-otp}" th:method="post">
                     <div class="form-group">
                         <input required name="otp" type="text" class="form-control" id="username" placeholder="Enter OTP ">
                     </div>
+
+                    <div th:if="${resend}" class="alert alert-success">
+                        <p th:text="${resend}"></p>
+                    </div>
+                    <div id="otp-error" class="text-danger" th:if="${otpError}" th:text="${otpError}"></div>
                     <button  type="submit" class="btn btn-primary btn-block">Confirm</button>
+                </form>
+                <form th:action="@{/resend-otp}" th:method="post">
+                    <button type="submit" class="btn btn-secondary">Resend OTP</button>
                 </form>
             </div>
         </div>

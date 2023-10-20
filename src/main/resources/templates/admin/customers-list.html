@@ -8,34 +8,42 @@
 </head>
 <body>
 <div th:include="~{fragment::admin-navbar}"></div>
-<table class="table m-5 text-center">
-    <thead class="thead-dark bg-secondary  text-white">
-    <tr>
-        <th>Username</th>
-        <th>Phone Number</th>
-        <th>Email</th>
-        <th>Status</th>
-        <th>Created</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="user : ${users}">
-        <td th:text="${user.username}"></td>
-        <td th:text="${user.phoneNumber}"></td>
-        <td th:text="${user.email}"></td>
-        <td >
-            <div>
-                    <form th:if=" ${user.isEnabled.equals(true)}" th:method="post"  th:action="@{/block}">
-                        <input class="btn btn-danger text-white"  type="submit" value="Logout">
+<div ><p th:text="${blocked}" class="text-info"></p></div>
+<div ><p th:text="${unblocked}" class="text-danger"></p></div>
+<div class="mx-5 px-5">
+    <table class="table m-5 text-center">
+        <thead class="thead-dark bg-secondary  text-white">
+        <tr>
+            <th>Username</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Created</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.phoneNumber}"></td>
+            <td th:text="${user.email}"></td>
+            <td >
+                <div>
+                    <form th:if="${user.isEnabled}" th:method="post" th:action="@{/admin/block-user/{id}(id=${user.userId})}">
+
+                <input class="bg-white border-none text-danger"  type="submit" value="Block">
+                    </form>
+                    <form th:if="${not user.isEnabled}" th:method="post" th:action="@{/admin/unblock-user/{id}(id=${user.userId})}">
+
+                        <input class="bg-white text-dark"  type="submit" value="UnBlock">
                     </form>
                     <a class="btn btn-into" th:href="@{/login}" th:if="not ${#authorization.expression('isAuthenticated()')}">Sign in</a>
-            </div>
-        </td>th:text="${user.isEnabled}"
-        <td th:text="${user.createdDate}"></td>
+                </div>
+            </td>
+            <td th:text="${user.createdTime}"></td>
 
-    </tr>
-    </tbody>
-</table>
-
+        </tr>
+        </tbody>
+    </table>
+     </div>
 </body>
 </html>

@@ -1,17 +1,14 @@
 package com.vipin.shoose.service;
-
 import com.vipin.shoose.dto.UserDto;
+import com.vipin.shoose.exception.OtpInvalidException;
 import com.vipin.shoose.model.User;
 import com.vipin.shoose.repository.UserRepository;
 import com.vipin.shoose.util.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
-
 @Service
 public class UserServiceImpl implements UserService{
     @Autowired
@@ -22,35 +19,44 @@ public class UserServiceImpl implements UserService{
     OtpService otpService;
 
     @Override
-    public void register(UserDto userDto) {
-        User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setEmail(userDto.getEmail());
-        user.setPhoneNumber(userDto.getPhoneNumber());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setRoles("USER");
-        user.setEnabled(true);
-        user.setCreatedDate(LocalDateTime.now());
-        user.setOtp(otpService.generateOtp());
-        user.setOtpGeneratedTime(LocalDateTime.now());
-        otpService.sendOTPEmail(userDto.getEmail(),user.getOtp());
-        userRepository.save(user);
-    }
-
-
-    @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public void verifyOtp(String otp) {
-        User user=userRepository.findByOtp(otp);
-        if(user==null){
-            throw new UsernameNotFoundException("user not found");
-        }user.setVerified(true);
-        userRepository.save(user);
-        otpService.sendEmail(user.getEmail());
+    public boolean verifyOtp(UserDto userDto, String otp) {
+        User user=new User();
+        if(userDto!=null&&otpService.isOtpValid(userDto,otp)){
+            user.setUsername(userDto.getUsername());
+            user.setEmail(userDto.getEmail());
+            user.setPhoneNumber(userDto.getPhoneNumber());
+            user.setRoles("USER");
+            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            user.setEnabled(true);
+            user.setCreatedTime(LocalDateTime.now());
+            userRepository.save(user);
+            otpService.sendEmail(user.getEmail());
+           return true;
+        } else {
+            throw  new OtpInvalidException("Invalid Otp");
+
+        }
+    }
+
+    @Override
+    public void blockUser(Long id) {
+        User user=userRepository.findByUserId(id);
+        user.setEnabled(false);
+  userRepository.save(user) ;
+
+
+    }
+
+    @Override
+    public void unBlockUser(Long id) {
+        User user=userRepository.findByUserId(id);
+        user.setEnabled(true);
+        userRepository.save(user) ;
     }
 
 
