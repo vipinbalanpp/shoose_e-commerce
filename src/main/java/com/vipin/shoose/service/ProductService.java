@@ -1,5 +1,6 @@
 package com.vipin.shoose.service;
 
+import com.vipin.shoose.dto.EditProductDto;
 import com.vipin.shoose.dto.ProductDto;
 import com.vipin.shoose.model.Product;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,13 @@ import java.util.List;
 public interface ProductService {
    public Long addProductAndGetId(ProductDto productDto);
 
-   List<Product> getAllProducts();
+   List<Product> getAllActiveProducts();
 
    Product getProductById(Long id);
+
+    void changeQuantity(Long productId, Long quantity);
+
+    void changeProductDetails(Long productId, EditProductDto editProductDto);
+
+    List<Product> getAllProducts();
 }

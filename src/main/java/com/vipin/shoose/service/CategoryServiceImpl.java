@@ -23,6 +23,8 @@ public class CategoryServiceImpl implements CategoryService{
     public void addCategory(CategoryDto categoryDto) {
         Category category=new Category();
         category.setCategoryName(categoryDto.getCategoryName());
+        category.setDescription(categoryDto.getDescription());
+        category.setEnabled(true);
            categoryRepository.save(category);
     }
 
@@ -33,7 +35,34 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public void changeCategoryName(CategoryDto categoryDto) {
-        Category category=categoryRepository.findByCategoryName(categoryDto.getCategoryName());
+    public void editCategory(CategoryDto categoryDto) {
+        Category category=categoryRepository.findByCategoryId(categoryDto.getCategoryId());
+        if(categoryDto.getCategoryName()!=""){
+            category.setCategoryName(categoryDto.getCategoryName());
+        }if(categoryDto.getDescription()!=""){
+            category.setDescription(categoryDto.getDescription());
+        }
+        categoryRepository.save(category);
     }
+
+    @Override
+    public Category getCategoryById(Long categoryId) {
+        return categoryRepository.findByCategoryId(categoryId);
+    }
+
+    @Override
+    public void blockCategory(Long categoryId) {
+        Category category=categoryRepository.findByCategoryId(categoryId);
+        category.setEnabled(false);
+        categoryRepository.save(category);
+    }
+
+    @Override
+    public void unBlockCategory(Long categoryId) {
+        Category category=categoryRepository.findByCategoryId(categoryId);
+        category.setEnabled(true);
+        categoryRepository.save(category);
+    }
+
+
 }

@@ -3,19 +3,77 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Shoose</title>
+    <link th:rel="stylesheet" th:href="@{/css/product-details.css}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link th:rel="stylesheet" th:href="@{/css/home.css}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </head>
 <body>
 <div th:include="~{fragment::navbar}"></div>
+<div class="container">
+    <div class=" row">
+        <div class="col-lg-6">
+            <div class="d-flex ms-5">
+                <div class="d-flex flex-column mt-5">
+                    <th:block th:each="image, iterStat : ${image}">
+                        <div class="side-image">
+                            <img class="card-img-top" th:src="@{/img/product-images/__${image}__}" th:data-index="${iterStat.index}" />
+                        </div>
+                    </th:block>
+                </div>
 
-<div class="text-center mt-5">
-    <h1>Most Popular Products</h1>
+                <div id="large" class="large">
+                    <img id="largeImage" class="img" th:src="@{/img/product-images/__${image[0]}__}" />
+                </div>
+
+            </div>
+
+        </div>
+        <div class="col-lg-6">
+            <div class="mt-5">
+                <h2 th:text="${product.brand}"></h2>
+                <h4 class="mt-3" th:text="${product.productName}"></h4>
+                <br>
+                <h5 class="text-dark" th:text="${product.description}" ></h5>
+                <br>
+                <h5 class="text-danger" th:text="'₹' + ${product.price}" ></h5>
+                <div class="mt-3">
+                    <div th:each="color : ${colors}">
+                        <label th:for="${color}"></label>
+                            <input type="radio" name="color" th:value="${color}" th:text="${color}">
+                    </div>
+
+                </div><br><br>
+                <div class="mt-3">
+                    <label for="category">Size:</label>
+                    <select id="category" name="size">
+                        <option hidden value="">Select Size</option>
+                        <th:block th:each="size : ${sizes}">
+                            <option th:value="${size}" th:text="${size}"></option>
+                        </th:block>
+                    </select>
+                </div><br>
+                <div class="d-flex">
+                    <div class="me-3">
+                        <form>
+                            <button class="btn btn-danger text-white">Add to Wishlist</button>
+                        </form>
+                    </div>
+                    <div>
+                        <form>
+                            <button class="btn btn-info text-white me-3">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="container-fluid">
+<br><br><br><br>
+<div class="container">
     <div class="row ms-3">
-        <div class="col-lg-3 col-md-6 col-12">
+        <h2 class="text-center">Related Products</h2>
+        <div class="col-lg-4 col-md-6 col-12">
             <div class="card">
                 <div class="img">
                     <img class="card-img-top" th:src="@{/img/sh1.jpg}" alt="Card image cap">
@@ -28,7 +86,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 col-12">
+        <div class="col-lg-4 col-md-6 col-12">
             <div class="card" >
                 <div class="img">
                     <img class="card-img-top" th:src="@{/img/sh1.jpg}" alt="Card image cap">
@@ -41,20 +99,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 col-12">
-            <div class="card" >
-                <div class="img">
-                    <img class="card-img" th:src="@{/img/sh1.jpg}" alt="Card image cap">
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title"><b>CAMPUS</b></h5>
-                    <p class="card-text">ROLLZ Running Shoes For Men (White)</p>
-                    <p class="price card-text text-danger"><b>₹1399</b></p>
-                    <a href="#" class="cardbutton btn">View Details</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-12">
+        <div class="col-lg-4 col-md-6 col-12">
             <div class="card" >
                 <div class="img">
                     <img class="card-img" th:src="@{/img/sh1.jpg}" alt="Card image cap">
@@ -72,5 +117,83 @@
 <footer>
     <div th:include="~{fragment::footer}"></div>
 </footer>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        const smallImages = document.querySelectorAll(".side-image img");
+        const largeImage = document.getElementById("largeImage");
+
+<!--        // Set the source of largeImage to the URL of the first small image-->
+<!--        largeImage.src = smallImages[0].src;-->
+
+        smallImages.forEach(function (image) {
+            image.addEventListener("click", function () {
+                // Get the data-index attribute to identify the clicked image
+                const dataIndex = image.getAttribute("data-index");
+
+                // Update the source of the large image container
+                largeImage.src = smallImages[dataIndex].src;
+            });
+        });
+    });
+</script>
+<script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var options = {
+            width: 400,
+            zoomWidth: 300,
+            offset: {vertical: 60, horizontal: 30}
+        };
+        new ImageZoom(document.getElementById("large"), options);
+    });
+</script>
+<!-- Add this script to your HTML file -->
+<!-- Add this script to your HTML file -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const smallImages = document.querySelectorAll(".side-image img");
+      const largeImage = document.getElementById("largeImage");
+      const radioButtons = document.querySelectorAll("input[name='color']");
+       const productId = /*[[${product.productId}]]*/;
+
+      // Function to update product images
+      function updateProductImages(selectedColor) {
+        // Make an AJAX request to fetch product images for the selected color and productId
+        $.ajax({
+          url: "/getProductImages", // Replace with your server endpoint
+          type: "GET", // Use the appropriate HTTP method
+          data: { productId: productId, selectedColor: selectedColor },
+          success: function (response) {
+            // Handle the response from the server, which should contain the product images
+            const images = response.images;
+
+            // Update the 'img' variable with the new images
+            img = images;
+
+            // Update the 'largeImage.src' with the first image from the updated list
+            largeImage.src = images[0];
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          }
+        });
+      }
+
+      // Set the source of largeImage to the URL of the first small image
+      largeImage.src = smallImages[0].src;
+
+      // Add a click event listener to each radio button
+      radioButtons.forEach(function (radioButton) {
+        radioButton.addEventListener("click", function () {
+          const selectedColor = radioButton.value;
+
+          // Update product images when a color is selected
+          updateProductImages(selectedColor);
+        });
+      });
+    });
+</script>
+
+
 </body>
 </html>

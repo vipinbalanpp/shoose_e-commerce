@@ -10,18 +10,112 @@
 <body>
 <div th:include="~{fragment::admin-navbar}"></div>
 <div class="d-flex justify-content-end p-5">
+    <div class="dropdown me-5">
+        <button class="btn btn-secondary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            Filter
+        </button>
+        <ul class="dropdown-menu bg-secondary">
+            <li>
+                <form>
+                    <p><b>Gender</b></p>
+                    <div class="form">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="male">
+                        <label class="form-check-label" for="male">
+                            Male
+                        </label>
+                    </div>
+                    <div class="form">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="female">
+                        <label class="form-check-label" for="female">
+                            Female
+                        </label>
+                    </div>
+                </form>
+            </li>
+            <li>
+                <form>
+                    <p><b>Brand</b></p>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="nike">
+                        <label class="form-check-label" for="nike">
+                            Nike
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="adidas">
+                        <label class="form-check-label" for="adidas">
+                            Adidas
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="puma">
+                        <label class="form-check-label" for="puma">
+                            Puma
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="reebok">
+                        <label class="form-check-label" for="reebok">
+                            Reebok
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="aadi">
+                        <label class="form-check-label" for="aadi">
+                            Aadi
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="campus">
+                        <label class="form-check-label" for="campus">
+                            Campus
+                        </label>
+                    </div>
+                </form>
+            </li>
+            <li>
+                <form>
+                    <p><b>Color</b></p>
+                    <div class="form">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="black">
+                        <label class="form-check-label" for="black">
+                            Black
+                        </label>
+                    </div>
+                    <div class="form">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="white">
+                        <label class="form-check-label" for="white">
+                            White
+                        </label>
+                    </div>
+                    <div class="form">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="red">
+                        <label class="form-check-label" for="red">
+                            Red
+                        </label> <div class="form">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="blue">
+                        <label class="form-check-label" for="blue">
+                            Blue
+                        </label>
+                    </div>
+                    </div>
+                </form>
+            </li>
+        </ul>
+    </div>
     <a class="btn btn-primary me-5" th:href="@{/admin/add-product}">add product</a>
 </div>
     <div class="m-5">
-        <table class="table m-5 text-center">
+        <table class="table me-5 text-center">
             <thead class="thead-dark bg-secondary  text-white">
             <tr>
                 <th>Product</th>
                 <th>id</th>
                 <th>Stock</th>
-                <th>Prize</th>
+                <th>Price</th>
                 <th>Status</th>
-                <th>updated</th>
+                <th></th>
+                <th>Last Updated</th>
             </tr>
             </thead>
             <tbody>
@@ -30,7 +124,21 @@
                 <td><a  th:text="${product.productId}" th:href="@{/admin/product-details/{id}(id=${product.productId})}"></a></td>
                 <td th:text="${product.quantity}"  class="text-primary"></td>
                 <td th:text="${product.price}"  class="text-danger"></td>
-                <td>Low Stock</td>
+                <td>
+                    <p th:if="${product.isEnabled}" class="text-success fw-bold">Product is Active</p>
+                    <p th:if="${not product.isEnabled}" class="text-danger fw-bold">Product is Blocked</p>
+                </td>
+                <td>
+                    <form th:if="${product.isEnabled}" th:method="post" th:action="@{/admin/block-product/{productId}(productId=${product.productId})}">
+
+
+                        <input class="btn btn-danger text-white"  type="submit" value="Block">
+                    </form>
+                    <form th:if="${not product.isEnabled}" th:method="post" th:action="@{/admin/unBlock-product/{productId}(productId=${product.productId})}">
+
+                        <input class="btn btn-success text-white"  type="submit" value="Unblock">
+                    </form>
+                </td>
                 <td th:text="${product.lastUpdated}"></td>
             </tr>
             </tbody>

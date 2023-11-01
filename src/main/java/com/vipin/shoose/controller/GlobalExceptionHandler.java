@@ -13,8 +13,4 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("error occurred", HttpStatus.BAD_REQUEST);
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<String> handleException(Exception ex) {
-//        return new ResponseEntity<>(" Fucked up.error occurred", HttpStatus.BAD_REQUEST);
-//    }
 }

@@ -13,15 +13,17 @@
     <div class="text-danger">
         <p th:text="${categoryExists}"></p>
     </div>
+
     <form th:action="@{/admin/add-category}" th:method="post" th:object="${category}">
         <div class="form-group">
             <div class="dropdown">
                 <button class="btn btn-primary dropdown-toggle me-5" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                     Add Category
                 </button>
-                <div class="dropdown-menu">
-                    <input class="form-control" name="categoryName" placeholder="Enter the Category to be added" required>
-                    <button class="btn-primary align-center" type="submit">Add</button>
+                <div id="category-dropdown" class="dropdown-menu p-5">
+                    <input class="form-control" name="categoryName" placeholder="Enter the Category Name" >
+                    <input class="form-control mt-5" type="text" name="description" placeholder="Enter the description of the category"><br>
+                    <button class="btn-primary align-center" type="submit">Add Category</button>
                 </div>
             </div>
         </div>
@@ -35,26 +37,47 @@
         <tr>
             <th>Category id</th>
             <th>Category name</th>
+            <th>Desription </th>
+            <th></th>
+            <th>Status</th>
             <th></th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="category : ${categories}">
             <td th:text="${category.categoryId}"></td>
-            <td th:text="${category.categoryName}" class="fw-bold fs-3" ></td>
+            <td th:text="${category.categoryName}" class="fw-bold fs-4" ></td>
+            <td  id="category-row"  th:text="${category.description}" ></td>
             <td>
-                <form th:action="@{/admin/rename-category}" th:method="post" th:object="${category}">
+                <form th:action="@{/admin/edit-category}" th:method="post" th:object="${category}">
                     <div class="form-group">
+                        <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
                         <div class="dropdown">
-                            <button class="btn text-primary dropdown-toggle me-5" type="button" id="d" data-bs-toggle="dropdown" aria-expanded="false">
-                               Rename Category
+                            <button class="btn btn-primary fw-bold me-5" type="button" id="d" data-bs-toggle="dropdown" aria-expanded="false">
+                                Edit
                             </button>
-                            <div class="dropdown-menu bg-secondary">
-                                <input class="form-control" name="categoryName" placeholder="Enter the new name" required>
-                                <button class="btn-primary align-center ms-5 mb-5 mt-2" type="submit">Save</button>
+                            <div id="edit-category-dropdown" class="dropdown-menu">
+                                <input class="form-control" name="categoryName" placeholder="Enter the new name" >
+                                <input class="form-control mt-3" name="description" placeholder="Change Description" >
+                                <button class="btn-primary align-center ms-5 mb-5 mt-4" type="submit">Save</button>
                             </div>
                         </div>
                     </div>
+                </form>
+            </td>
+            <td>
+                <p class="text-success fw-bold" th:if="${category.isEnabled}">Active</p>
+                <p class="text-danger fw-bold" th:if="${not category.isEnabled}">Blocked</p>
+            </td>
+            <td>
+                <form th:if="${category.isEnabled}" th:method="post" th:action="@{/admin/block-category/{categoryId}(categoryId=${category.categoryId})}">
+
+
+                    <input class="btn btn-danger text-white"  type="submit" value="Block">
+                </form>
+                <form th:if="${not category.isEnabled}" th:method="post" th:action="@{/admin/unBlock-category/{categoryId}(categoryId=${category.categoryId})}">
+
+                    <input class="btn btn-success text-white"  type="submit" value="Unblock">
                 </form>
             </td>
         </tr>

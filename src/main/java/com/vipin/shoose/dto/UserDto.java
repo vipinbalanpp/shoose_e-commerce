@@ -15,7 +15,6 @@ public class UserDto {
     private int id;
     private String username;
     private String email;
-    private String phoneNumber;
     private String password;
     private String otp;
     private LocalDateTime otpGeneratedTime;

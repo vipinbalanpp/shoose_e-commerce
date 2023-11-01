@@ -15,6 +15,7 @@
                 <img th:src="@{/img/logo.png}" style="height:60px; width:150px;"  alt="">
             </a>
         </div>
+        <h6 class="text=danger fw-bold" th:text="${empty}"></h6>
         <div class=" me-5">
             <div class="d-flex gap-5 align-items-center">
 
@@ -38,14 +39,24 @@
                         <i class="fa-solid fa-cart-shopping"></i><span> Profile</span>
                     </a>
                 </div>
-                    <div>
-                                <form th:if=" ${#authorization.expression('isAuthenticated()')}" th:method="post"  th:action="@{/logout}">
-                                    <input class="btn btn-danger text-white"  type="submit" value="Logout">
-                                </form>
-                              <a class="btn btn-into" th:href="@{/login}" th:if="not ${#authorization.expression('isAuthenticated()')}">Sign in</a>
-
-                    </div>
-
+                <div class="dropdown">
+                    <button  class="btn text-dark dropdown-toggle" type="button" id="profile button" data-bs-toggle="dropdown" aria-expanded="false">
+                        click
+                    </button>
+                    <ul id="profile-dropdown" class="dropdown-menu p-3">
+                        <li class="ms-3">
+                            <div th:if=" ${#authorization.expression('isAuthenticated()')}">
+                                <a th:href="@{/user/profile}">profile</a>
+                            </div>
+                        </li>
+                        <li class="ms-3 mt-4">
+                            <form th:if=" ${#authorization.expression('isAuthenticated()')}" th:method="post"  th:action="@{/logout}">
+                                <input class="btn btn-danger text-white"  type="submit" value="Logout">
+                            </form>
+                            <a class="btn btn-info" th:href="@{/login}" th:if="not ${#authorization.expression('isAuthenticated()')}">Sign in</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -53,47 +64,22 @@
     <div class="container-fluid p-0 mt-2">
         <img class="img-fluid" th:src="@{/img/newbanner.png}"   alt="">
     </div>
+<br>
     <div class="text-center mt-5">
         <h1>Most Popular Products</h1>
     </div>
 <div class="container">
     <div class="row ms-3">
-        <div class="col-lg-4 col-md-6 col-12">
+        <div th:each="product : ${productList}" class="col-lg-3 col-md-4 col-sm-6 col-12">
             <div class="card">
-               <div class="img">
-                   <img class="card-img-top" th:src="@{/img/sh1.jpg}" alt="Card image cap">
-               </div>
-                <div class="card-body">
-                    <h5 class="card-title"><b>CAMPUS</b></h5>
-                    <p class="card-text">ROLLZ Running Shoes For Men (White)</p>
-                    <p class="price card-text text-danger"><b>₹1399</b></p>
-                    <a href="#" class="cardbutton btn">View Details</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-12">
-            <div class="card" >
                 <div class="img">
-                    <img class="card-img-top" th:src="@{/img/sh1.jpg}" alt="Card image cap">
+                    <img class="card-img-top" th:src="@{/img/product-images/__${product.productImage}__}" />
                 </div>
-                <div class="card-body">
-                    <h5 class="card-title"><b>CAMPUS</b></h5>
-                    <p class="card-text">ROLLZ Running Shoes For Men (White)</p>
-                    <p class="price card-text text-danger"><b>₹1399</b></p>
-                    <a href="#" class="cardbutton btn">View Details</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-12">
-            <div class="card" >
-                <div class="img">
-                    <img class="card-img" th:src="@{/img/sh1.jpg}" alt="Card image cap">
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title"><b>CAMPUS</b></h5>
-                    <p class="card-text">ROLLZ Running Shoes For Men (White)</p>
-                    <p class="price card-text text-danger"><b>₹1399</b></p>
-                    <a href="#" class="cardbutton btn">View Details</a>
+                <div class="card-body position-relative">
+                    <h5 class="card-title"><b><span th:text="${product.brand}"></span></b></h5>
+                    <p th:text="${product.productName}" class="card-text"></p>
+                    <p th:text="'₹' + ${product.price}" class="price card-text text-danger"></p>
+                    <a th:href="@{'/product-details?productId=' + ${product.productId}}" class="cardbutton btn">View Details</a>
                 </div>
             </div>
         </div>

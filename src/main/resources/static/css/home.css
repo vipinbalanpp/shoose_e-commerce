@@ -45,4 +45,9 @@ background-color:white;
 .cardbutton{
 color:black;
 background-color:white;
-border:1px solid black;}
+border:1px solid black;
+}
+#profile-dropdown{
+height:150px;
+}
+

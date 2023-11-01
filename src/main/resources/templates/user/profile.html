@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Shoose</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link th:rel="stylesheet" th:href="@{/css/profile.css}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</head>
+<body>
+<p class="bg-success text-white text-center" th:text="${changePasswordSuccess}"></p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-3">
+            <section>
+                <div th:replace="fragment::userDetails"></div>
+                <div th:replace="fragment::sidebar"></div>
+            </section>
+        </div>
+        <div class="col-lg-9">
+            <div class="row mb-5">
+                <div id="profile-details" class="col-lg-12 ">
+
+                    <form th:action="@{/user/change-username}" method="post" >
+                    <div class="bg-secondary-soft px-4 py-5 rounded">
+                        <h4 class="mb-4 mt-0">Update Profile Details</h4>
+                        <div class="col-md-12">
+                            <p th:text="${success}"></p>
+                            <label class="form-label fw-bold">Change Username</label>
+                            <div class="d-flex align-right">
+                                <input id="username" name="newUsername" type="text" class="form-control me-2" th:placeholder="${user.username}">
+                                <button id="username-change-button" type="submit" class="btn text-white mt-2">Save</button>
+                                <p class="text-danger" th:text="${exists}"></p>
+                                <p class="text-danger" th:text="${null}"></p>
+                                <p class="text-danger" th:text="${equal}"></p>
+                            </div>
+                            <p class="error-message text-danger" id="username-error"></p>
+                        </div>
+                    </div>
+                </form>
+                    <div>
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn bg-white text-primary fw-bold " data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                            Change Password
+                        </button>
+
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title fw-bold" id="exampleModalLabel">Change Password</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form class="file-upload" th:action="@{/user/change-password}" method="post">
+                                            <div class="bg-secondary-soft px-4 py-5 rounded">
+                                                <div class="col-md-12">
+
+                                                    <label class="form-label">Current Password</label>
+                                                    <input id="password1" type="password" name="oldPassword" class="form-control" placeholder="">
+
+                                                </div>
+                                                <span class="input-group-addon">
+                                                        <i class="far fa-eye" id="password1-toggle" onclick="togglePassword('password1', 'password1-toggle')"></i>
+                                                </span>
+                                                <div class="col-md-12">
+                                                    <label class="form-label">New Password</label>
+                                                    <input id="password2" type="password"  class="form-control" placeholder="" aria-label="Last name" >
+                                                    <span class="input-group-addon">
+                                                        <i class="far fa-eye" id="password2-toggle" onclick="togglePassword('password2', 'password2-toggle')"></i>
+                                                </span>
+                                                </div>
+                                                <div class="col-md-12">
+                                                 <span class="input-group-addon">
+                                                        <i class="far fa-eye" id="password3-toggle" onclick="togglePassword('password3', 'password3-toggle')"></i>
+                                                </span>
+                                                    <label class="form-label">Confirm New Password</label>
+                                                    <input id="password3" type="password" name="newPassword" class="form-control" placeholder="" aria-label="Phone number" >
+                                                </div>
+                                                <div  class="col-md-12 m-4">
+                                                    <a class="text-danger" th:href="@{/forgot-password}">Forgot Password?</a>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="mt-5">
+                            <h1 class="text-center">Addresses</h1>
+
+                            <div >
+                                <div id="add-address" class="col-lg-12 mb-3">
+                                    <!-- Button trigger modal -->
+                                    <div id="add-btn" class="col-lg-12 d-flex align-items-center">
+                                        <button type="button" id="add-address-button" class="col-lg-12 bg-white text-primary fw-bold" data-bs-toggle="modal" data-bs-target="#example">
+                                            <span class="fas fa-plus"></span> Add Address
+                                        </button>
+
+                                    </div>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="example" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title fw-bold" id="exampleModal1">Add Address</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form class="form-horizontal" th:action="@{/user/add-address}" method="post" >
+                                                        <div class="control-group">
+                                                            <div class="col-lg-12 mt-2">
+                                                                <label for="full-name" class="control-label">Full Name</label>
+                                                                <input class="form-control" id="full-name" name="fullName" type="text" placeholder="Enter your full name" >
+                                                            </div>
+                                                        </div>
+                                                        <div class="control-group">
+                                                            <div class="col-lg-12 mt-2">
+                                                                <label for="phone-number" class="control-label">Mobile Number</label>
+                                                                <input class="form-control" id="phone-number" name="phoneNumber" type="number"  >
+                                                            </div>
+                                                        </div>
+                                                        <!-- address-line1 input-->
+                                                        <div class="control-group mt-2">
+                                                            <label class="control-label">Apartment, building</label>
+                                                            <div class="col-lg-12">
+                                                                <input id="address-line1" name="buildingName" type="text" class="form-control"  >
+                                                            </div>
+                                                        </div>
+                                                        <!-- address-line2 input-->
+                                                        <div class="control-group mt-2">
+                                                            <label class="control-label">Street </label>
+                                                            <div class="col-lg-12">
+                                                                <input id="address-line2" name="streetName" type="text" class="form-control"  >
+                                                            </div>
+                                                        </div>
+                                                        <!-- city input-->
+                                                        <div class="control-group mt-2">
+                                                            <label class="control-label">City</label>
+                                                            <div class="col-lg-12">
+                                                                <input id="city" name="city" type="text"     class="form-control">
+
+                                                            </div>
+                                                        </div>
+                                                        <!-- region input-->
+                                                        <div class="control-group mt-2">
+                                                            <label class="control-label">State </label>
+                                                            <div class="col-lg-12">
+                                                                <input id="region" name="state" type="text" placeholder="state / province / region"     class="form-control">
+
+                                                            </div>
+                                                        </div>
+                                                        <!-- postal-code input-->
+                                                        <div class="control-group mt-2">
+                                                            <label class="control-label">Postal Code</label>
+                                                            <div class="col-lg-12 ">
+                                                                <input   id="postal-code" name="postalCode" type="text"     class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="submit" class="btn">Save changes</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div id="address" class="col-lg-12 mt-4 p-3" th:each="address : ${addresses}">
+                                <div>
+                                    <h4 th:text="${address.fullName}"></h4>
+                                    <p><span  th:text="${address.buildingName}">
+                                </span>,<span th:text="${address.streetName}" ></span>,
+                                        <span th:text="${address.city}"></span>,
+                                        <span th:text="${address.state}"></span>,
+                                        <span th:text="${address.postalCode}"></span>,
+                                        <span th:text="${address.phoneNumber}"></span></p>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="me-2">
+                                        <form method="post" th:action="@{/user/address/delete/{addressId}(addressId = ${address.addressId})}">
+                                            <button  type="submit" class="add-man">
+                                                <span class="fas fa-trash"></span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                        <div id="delete">
+                                            <button type="button" class="add-man" data-bs-toggle="modal" data-bs-target="#editAddressModal">
+                                                <span class="fas fa-edit"></span>
+                                            </button>
+                                        </div>
+                                    <!-- Edit Address Modal -->
+                                    <div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title fw-bold" id="editAddressLabel">Edit Address</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <!-- Form for editing the address -->
+                                                    <form class="form-horizontal" th:action="@{/user/address/edit/{addressId}(addressId = ${address.addressId})}" method="post" >
+                                                        <div class="control-group">
+                                                            <div class="col-lg-12 mt-2">
+                                                                <label for="full-name" class="control-label">Full Name</label>
+                                                                <input class="form-control" id="full-name1" name="fullName" type="text" th:placeholder="${address.fullName}" >
+                                                            </div>
+                                                        </div>
+                                                        <div class="control-group">
+                                                            <div class="col-lg-12 mt-2">
+                                                                <label for="phone-number" class="control-label">Mobile Number</label>
+                                                                <input class="form-control" id="phone-number1" name="phoneNumber" type="number" th:placeholder="${address.phoneNumber}" >
+                                                            </div>
+                                                        </div>
+                                                        <!-- address-line1 input-->
+                                                        <div class="control-group mt-2">
+                                                            <label class="control-label">Apartment, building</label>
+                                                            <div class="col-lg-12">
+                                                                <input id="addres" name="buildingName" type="text" class="form-control" th:placeholder="${address.buildingName}" >
+                                                            </div>
+                                                        </div>
+                                                        <!-- address-line2 input-->
+                                                        <div class="control-group mt-2">
+                                                            <label class="control-label">Street </label>
+                                                            <div class="col-lg-12">
+                                                                <input id="address-line" name="streetName" type="text" class="form-control" th:placeholder="${address.streetName}" >
+                                                            </div>
+                                                        </div>
+                                                        <!-- city input-->
+                                                        <div class="control-group mt-2">
+                                                            <label class="control-label">City</label>
+                                                            <div class="col-lg-12">
+                                                                <input id="city1" name="city" type="text" class="form-control" th:placeholder="${address.city}">
+
+                                                            </div>
+                                                        </div>
+                                                        <!-- region input-->
+                                                        <div class="control-group mt-2">
+                                                            <label class="control-label">State </label>
+                                                            <div class="col-lg-12">
+                                                                <input id="region1" name="state" type="text" class="form-control" th:placeholder="${address.state}">
+
+                                                            </div>
+                                                        </div>
+                                                        <!-- postal-code input-->
+                                                        <div class="control-group mt-2">
+                                                            <label class="control-label">Postal Code</label>
+                                                            <div class="col-lg-12 ">
+                                                                <input   id="postal-code1" name="postalCode" type="text" class="form-control" th:placeholder="${address.postalCode}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="submit" class="btn">Save changes</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+      function togglePassword(inputId, toggleId) {
+         var input = document.getElementById(inputId);
+         var inputType = input.getAttribute("type");
+         if (inputType === "password") {
+             input.setAttribute("type", "text");
+             document.getElementById(toggleId).classList.remove("fa-eye");
+             document.getElementById(toggleId).classList.add("fa-eye-slash");
+         } else {
+             input.setAttribute("type", "password");
+             document.getElementById(toggleId).classList.remove("fa-eye-slash");
+             document.getElementById(toggleId).classList.add("fa-eye");
+         }
+     }
+
+       var myModal = document.getElementById('myModal')
+     var myInput = document.getElementById('myInput')
+
+     myModal.addEventListener('shown.bs.modal', function () {
+       myInput.focus()
+     })
+
+ function validateForm() {
+  var newUsername = document.getElementById("username").value;
+  var usernameError = document.getElementById("username-error");
+  var isValid = true;
+  usernameError.textContent = "";
+
+  if (!newUsername) {
+    usernameError.textContent = "Username is required.";
+    isValid = false;
+  } else if (!/^[a-zA-Z0-9._%+-]{3,}$/.test(newUsername)) {
+    usernameError.textContent = "Username should contain only alphanumeric characters and be at least 3 characters long.";
+    isValid = false;
+  }
+
+  return isValid;
+}
+
+
+</script>
+</html>

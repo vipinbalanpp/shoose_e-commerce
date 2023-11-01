@@ -13,16 +13,23 @@
 </head>
 <body>
 <div th:replace="fragment::admin-navbar"></div>
-<form th:action="@{/admin/add-product-images}" method="post" enctype="multipart/form-data">
-    <ul th:each="color : ${colors}">
-        <li>
-            <label th:text="${color}"></label>
-            <input type="file" name="images" accept="image/png, image/jpeg" multiple="multiple" onchange="displaySelectedImages(this, 'image-preview')" />
-            <div id="image-preview"></div>
-        </li>
-    </ul>
-    <button type="submit" class="btn btn-primary">Upload Images</button>
-</form>
+<div class="m-5 p-5">
+    <form th:action="@{/admin/add-product-images}" method="post" enctype="multipart/form-data">
+        <ul class="">
+            <li th:each="color : ${product.getColors}">
+                <label th:text="${color}"></label>
+               <input type="hidden" th:value="${product.productId}" name="productId" required>
+                <!-- Change the input field name to match the DTO -->
+                <input type="file" name="productImages" accept="image/png, image/jpeg" multiple="multiple" onchange="displaySelectedImages(this, 'image-preview')" />
+                <input type="file" name="productImages" accept="image/png, image/jpeg" multiple="multiple" onchange="displaySelectedImages(this, 'image-preview')" />
+                <input type="file" name="productImages" accept="image/png, image/jpeg" multiple="multiple" onchange="displaySelectedImages(this, 'image-preview')" />
+                <div id="image-preview"></div>
+            </li>
+        </ul>
+        <button type="submit" class="btn btn-primary">Upload Images</button>
+    </form>
+
+</div>
 <script th:inline="javascript">
     function displaySelectedImages(input, previewId) {
         var preview = document.getElementById(previewId);

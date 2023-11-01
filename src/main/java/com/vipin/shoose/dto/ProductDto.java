@@ -20,6 +20,7 @@ public class ProductDto {
     private  String  brand;
     private String price;
     private  Long  categoryId;
+    private  String image;
     private List<VariantDto> variants;
 
 

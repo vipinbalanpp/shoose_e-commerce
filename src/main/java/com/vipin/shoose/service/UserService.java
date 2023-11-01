@@ -15,4 +15,19 @@ public interface UserService {
     void blockUser(Long id);
 
     void unBlockUser(Long id);
+
+    void sendOtp(UserDto userDto);
+
+    void setNewPassword(UserDto userDto);
+
+    void resendMail(UserDto userDto);
+
+    void changeUsername(User user, String newUsername);
+
+    User getCurrentUser();
+
+
+    boolean  checkCurrentPassword(User user, String oldPassword);
+
+    void changePassword(User user, String newPassword);
 }

@@ -24,4 +24,5 @@ public class Product {
     private Category category;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     List<Variant>variants;
+    boolean isEnabled=false;
 }

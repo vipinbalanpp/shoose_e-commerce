@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,10 +20,10 @@ public class User {
     @Column(unique = true)
     @NotNull
     private String email;
-    @NotNull
-    private String phoneNumber;
     private  String password;
     private  String roles;
     private  boolean isEnabled=false;
     private  LocalDateTime createdTime;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Address>addresses;
 }

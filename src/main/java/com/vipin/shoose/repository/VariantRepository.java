@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface VariantRepository extends JpaRepository<Variant, Long> {
@@ -14,5 +15,9 @@ public interface VariantRepository extends JpaRepository<Variant, Long> {
     List<Variant> findByProductId(@Param("productId") Long productId);
     @Query(value = "SELECT DISTINCT color FROM variant WHERE product_id = :productId", nativeQuery = true)
     List<String> findColorsByProductId(@Param("productId") Long productId);
+
+    Variant findByVariantId(Long variantId);
+    @Query(value = "SELECT  size FROM variant WHERE product_id = :productId AND color = :selectedColor", nativeQuery = true)
+    List<Long> findAllSizesByColor(Long productId, String selectedColor);
 }
 

@@ -11,6 +11,7 @@ public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long imageId;
+    private  String image;
     String color;
     @ManyToOne
     @JoinColumn(name = "product_id")

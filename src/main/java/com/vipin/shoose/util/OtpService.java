@@ -31,7 +31,7 @@ public class OtpService {
             message.setSubject("Registration Success Mail");
             message.setText(" Thank you for registering with Shoose!" +
                     " Your account has been successfully created. You are now part of our community." +
-                    "Best regards from team.shoose@gamil.com");
+                    "Best regards from team.shoose@gmail.com");
 
 
 
@@ -49,7 +49,7 @@ public class OtpService {
             SimpleMailMessage message=new SimpleMailMessage();
             message.setTo(recipientEmail);
             message.setSubject("Your OTP Code");
-            message.setText("Your otp for registering in to shoose app is:  "
+            message.setText("Your otp from shoose app is:  "
                     + otp);
             javaMailSender.send(message);
         } catch (Exception e) {
@@ -62,7 +62,7 @@ public class OtpService {
             SimpleMailMessage message=new SimpleMailMessage();
             message.setTo(recipientEmail);
             message.setSubject("Your OTP Code");
-            message.setText("Your new otp for registering in to shoose app is:  "
+            message.setText("Your new otp from to shoose app is:  "
                     + otp);
             javaMailSender.send(message);
         } catch (Exception e) {

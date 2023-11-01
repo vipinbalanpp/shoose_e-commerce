@@ -7,3 +7,17 @@ border:none;
 .no-arrow::after {
     content: none;
 }
+#category-dropdown{
+width:1000px;
+height:500px;
+background-color:rgba(250, 246, 246, 1);
+}
+#category-row{
+width:400px;
+}
+#edit-category-dropdown{
+width:600px;
+padding:50px;
+height:300px;
+background-color:rgba(250, 246, 246, 1);
+}

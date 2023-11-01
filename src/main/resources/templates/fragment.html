@@ -15,7 +15,7 @@
     <nav class="navbar bg-body-tertiary p-3" style="border-bottom:1px solid black">
         <div class="container-fluid d-flex justify-content-between align-items-middle" style="background-color:white;">
             <div class="align-self-start">
-                <a class="navbar-brand" href="/homepage">
+                <a class="navbar-brand" th:href="@{/home}">
                     <img th:src="@{/img/logo.png}" style="height:60px; width:150px;"  alt="">
                 </a>
             </div>
@@ -23,10 +23,10 @@
                 <div class="d-flex gap-5 align-items-center">
                     <form class="d-flex" role="search">
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-info" type="submit">Search</button>
+                        <button class="btn btn-info text-white" type="submit">Search</button>
                     </form>
                     <div class="dropdown">
-                        <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn text-white dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                             Filter
                         </button>
                         <ul class="dropdown-menu">
@@ -139,11 +139,24 @@
                         </a>
                     </div>
                     <div>
-                        <form th:if=" ${#authorization.expression('isAuthenticated()')}" th:method="post"  th:action="@{/logout}">
-                            <input class="btn btn-danger text-white"  type="submit" value="Logout">
-                        </form>
-                        <a class="btn btn-into" th:href="@{/login}" th:if="not ${#authorization.expression('isAuthenticated()')}">Sign in</a>
-
+                        <div class="dropdown">
+                            <button  class="btn text-dark dropdown-toggle" type="button" id="profile button" data-bs-toggle="dropdown" aria-expanded="false">
+                             click
+                            </button>
+                            <ul id="profile-dropdown" class="dropdown-menu p-3">
+                              <li class="ms-3">
+                                  <div th:if=" ${#authorization.expression('isAuthenticated()')}">
+                                      <a th:href="@{/user/profile}">profile</a>
+                                  </div>
+                              </li>
+                                <li class="ms-3 mt-4">
+                                    <form th:if=" ${#authorization.expression('isAuthenticated()')}" th:method="post"  th:action="@{/logout}">
+                                        <input class="btn btn-danger text-white"  type="submit" value="Logout">
+                                    </form>
+                                    <a class="btn btn-into" th:href="@{/login}" th:if="not ${#authorization.expression('isAuthenticated()')}">Sign in</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -222,5 +235,29 @@
         </div>
     </nav>
 </div>
+<div th:fragment="sidebar">
+    <div id="sidebar" class="mt-5 ms-4">
+        <ul class="d-flex fw-bold flex-column justify-content-center text-dark list-unstyled">
+            <li class="text-center mt-4"><a class="text-decoration-none" th:href="@{/user/profile}">Profile</a></li><hr>
+            <li class="text-center mt-4"><a class="text-decoration-none"  th:href="@{/user/orders}">Orders</a></li>  <hr>
+            <li class="text-center mt-4"><a class="text-decoration-none"  th:href="@{/user/wishlist}">Wishlist</a></li>  <hr>
+            <li class="text-center mt-4"><a class="text-decoration-none"  th:href="@{/user/cart}">Cart</a></li>  <hr>
+            <li class="text-center mt-4"><a class="text-decoration-none"  th:href="@{/user/wallet}">Wallet</a></li>
+            <li class="text-center mt-4"> <form th:method="post"  th:action="@{/logout}">
+                <input class="text-danger"  type="submit" value="Logout">
+            </form></li>
+        </ul>
+
+    </div>
+</div>
+<div th:fragment="userDetails">
+    <div id="userDetails" class="d-flex flex-column justify-content-center align-items-center mt-5 ms-4 ">
+        <i id="user-icon" class="fa fa-user mt-5" aria-hidden="true"></i>
+        <h4 th:text="${user.username}" id="username" class="mt-5"></h4>
+        <p th:text="${user.email}"  class="mt-2"></p>
+    </div>
+
+</div>
+
 </body>
 </html>

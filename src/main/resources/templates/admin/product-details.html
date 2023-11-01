@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
+    <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon">
     <title>Shoose</title>
     <link th:rel="stylesheet" th:href="@{/css/product-list.css}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -12,30 +13,93 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-6">
-                <h1>Product Name:<span th:text="${product.productName}"></span></h1>
-                <p>Product Details:<span th:text="${product.description}"></span></p>
-                <h3>Price:<span th:text="${product.price}"></span></h3>
-                <h1>Stock:<span th:text="${product.quantity}"></span></h1>
+                <h3 class="mt-5">Product Name: <span class="fw-bold" th:text="${product.productName}"></span></h3>
+                <p>Product Details: <span th:text="${product.description}"></span></p>
+                <p>Brand: <span class="fw-bold" th:text="${product.brand}"></span></p>
+                <p>Category: <span class="fw-bold" th:text="${product.category.categoryName}"></span></p>
+                <h5>Price: <span class="text-danger" th:text="${product.price}"></span></h5>
+                <h3>Stock:<span th:text="${product.quantity}"></span></h3>
+                <div>
+                    <a class="btn btn-primary mt-5" th:href="@{/admin/edit-product/{productId}(productId=${product.productId})}">Edit Product Details</a>
+                </div>
 
-                <table class="table m-5 text-center">
-                    <h1 class="m-5">Variants</h1>
-                    <thead>
-                    <tr>
-                        <th>Color</th>
-                        <th>Size</th>
-                        <th>Quantity</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="variant : ${variants}">
-                        <td th:text="${variant.color}"></td>
-                        <td th:text="${variant.size}"></td>
-                        <td th:text="${variant.quantity}"></td>
-                    </tr>
-                    </tbody>
-                </table>
+
+            </div>
+            <div class="col-lg-6">
+                    <table class="table m-5 text-center">
+                        <h1 class="m-5">Variants</h1>
+                        <thead>
+                        <tr>
+                            <th>Color</th>
+                            <th>Size</th>
+                            <th>Quantity</th>
+                            <th>Increase Quantity</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="variant : ${variants}">
+                            <td th:text="${variant.color}"></td>
+                            <td th:text="${variant.size}"></td>
+                            <td th:text="${variant.quantity}"></td>
+                            <td>
+                                <form th:action="@{/admin/increase-quantity/{productId},{variantId}(productId=${product.productId},variantId=${variant.variantId})}" method="post">
+                                    <input type="hidden" name="productId" th:value="${productId}">
+                                    <input type="number" name="quantity">
+                                    <button type="submit">Add</button>
+                                </form>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
             </div>
         </div>
     </div>
+<div class="mx-5 mt-5 p-5">
+        <form th:action="@{/admin/new-variants/{productId}(productId=${product.productId})}" method="post">
+
+
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-primary ms-5" th:onclick="addVariant()">Add New Variants</button>
+        </div>
+        <div id="variants">
+
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            <button class="btn btn-primary" type="submit">Add</button>
+        </div>
+    </form>
+</div>
 </body>
+<script th:inline="javascript">
+    function addVariant() {
+        var variantDiv = document.createElement('div');
+        variantDiv.className = 'mb-3';
+
+        variantDiv.innerHTML = `
+            <label for="color">Color:</label>
+            <input type="text" name="variants.color" required="required">
+            <label for="size">Size:</label>
+            <select id="size" name="variants.size">
+                <option value="">Select a Size</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+            <label for="variantQuantity">Quantity:</label>
+            <input type="text" name="variants.quantity" required="required">
+            <button type="button" class="text-danger fw-bold bg-white border-0" onclick="removeVariant(this)">X</button>
+        `;
+
+        document.getElementById('variants').appendChild(variantDiv);
+    }
+
+    function removeVariant(button) {
+        // Get the parent div (variantDiv) and remove it
+        var variantDiv = button.parentNode;
+        variantDiv.parentNode.removeChild(variantDiv);
+    }
+</script>
 </html>

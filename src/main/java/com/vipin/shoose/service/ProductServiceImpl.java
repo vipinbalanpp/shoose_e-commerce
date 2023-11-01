@@ -1,5 +1,6 @@
 package com.vipin.shoose.service;
 
+import com.vipin.shoose.dto.EditProductDto;
 import com.vipin.shoose.dto.ProductDto;
 import com.vipin.shoose.dto.VariantDto;
 import com.vipin.shoose.model.Category;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -36,14 +38,13 @@ public class ProductServiceImpl implements ProductService {
         product.setGender(productDto.getGender());
         product.setCategory(category);
         product.setLastUpdated (LocalDateTime.now());
-//        product.setImage(productDto.getImage());
         productRepository.save(product);
         for(int i=0;i<productDto.getVariants().size();i++){
             Variant variant=new Variant();
             variant.setProduct(product);
             variant.setColor(productDto.getVariants().get(i).getColor());
-            variant.setSize(productDto.getVariants().get(i).getSize());
-            variant.setQuantity(productDto.getVariants().get(i).getQuantity());
+            variant.setSize(Long.valueOf(productDto.getVariants().get(i).getSize()));
+            variant.setQuantity(Long.valueOf(productDto.getVariants().get(i).getQuantity()));
             variantRepository.save(variant);
         }
         Long quantity= 0L;
@@ -57,13 +58,52 @@ return product.getProductId();
     }
 
     @Override
-    public List<Product> getAllProducts() {
+    public List<Product> getAllActiveProducts() {
 
-        return productRepository.findAll();
+        return productRepository.findByEnabled();
     }
 
     @Override
     public Product getProductById(Long id) {
         return productRepository.findByProductId(id);
+    }
+
+    @Override
+    public void changeQuantity(Long productId, Long quantity) {
+        Product product=productRepository.findByProductId(productId);
+        product.setQuantity((int) (product.getQuantity()+quantity));
+        productRepository.save(product);
+    }
+
+    @Override
+    public void changeProductDetails(Long productId, EditProductDto editProductDto) {
+        Product product=productRepository.findByProductId(productId);
+        if(editProductDto.getProductName()!=""){
+            product.setProductName(editProductDto.getProductName());
+
+        }
+        if(editProductDto.getDescription()!=""){
+            product.setDescription(editProductDto.getDescription());
+        }
+        if(editProductDto.getPrice()!=""){
+            product.setPrice(Double.valueOf(editProductDto.getPrice()));
+        }
+        if(editProductDto.getBrand()!=""){
+            product.setBrand(editProductDto.getBrand());
+        }
+        if(editProductDto.getGender()!=""){
+            product.setGender(editProductDto.getGender());
+        }
+        if(editProductDto.getCategoryId()!=null){
+         Category category=categoryRepository.findByCategoryId(editProductDto.getCategoryId());
+            product.setCategory(category);
+
+        }
+        productRepository.save(product);
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 }

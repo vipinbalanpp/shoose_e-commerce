@@ -12,5 +12,12 @@ public interface CategoryService {
 
     Category getCategoryByCategoryName(String categoryName);
 
-    void changeCategoryName(CategoryDto categoryDto);
+    void editCategory(CategoryDto categoryDto);
+
+
+    Category getCategoryById(Long categoryId);
+
+    void blockCategory(Long categoryId);
+
+    void unBlockCategory(Long categoryId);
 }
