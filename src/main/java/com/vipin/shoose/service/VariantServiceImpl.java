@@ -1,7 +1,9 @@
 package com.vipin.shoose.service;
 
+import com.vipin.shoose.model.OrderInfo;
 import com.vipin.shoose.model.Product;
 import com.vipin.shoose.model.Variant;
+import com.vipin.shoose.repository.OrderRepository;
 import com.vipin.shoose.repository.ProductRepository;
 import com.vipin.shoose.repository.VariantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class VariantServiceImpl implements  VariantService{
@@ -17,6 +20,8 @@ public class VariantServiceImpl implements  VariantService{
     ProductRepository productRepository;
     @Autowired
     VariantRepository variantRepository;
+    @Autowired
+    OrderRepository orderRepository;
 
     @Override
     public List<Variant> getVaraints(Long id) {
@@ -64,7 +69,7 @@ public class VariantServiceImpl implements  VariantService{
                 variant.setSize(variantSizes.get(i));
                 variant.setQuantity(Long.valueOf(variantQuantities.get(i)));
                 variant.setProduct(product);
-                product.setQuantity((int) (variant.getQuantity()+product.getQuantity()));
+                product.setQuantity((variant.getQuantity()+product.getQuantity()));
                 productRepository.save(product);
                 variantsToAdd.add(variant);
             }
@@ -77,5 +82,32 @@ public class VariantServiceImpl implements  VariantService{
     @Override
     public List<Long> getAllSizesForColor(Long productId, String selectedColor) {
         return variantRepository.findAllSizesByColor(productId,selectedColor);
+    }
+
+    @Override
+    public Variant getVariantByProductColorAndSize(Long productId, String color, Long size) {
+        return  variantRepository.findByProductIdColorAndSize(productId,color,size);
+    }
+
+    @Override
+    public Long getVariantQuantity(Long productId, String color, Long size) {
+        return getVariantByProductColorAndSize(productId,color,size).getQuantity();
+    }
+
+    @Override
+    public void manageStockForOrder(Map<Variant, Long> orderProducts) {
+        for(Variant variant:orderProducts.keySet()){
+            Variant variant1=variantRepository.findByVariantId(variant.getVariantId());
+            variant1.setQuantity(variant1.getQuantity()-orderProducts.get(variant));
+            variantRepository.save(variant1);
+        }
+    }
+    @Override
+    public void updateStockonCancellingOrder(Long orderId) {
+        OrderInfo orderInfo=orderRepository .findByOrderId(orderId);
+        Map<Variant,Long>products=orderInfo.getProducts();
+        for(Variant variant:products.keySet()){
+            variant.setQuantity(variant.getQuantity()+products.get(variant));
+        }
     }
 }

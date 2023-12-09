@@ -19,5 +19,7 @@ public interface VariantRepository extends JpaRepository<Variant, Long> {
     Variant findByVariantId(Long variantId);
     @Query(value = "SELECT  size FROM variant WHERE product_id = :productId AND color = :selectedColor", nativeQuery = true)
     List<Long> findAllSizesByColor(Long productId, String selectedColor);
+    @Query(value = "SELECT  * FROM variant WHERE product_id = :productId AND color = :color AND size = :size", nativeQuery = true)
+    Variant findByProductIdColorAndSize(Long productId, String color, Long size);
 }
 

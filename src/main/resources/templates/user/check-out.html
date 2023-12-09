@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <title>Shoes</title>
+    <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet" type="text/css" />
+    <link th:rel="stylesheet" th:href="@{/css/check-out.css}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+        <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="addAddressModalLabel">Add Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form
+                class="form-horizontal"
+                th:action="@{/user/add-addressFromCheckout}"
+                method="post"
+              >
+                <div class="control-group">
+                  <div class="col-lg-12 mt-2">
+                    <label for="full-name" class="control-label"
+                      >Full Name</label
+                    >
+                    <input
+                      class="form-control"
+                      id="full-name"
+                      name="fullName"
+                      type="text"
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+                </div>
+                <div class="control-group">
+                  <div class="col-lg-12 mt-2">
+                    <label
+                      for="phone-number"
+                      class="control-label"
+                      >Mobile Number</label
+                    >
+                    <input
+                      class="form-control"
+                      id="phone-number"
+                      name="phoneNumber"
+                      type="text"
+                    />
+                  </div>
+                </div>
+                <!-- address-line1 input-->
+                <div class="control-group mt-2">
+                  <label class="control-label"
+                    >Apartment, building</label
+                  >
+                  <div class="col-lg-12">
+                    <input
+                      id="address-line1"
+                      name="buildingName"
+                      type="text"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+                <!-- address-line2 input-->
+                <div class="control-group mt-2">
+                  <label class="control-label">Street </label>
+                  <div class="col-lg-12">
+                    <input
+                      id="address-line2"
+                      name="streetName"
+                      type="text"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+                <!-- city input-->
+                <div class="control-group mt-2">
+                  <label class="control-label">City</label>
+                  <div class="col-lg-12">
+                    <input
+                      id="city"
+                      name="city"
+                      type="text"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+                <!-- region input-->
+                <div class="control-group mt-2">
+                  <label class="control-label">State </label>
+                  <div class="col-lg-12">
+                    <input
+                      id="region"
+                      name="state"
+                      type="text"
+                      placeholder="state / province / region"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+                <!-- postal-code input-->
+                <div class="control-group mt-2">
+                  <label class="control-label">Postal Code</label>
+                  <div class="col-lg-12">
+                    <input
+                      id="postal-code"
+                      name="postalCode"
+                      type="text"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">
+                    Save changes
+                  </button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                  </button>
+                </div>
+              </form>
+              </div>
+              <div class="modal-footer">
+              </div>
+            </div>
+          </div>
+        </div>
+  
+
+
+          <div class="container custom-container main ">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div >
+                        <div class="card">
+                          <div class="card-body">
+                            <h5 class="card-title">Saved Addresses</h5>
+                            <th:block th:each="address, iterStat : ${addresses}" >
+                            <div class="address-card row">
+                                <div class="col-1">
+                                  <input name="addressId" type="radio" th:value="${address.addressId}" th:id="'address' + ${iterStat.count}" th:checked="${iterStat.first}" data-address-id="${address.addressId}">
+                                </div>
+                                <div class="col-4">
+                                  <div class="address-line mt-2">Name:</div>
+                                  <div class="address-line mt-2">BuildingName:</div>
+                                  <div class="address-line mt-2">City:</div>
+                                  <div class="address-line mt-2">Pincode:</div>
+                                  <div class="address-line mt-2">State:</div>
+                                  <div class="address-line mt-2">Mobile Number:</div>
+                                </div>
+                                <div class="col-7">
+                                  <div class="address-value">
+                                    <span th:text="${address.fullName}"></span>
+                                  </div>
+                                  <div class="address-value">
+                                    <span th:text="${address.buildingName}"></span>
+                                  </div>
+                                  <div class="address-value">
+                                    <span th:text="${address.city}"></span>
+                                  </div>
+                                  <div class="address-value">
+                                    <span th:text="${address.postalCode}"></span>
+                                  </div>
+                                  <div class="address-value">
+                                    <span th:text="${address.state}"></span>
+                                  </div>
+                                  <div class="address-value">
+                                    <span th:text="${address.phoneNumber}"></span>
+                                  </div>
+                                </div>
+                            </div>
+                        </th:block>
+                                <a class="btn btn-dark" style="background-color: black;" data-bs-toggle="modal"
+                                  data-bs-target="#addAddressModal">
+                                  <i class="fas fa-plus-circle"></i> Add Address
+                                </a>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mt-2 col-lg-12">
+                        <div class="card mb-3 border shadow-0 col-lg-6">
+                          <div class="card-body">
+                              <div class="form-group">
+                                <label class="form-label">Have coupon?</label>
+                                <p id="coupon-success" class="text-success" style="display: none;">Coupon applied successfully</p>
+                                <p id="coupon-error" class="text-danger" style="display: none;">Enter Valid coupon code</p>
+                                <p id="inform-refresh" class="text-danger" style="display: none;">Do not refresh the page before checkout</p>
+                                <div class="input-group">
+                                    <input
+                                      type="text"
+                                      class="form-control border"
+                                      id="couponCodeInput"
+                                      placeholder="Coupon code"
+                                      oninput="validateCoupon()"
+                                    />    
+                                  
+                                  <button class="btn btn-dark" type="button" id="applyCouponBtn" onclick="applayCoupon()" >Apply</button>
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="card shadow-0 border col-lg-8">
+                            <div class="card-body">
+                              <div class="d-flex justify-content-between">
+                                <p class="mb-2">Total price:</p>
+                                <div id="sub-total"><span class="text-danger" id="actual-amount" th:text="${totalAmount}"></span></div>
+                              </div>
+                              <div class="d-flex justify-content-between">
+                                <p class="mb-2">Discount:</p>
+                                <p  class="mb-2 text-danger" id="discountAmount">0.00</p>
+                              </div>
+                              <hr />
+                              <div class="d-flex justify-content-between">
+                                <p class="mb-2">Amount to be payed:</p>
+                                <p class="mb-2 text-danger" id="amount-to-be-payed" th:text="${totalAmount}"></p>
+                              </div>
+                            </div>
+                          </div>
+                    <form id="order-form" th:action="@{/user/place-order}" method="post" onsubmit="paymentStart(event)">
+                              <div class="col-lg-8" >
+                                  <div class="card">
+                              <div class="card-body">
+                              <h5 class="card-title">Payment Methods</h5>
+                
+                              <div class="form-check">
+                                <input class="form-check-input" type="radio" checked name="paymentMethod" id="cod" value="cod"  />
+                                <label class="form-check-label" for="cod">
+                                  Cash on Delivery (COD)
+                                </label>
+                              </div>
+                              <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="online" value="razorpay" />
+                                <label class="form-check-label" for="online">
+                                  Online Payment
+                                </label>
+                              </div>
+                              <div class="form-check">
+                                <input class="form-check-input" type="radio"  name="paymentMethod" id="wallet" value="wallet" />
+                                <label class="form-check-label" for="online">
+                                  Wallet Payment
+                                </label>
+                              </div>
+                              <input type="hidden" name="addressId" id="addressId" />
+                              <input type="hidden" name="totalAmount" id="totalamount" th:value="${totalAmount}">
+                              <input type="hidden" name="discountCode" id="discountCode">
+                              <div class="justify-content-center">
+                                <button type="submit" class="btn btn-success mt-4" id="confirmOrderButton">
+                                  Confirm Order
+                                </button>
+                                <a th:href="@{/shop}"><button class="btn btn-secondary mt-4" type="button">Back to Shop</button></a>
+                              </div>
+                            </form>
+                            </div>
+                          </div>
+                      </div>
+                </div>
+            </div>
+          </div>
+  <script th:inline="javascript">
+    var couponApplied=false
+    check()
+      function initializePage() {
+            var totalAmount = [[${totalAmount}]];
+            var addresses = [[${adds}]]
+            const addressRadios = document.querySelectorAll('input[type="radio"][name="addressId"]');
+            const addressInput = document.getElementById("addressId");
+            addressRadios.forEach(function (radio) {
+                radio.addEventListener("change", function () {
+                    if (this.checked) {
+                        const addressId = this.value;
+                        addressInput.value = addressId;
+                    }
+                });
+            });
+        }
+        function validateCoupon() {
+    var couponInput = document.getElementById("couponCodeInput");
+    var couponCode = couponInput.value;
+    if (!couponCode.trim()) {
+        // Clear the style and hide the error message
+        couponInput.style.color = '';
+        var couponError = document.getElementById("coupon-error");
+        couponError.style.display = 'none';
+        return;
+    }
+
+    $.ajax({
+        url: '/user/checkCouponExists',
+        type: 'GET',
+        dataType: 'json',
+        data: { couponCode },
+        success: function (response) {
+            if (response) {
+                console.log(response);
+                couponInput.style.color = 'green'; 
+                var couponError=document.getElementById("coupon-error")
+                couponError.style.display='none'
+                var discountCodeForCheckeout=document.getElementById("discountCode")
+                discountCodeForCheckeout.value=couponCode;
+                console.log(discountCodeForCheckeout)
+                check();
+            } else {
+                console.log(response);
+                var couponError=document.getElementById("coupon-error")
+                couponError.style.display='block'
+            }
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+function applayCoupon() {
+  var couponCode = document.getElementById("couponCodeInput").value;
+  var totalAmount = document.getElementById("actual-amount").textContent;
+
+  $.ajax({
+    url: '/user/applyCoupon',
+    type: 'GET',
+    dataType: 'json',
+    data: { couponCode, totalAmount },
+    success: function (response) {
+      console.log(response);
+
+      if (response.ableToApply === false) {
+        lessThanMinimumPurchaseAmount();
+        console.log(response.ableToApply + ' toast');
+        return;
+      }
+
+      // Move other code that depends on the response here
+      var discountAmount = document.getElementById("discountAmount");
+      discountAmount.textContent = response.discountAmount;
+
+      var amountTobePayed = document.getElementById("amount-to-be-payed");
+      amountTobePayed.textContent = response.totalAmount;
+
+      var couponSuccessTag = document.getElementById("coupon-success");
+      couponSuccessTag.style.display = 'block';
+
+      var couponInput = document.getElementById("couponCodeInput");
+      couponInput.style.display = 'none';
+
+      var couponApplyButton = document.getElementById("applyCouponBtn");
+      couponApplyButton.style.display = 'none';
+
+      var informRefresh = document.getElementById("inform-refresh");
+      informRefresh.style.display = 'block';
+
+      couponApplied = true;
+      check();
+    }
+  });
+}
+
+
+        function check(){
+          console.log(couponApplied);
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+          const addressInput = document.getElementById("addressId");
+          console.log("fhghf")
+            initializePage();
+        });
+        function paymentStart (e){
+          e.preventDefault()
+          var orderForm = document.getElementById("order-form");
+          var totalAmount = [[${totalAmount}]];
+          const addressInput = document.getElementById("addressId");
+            var addresses = [[${adds}]]
+      var selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+      console.log(selectedPaymentMethod);
+      var csrfToken = $("meta[name='_csrf']").attr("content");
+            addressInput.value=addresses[0].addressId
+            if (addresses.length === 0) {
+        addressEmpty();
+        return; 
+      }  if(couponApplied === false){
+          var discountCodeForCheckeout=document.getElementById("discountCode")
+                discountCodeForCheckeout.value='not-applied';
+                console.log(discountCodeForCheckeout)
+        }
+
+      if (selectedPaymentMethod === 'razorpay') {
+        $.ajax({
+          url: '/user/createOrder',
+          type: 'POST',
+          data: { amount: totalAmount },
+          dataType: 'json',
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+          },
+          success: function (response) {
+            console.log(response);
+            if (response.status == "created") {
+              let options = {
+                key: "rzp_test_XOMufWarHqGN9i",
+                amount: response.amount,
+                currency: "INR",
+                name: "shoose",
+                description: "payment for the product",
+                image: "https://rukminim2.flixcart.com/image/832/832/l1jmc280/shoe/m/y/z/6-innova-04cwhtsky-asian-white-original-imagd3atfhw3tdwh.jpeg?q=70",
+                order_id: response.id,
+                handler: function (response) {
+                  console.log(response.razorpay_payment_id);
+                  console.log(response.razorpay_order_id);
+                  console.log(response.razorpay_signature);
+                  console.log("payment successful");
+                  var orderForm = document.getElementById("order-form");
+                  console.log("orderform" + orderForm);
+                  orderForm.submit();
+                },
+                "prefill": {
+                  "name": "",
+                  "email": "",
+                  "contact": ""
+                }, "notes": {
+                  "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                  "color": "#3399cc"
+                }
+              };
+              let rzp = new Razorpay(options);
+              rzp.on("payment.failed", function (response) {
+                alert("oops.... payment failed");
+              });
+              rzp.open();
+            }
+          }
+        });
+      }else if (selectedPaymentMethod === 'cod') {
+        var orderForm = document.getElementById("order-form");
+        orderForm.submit();
+      } else if (selectedPaymentMethod === 'wallet') {
+        $.ajax({
+      url: '/user/getWalletBalance',
+      type: 'GET',
+      success: function (response) {
+         if(response<totalAmount){
+          Swal.fire({
+                icon: 'error',
+                title: 'Insufficient Balance',
+                text: 'Your wallet balance is not sufficient to place this order.',
+                confirmButtonText: 'OK',
+                showCancelButton: false,
+              });
+         }else{
+          var orderForm = document.getElementById("order-form");
+        orderForm.submit();
+         }
+      },
+    });
+       
+      }
+        }
+        function lessThanMinimumPurchaseAmount() {
+  Swal.fire({
+    icon: 'error',
+    title: '',
+    text: 'Amount is less than the minimum purchase amount for this coupon',
+    confirmButtonText: 'OK',
+    showCancelButton: false,
+  });
+}
+
+    </script>
+    
+</body>
+</html>

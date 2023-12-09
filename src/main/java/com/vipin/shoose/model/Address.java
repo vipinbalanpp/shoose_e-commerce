@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 public class Address {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressId;
     private  String fullName;
     private String phoneNumber;

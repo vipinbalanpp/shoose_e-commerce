@@ -1,0 +1,148 @@
+#cart-heading{
+  font-family: var(--bs-font-sans-serif);
+  color: rgba(8, 87, 166, 1);
+  font-size: 40px;
+  margin-left: 26px;
+  margin-top: 58px;
+}
+#heading-div{
+  padding-left: 40px;
+}
+#cart-table{
+  border-bottom: 0px;
+}
+#amout{
+width:400px;
+}
+.quantity {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+input[type="number"] {
+    width: 40px;
+    text-align: center;
+}
+
+.btn-remove {
+    background-color:1px solid #ff5555;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.quantityField{
+    width:50px;
+}
+.product-details h2 {
+    margin: 0;
+}
+.product-image {
+  width: 80px;
+  height: 80px;
+  border: 1px solid #000;
+
+}
+.product {
+    display: flex;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+img{
+width:20px;
+height:20px;
+}
+#total-prize{
+  width: 414px;
+  height: 363px;
+  border: 1px solid black;
+}
+
+.table-body{
+    height: 20px;
+}
+/* CSS for the custom confirmation modal */
+.custom-confirmation-modal {
+  background-color: #fff; /* Modify to match your modal background color */
+  border: 1px solid #ccc; /* Modify to match your modal border style */
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+   width: 50%; /* Adjust the width as needed */
+    margin: 0 auto; /* Center horizontally */
+    text-align: center; /* Center content within the modal */
+    position: absolute;
+    top: 50%; /* Center vertically */
+ /* Center horizontally */
+    transform: translate(-50%, -50%);/* Modify to match your modal box shadow */
+}
+
+/* Style the buttons */
+.custom-confirmation-modal button {
+  margin: 5px;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+/* Style the "Yes" button */
+.custom-confirmation-modal #confirmRemove {
+  background-color: #dc3545; /* Modify to match your "Yes" button color */
+  color: #fff; /* Modify to match your "Yes" button text color */
+}
+
+/* Style the "No" button */
+.custom-confirmation-modal #cancelRemove {
+  background-color: #6c757d; /* Modify to match your "No" button color */
+  color: #fff; /* Modify to match your "No" button text color */
+}
+
+#value{
+  margin-left: 95px;
+
+}
+#total-price-heading-div{
+  border-bottom: 1px solid black;
+  width: 414px;
+  margin-left: -41px;
+  height: 44px;
+}
+#value{
+  width: 121px;
+  border-left: 1px solid black;
+  height: 303px;
+  margin-top: -1px;
+  margin-left: 89px;
+  padding-left: 10px;
+
+}
+#place-order-button-div{
+  margin-left: 228px;
+  margin-top: 36px;
+}
+.card{
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2); /* Add more shadow to the container */
+}
+.quantity button {
+  width: 30px;
+  height: 30px;
+  font-size: 22px;
+  color: black;
+  background-color: rgb(204, 122, 122);
+  border-radius: 20%;
+  border: 0px;
+  margin: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-minus, .btn-plus {
+  padding: 0;
+}
+
+

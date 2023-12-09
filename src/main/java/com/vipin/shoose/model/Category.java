@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 public class Category {
@@ -14,6 +16,11 @@ public class Category {
     private  Long categoryId;
     private String categoryName;
     private  String description;
+    private  String image;
+    private Boolean isHavingOffer=false;
+    private Integer offerInPercentage;
+    private LocalDate startDate;
+    private LocalDate expiryDate;
     boolean isEnabled=false;
 
 }

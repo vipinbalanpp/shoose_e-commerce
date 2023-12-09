@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,9 +19,9 @@ public class ProductDto {
     private String description;
     private String gender;
     private  String  brand;
-    private String price;
+    private MultipartFile image;
+    private Float price;
     private  Long  categoryId;
-    private  String image;
     private List<VariantDto> variants;
 
 

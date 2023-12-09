@@ -2,87 +2,361 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Shoose</title>
-    <link th:rel="stylesheet" th:href="@{/css/product-list.css}">
+    <title>Shoes</title>
+    <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon" />
+    <link th:rel="stylesheet" th:href="@{/css/product-list.css}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/boxicons/2.0.7/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" 
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <style>
+  
+    </style>
 </head>
 <body>
-<div th:include="~{fragment::admin-navbar}"></div>
-<div class="d-flex justify-content-end p-5">
-    <div class="text-danger">
-        <p th:text="${categoryExists}"></p>
+    <p th:text="${offerAddingSuccess}" class="bg-success text-white"></p>
+    <p th:text="${offerEditingSuccess}" class="bg-success text-white"></p>
+    <div th:replace="~{fragment::admin-dashboard}"></div>
+    <div class="m-0 p-0">
+        <p class="text-danger text-center m-0 p-0" th:text="${categoryExists}"></p>
     </div>
+    <div class="d-flex justify-content-end p-5">
+        <!-- Button to trigger the modal -->
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+            Add Category
+        </button>
 
-    <form th:action="@{/admin/add-category}" th:method="post" th:object="${category}">
-        <div class="form-group">
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle me-5" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    Add Category
-                </button>
-                <div id="category-dropdown" class="dropdown-menu p-5">
-                    <input class="form-control" name="categoryName" placeholder="Enter the Category Name" >
-                    <input class="form-control mt-5" type="text" name="description" placeholder="Enter the description of the category"><br>
-                    <button class="btn-primary align-center" type="submit">Add Category</button>
+        <!-- Modal for adding a new category -->
+        <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                       
+                        <!-- Form to add category -->
+                        <form id="addCategoryForm" th:action="@{/admin/add-category}" th:method="post" th:object="${category}" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <!-- Input fields for category details -->
+                                <input class="form-control mt-5" name="categoryName" placeholder="Enter the Category Name" oninput="showImageSelected()">
+                                <input class="form-control mt-5" type="text" name="description" placeholder="Enter the description of the category">
+                                <!-- Input field for category image -->
+                                <div class="d-flex">
+                                    <input id="categoryImage" class="custom-file-input mt-4 mb-3" type="file" name="categoryImage" accept="image/*" multiple="multiple" required onchange="showImageSelected()">
+                                    <img id="category-image-preview" style="max-width: 200px; max-height: 200px; display: none;" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <!-- Submit button to add category -->
+                                <button type="submit" class="btn btn-primary">Add Category</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </form>
-</div>
+    </div>
+    <div class="px-5">
+        <table class="table text-center custom-table table-bordered">
+            <thead class="thead table-dark ">
+                <tr>
+                    <th></th>
+                    <th>Category name</th>
+                    <th>Desription </th>
+                    <th></th>
+                    <th>Status</th>
+                   
+                    <th>Offer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="category : ${categories}">
+                    <td>
+                        <div>
+                            <img th:id="'img-' + ${category.categoryId}"  class="category-image" th:src="@{/img/product-images/__${category.image}__}" data-category-id="${category.categoryId}" />
 
-</div>
-<div class="me-5 pe-5">
-    <table class="table m-5 text-center">
-        <thead class="thead-dark bg-secondary  text-white">
-        <tr>
-            <th>Category id</th>
-            <th>Category name</th>
-            <th>Desription </th>
-            <th></th>
-            <th>Status</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="category : ${categories}">
-            <td th:text="${category.categoryId}"></td>
-            <td th:text="${category.categoryName}" class="fw-bold fs-4" ></td>
-            <td  id="category-row"  th:text="${category.description}" ></td>
-            <td>
-                <form th:action="@{/admin/edit-category}" th:method="post" th:object="${category}">
-                    <div class="form-group">
-                        <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
-                        <div class="dropdown">
-                            <button class="btn btn-primary fw-bold me-5" type="button" id="d" data-bs-toggle="dropdown" aria-expanded="false">
-                                Edit
-                            </button>
-                            <div id="edit-category-dropdown" class="dropdown-menu">
-                                <input class="form-control" name="categoryName" placeholder="Enter the new name" >
-                                <input class="form-control mt-3" name="description" placeholder="Change Description" >
-                                <button class="btn-primary align-center ms-5 mb-5 mt-4" type="submit">Save</button>
-                            </div>
+                          <label th:for="'image-' + ${category.categoryId}"  ><i class="fa-solid fa-upload"></i></label>
+                          <input hidden th:id="'image-' + ${category.categoryId}" class="custom-file-input mt-4 mb-3" type="file" name="categoryImage" accept="image/*" multiple="multiple" required onchange="updateCategoryImage(this)">
+
                         </div>
+                      
+                       
+                    </td>
+                    <td th:text="${category.categoryName}" class="fw-bold fs-4"></td>
+                    <td class="description-cell">
+                        <!-- Display only one line and hide the overflow -->
+                        <div class="description-content">
+                            <span th:text="${category.description}"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <form th:action="@{/admin/edit-category}" th:method="post" th:object="${category}">
+                            <div class="form-group">
+                                <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
+                                <div class="dropdown">
+                                    <label for="categoryEdit"><i class="fa-solid fa-pen-to-square"></i></label>
+                                    <input type="submit" id="categoryEdit"  data-bs-toggle="dropdown" aria-expanded="false" hidden> 
+                                    <div id="edit-category-dropdown" class="dropdown-menu">
+                                        <input class="form-control" name="categoryName" placeholder="Enter the new name">
+                                        <input class="form-control mt-3" name="description" placeholder="Change Description">
+                                        <button class="btn-primary align-center ms-5 mb-5 mt-4" type="submit">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </td>
+                    <td>    
+                       
+                            <form th:if="${category.isEnabled}" th:method="post" th:action="@{/admin/block-category/{categoryId}(categoryId=${category.categoryId})}">
+                            <label th:for="'block-' + ${category.categoryId}"><span class="text-success" th:if="${category.isEnabled}">Active</span><i  class="fas fa-check-circle text-success"></i></label>
+                            <input hidden th:id="'block-' + ${category.categoryId}" class="btn text-danger" type="submit" value="Block">
+                        </form>
+                        <form th:if="${not category.isEnabled}" th:method="post" th:action="@{/admin/unBlock-category/{categoryId}(categoryId=${category.categoryId})}">
+                            <label th:for="'unBlock-' + ${category.categoryId}"><span class="text-danger" th:if="${not category.isEnabled}">Blocked</span><i class="fa-solid fa-ban text-danger"></i></label>
+                            <input hidden th:id="'unBlock-' + ${category.categoryId}" class="btn text-success" type="submit" value="Unblock">
+                        </form>
+                    </td>  
+                    <td>
+                        <div th:if="${category.isHavingOffer}">
+                            <p>Discount: <span th:text="${category.offerInPercentage}"></span>%</p>
+                            <p>Started Date: <span th:text="${category.startDate}"></span></p>
+                            <p>Expiry Date: <span th:text="${category.expiryDate}"></span></p>
+                        </div>
+                        <span th:if="${category.isHavingOffer}" data-bs-toggle="modal" th:data-bs-target="'#editOfferModal-' + ${category.categoryId}">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </span>
+                        <button th:if="${not category.isHavingOffer}"  class="btn btn-primary" data-bs-toggle="modal" th:data-bs-target="'#addOfferModal-' + ${category.categoryId}">
+                            Add Offer<i class="fa-regular fa-plus"></i>
+                        </button>
+                    </td>
+                  
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    
+    <div th:each="category : ${categories}">
+        <!-- Modal for adding offer -->
+        <div class="modal fade" th:id="'addOfferModal-' + ${category.categoryId}" tabindex="-1" aria-labelledby="'addOfferModalLabel-' + ${category.categoryId}" aria-hidden="true">
+            <!-- Modal content -->
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" th:id="'addOfferModalLabel-' + ${category.categoryId}">Add Offer</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                </form>
-            </td>
-            <td>
-                <p class="text-success fw-bold" th:if="${category.isEnabled}">Active</p>
-                <p class="text-danger fw-bold" th:if="${not category.isEnabled}">Blocked</p>
-            </td>
-            <td>
-                <form th:if="${category.isEnabled}" th:method="post" th:action="@{/admin/block-category/{categoryId}(categoryId=${category.categoryId})}">
+                    <div class="modal-body">
+                        <!-- Form to add offer -->
+                        <form th:action="@{/admin/add-offer}" th:method="post" onsubmit="return validateAddOfferForm()">
+                            <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
+                            <div class="form-group">
+                                <label for="offerPercentage">Discount Percentage:</label>
+                                <input type="number" class="form-control" id="offerPercentageForAddOffer" min="0" max="100" name="offerPercentage" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="startDate">Start Date:</label>
+                                <input type="date" class="form-control" id="startDateForAddOffer" name="startDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="endDate">Expiry Date:</label>
+                                <input type="date" class="form-control" id="endDateForAddOffer" name="expiryDate" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Offer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:each="category : ${categories}">
+        <!-- Modal for adding offer -->
+        <div class="modal fade" th:id="'editOfferModal-' + ${category.categoryId}" tabindex="-1" aria-labelledby="'editOfferModalLabel-' + ${category.categoryId}" aria-hidden="true">
+            <!-- Modal content -->
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" th:id="'editOfferModalLabel-' + ${category.categoryId}">Edit Offer for <span th:text="${category.categoryName}"></span></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form to add offer -->
+                        <form th:action="@{/admin/edit-offer}" th:method="post">
+                            <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
+                            <div class="form-group">
+                                <label for="offerPercentage">Discount Percentage:</label>
+                                <input type="number" min="0" max="100" class="form-control" id="offerPercentage" name="offerPercentage" >
+                            </div>
+                            <div class="form-group">
+                                <label for="endDate">Expiry Date:</label>
+                                <input type="date" class="form-control" id="endDate" name="expiryDate" >
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-5">Add Offer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function validateAddOfferForm(){
+            var discountPercentage=document.getElementById("offerPercentageForAddOffer").value
+            var startDate=document.getElementById("startDateForAddOffer").value
+            var expiryDate=document.getElementById("endDateForAddOffer").value
+            var today = new Date().toISOString().split('T')[0];
+             if (startDate < today) {
+                 Swal.fire({
+                     icon: 'error',
+                    title: 'Invalid Input',
+                    text: 'Start date should be atleast Today. '
+             });
+                     return false; 
+             }
+
+             if (discountPercentage < 1 || discountPercentage > 100) {
+                console.log(discountPercentage)
+                     Swal.fire({
+                         icon: 'error',
+                         title: 'Invalid Input',
+                        text: 'Discount percentage must be between 1 and 100.'
+            });
+            return false; 
+         }
 
 
-                    <input class="btn btn-danger text-white"  type="submit" value="Block">
-                </form>
-                <form th:if="${not category.isEnabled}" th:method="post" th:action="@{/admin/unBlock-category/{categoryId}(categoryId=${category.categoryId})}">
+       
 
-                    <input class="btn btn-success text-white"  type="submit" value="Unblock">
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+
+            if (expiryDate < startDate) {
+                 Swal.fire({
+                     icon: 'error',
+                    title: 'Invalid Input',
+                     text: 'Expiry date should not be less than the start date.'
+             });
+                return false; 
+                 }
+
+            return true;
+
+        }
+        const today = new Date();
+
+
+
+    function updateCategoryImage(input) {
+    var categoryId = input.id.replace('image-', ''); 
+    var uploadedImage = input.files[0];
+    
+    var imgElement = document.getElementById('img-' + categoryId);
+
+    if (imgElement) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            imgElement.src = e.target.result;
+        };
+
+        reader.readAsDataURL(uploadedImage);
+    }
+}
+
+
+    
+        function showImageSelected() {
+            var inputElement = document.getElementById("categoryImage");
+            var imgElement = document.getElementById("category-image-preview");
+
+            if (inputElement.files && inputElement.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    imgElement.src = e.target.result;
+                    imgElement.style.display = "block"; // Display the image
+                };
+
+                reader.readAsDataURL(inputElement.files[0]);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function (event) {
+            var startDateInput = document.getElementById("startDateForAddOffer");
+    if (startDateInput) {
+        var today = new Date().toISOString().split('T')[0];
+        startDateInput.setAttribute("min", today);
+    }
+
+    // Update the end date input to disable dates before today and before the start date
+    var endDateInput = document.getElementById("endDateForAddOffer");
+    if (endDateInput) {
+        var today = new Date().toISOString().split('T')[0];
+        endDateInput.setAttribute("min", today);
+
+        // Add an event listener to the start date input to update the min attribute of the end date
+        startDateInput.addEventListener('input', function () {
+            endDateInput.setAttribute("min", startDateInput.value);
+        });
+    }
+  
+            const showNavbar = (toggleId, navId, bodyId, headerId) => {
+                const toggle = document.getElementById(toggleId),
+                    nav = document.getElementById(navId),
+                    bodypd = document.getElementById(bodyId),
+                    headerpd = document.getElementById(headerId)
+  
+                // Validate that all variables exist
+                if (toggle && nav && bodypd && headerpd) {
+                    toggle.addEventListener('click', () => {
+                        // show navbar
+                        nav.classList.toggle('show')
+                        // change icon
+                        toggle.classList.toggle('bx-x')
+                        // add padding to body
+                        bodypd.classList.toggle('body-pd')
+                        // add padding to header
+                        headerpd.classList.toggle('body-pd')
+                    })
+                }
+            }
+  
+            showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header')
+  
+            /*===== LINK ACTIVE =====*/
+            const linkColor = document.querySelectorAll('.nav_link')
+  
+            function colorLink() {
+                if (linkColor) {
+                    linkColor.forEach(l => l.classList.remove('active'))
+                    this.classList.add('active')
+                }
+            }
+            linkColor.forEach(l => l.addEventListener('click', colorLink))
+            const addCategoryForm = document.getElementById('addCategoryForm');
+
+addCategoryForm.addEventListener('submit', function (event) {
+    const categoryNameInput = document.getElementById('categoryName');
+    const descriptionInput = document.getElementById('description');
+
+    if (!categoryNameInput.value.trim() || !descriptionInput.value.trim()) {
+        // Prevent form submission if any field is empty or contains only spaces
+        event.preventDefault();
+        alert('Please fill in all fields');
+    }
+});
+  
+            // Your code to run since DOM is loaded and ready
+        });
+    </script>
 </body>
 </html>

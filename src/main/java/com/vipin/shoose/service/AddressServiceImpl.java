@@ -1,14 +1,17 @@
 package com.vipin.shoose.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vipin.shoose.dto.AddressDto;
+import com.vipin.shoose.exception.CustomException;
 import com.vipin.shoose.model.Address;
 import com.vipin.shoose.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class AddressServiceImpl implements AddressService{
@@ -37,9 +40,15 @@ public class AddressServiceImpl implements AddressService{
 
     @Override
     public List<Address> getCurrentUserAddresses() {
-        return addressRepository.findByUser(userService.getCurrentUser());
+        try {
+            return addressRepository.findByUser(userService.getCurrentUser());
+        }catch (Exception e){
+            throw new CustomException("An error occurred");
+        }
+
 
     }
+
 
     @Override
     public void deleteAddress(Long addressId) {
@@ -74,5 +83,25 @@ public class AddressServiceImpl implements AddressService{
         }
 
 
+    }
+
+    @Override
+    public List<AddressDto> getCurrentUserAddressDtos() throws JsonProcessingException {
+        List<AddressDto> addressDtos=new ArrayList<>();
+        ObjectMapper objectMapper=new ObjectMapper();
+        List<Address>addresses= userService.getAddresses(userService.getCurrentUser());
+        for(Address a:addresses){
+            AddressDto addressDto=new AddressDto();
+            addressDto.setAddressId(String.valueOf(a.getAddressId()));
+            addressDto.setFullName(a.getFullName());
+            addressDto.setPhoneNumber(a.getPhoneNumber());
+            addressDto.setBuildingName(a.getBuildingName());
+            addressDto.setStreetName(a.getStreetName());
+            addressDto.setCity(a.getCity());
+            addressDto.setState(a.getState());
+            addressDto.setPostalCode(a.getPostalCode());
+            objectMapper.writeValueAsString(addressDto);
+            addressDtos.add(addressDto);
+        }return addressDtos;
     }
 }

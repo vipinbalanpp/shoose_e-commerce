@@ -1,42 +1,70 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
+  <head>
+    <meta charset="UTF-8" />
     <title>Shoose</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link th:rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <link th:rel="stylesheet" th:href="@{/css/home.css}" />
     <style>
-        .card {
-            margin-bottom: 20px;
-        }
+      .card {
+        margin-bottom: 20px;
+      }
 
-        .card-body {
-            min-height: 200px; /* Set a fixed minimum height for the card body */
-        }
+      .card-body {
+        min-height: 150px; /* Set a fixed minimum height for the card body */
+      }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-</head>
-<body>
-<div th:include="~{fragment::navbar}"></div>
-<div class="container-fluid">
-    <div class="row ms-3">
-        <div th:each="product : ${productList}" class="col-lg-3 col-md-4 col-sm-6 col-12">
-            <div class="card">
-                <div class="img">
-                    <img class="card-img-top" th:src="@{/img/product-images/__${product.productImage}__}" />
-                </div>
-                <div class="card-body position-relative">
-                    <h5 class="card-title"><b><span th:text="${product.brand}"></span></b></h5>
-                    <p th:text="${product.productName}" class="card-text"></p>
-                    <p th:text="'₹' + ${product.price}" class="price card-text text-danger"></p>
-                    <a th:href="@{'/product-details?productId=' + ${product.productId}}" class="cardbutton btn">View Details</a>
-                </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div th:include="~{fragment::navbar}"></div>
+    <div class="container-fluid">
+      <div class="row ms-3">
+        <div th:if="${productList}"
+          th:each="product : ${productList}"
+          class="col-lg-3 col-md-4 col-sm-6 col-12">
+          <div class="card">
+            <div class="img">
+              <img
+                class="card-img-top"
+                th:src="@{/img/product-images/__${product.image}__}"
+              />
             </div>
+            <div class="card-body position-relative">
+              <h5 class="card-title">
+                <b><span th:text="${product.brand}"></span></b>
+              </h5>
+              <p th:text="${product.productName}" class="card-text"></p>
+              <p th:unless="${product.isCategoryHavingOffer}" class="price card-text text-danger">
+                <span >₹<span th:text="${product.actualPrice}"></span></span>
+            </p>
+              <p th:if="${product.isCategoryHavingOffer}" class="price card-text text-danger">
+              <span style="text-decoration: line-through;" class="me-3" th:text="${product.actualPrice}"></span>₹<span th:text="${product.discountPrice}"></span>
+          </p>
+              <a
+                th:href="@{'/product-details?productId=' + ${product.productId}}"
+                class="cardbutton btn"
+                >View Details</a
+              >
+            </div>
+          </div>
         </div>
+        <div th:unless="${not #lists.isEmpty(productList)}" style="height: 500px;">
+          <h3 class="text-center mt-5 text-danger">No products available for this category.  <br> <a class="mt-5" th:href="@{/shop}">Get All Products</a></h3>
+        
+        </div>
+      </div>
     </div>
-</div>
-<footer>
-    <div th:include="~{fragment::footer}"></div>
-</footer>
-</body>
+      <div th:include="~{fragment::footer}"></div>
+  </body>
 </html>

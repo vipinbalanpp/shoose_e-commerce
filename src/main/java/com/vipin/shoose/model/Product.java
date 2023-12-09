@@ -16,8 +16,11 @@ public class Product {
     private String description;
     private  String gender;
     private  String brand;
-    private Double price;
-    private Integer quantity;
+    private Float actualPrice;
+    private Float discountPrice;
+    private String image;
+    private Boolean isCategoryHavingOffer=false;
+    private Long quantity;
     private LocalDateTime lastUpdated;
     @ManyToOne
     @JoinColumn(name = "category_id")

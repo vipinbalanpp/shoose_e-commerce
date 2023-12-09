@@ -1,13 +1,138 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
-    <title>Shoose</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <meta charset="UTF-8" />
+  <title>Shoes</title>
+  <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet" type="text/css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/boxicons/2.0.7/css/boxicons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link th:rel="stylesheet" th:href="@{/css/product-list.css}" />
+
 </head>
 <body>
-<div th:include="~{fragment::admin-navbar}"></div>
+  <div th:replace="fragment::admin-dashboard"></div>
+  <div id="filter" class="d-flex ">
+    <div onclick="getAllOrders()">All</div>
+    <div onclick="filterOrdersByStatus('PENDING')">Pending</div>
+    <div onclick="filterOrdersByStatus('PROCESSING')">Processing</div>
+    <div onclick="filterOrdersByStatus('SHIPPED')">Shipped</div>
+    <div onclick="filterOrdersByStatus('OUT_FOR_DELIVERY')">Out For Delivery</div>
+    <div onclick="filterOrdersByStatus('DELIVERED')">Delivered</div>
+    <div onclick="filterOrdersByStatus('CANCELLED')">Cancelled</div>
+    <div onclick="filterOrdersByStatus('RETURN_REQUESTED')">Requested For Return</div>
+    <div onclick="filterOrdersByStatus('RETUNED')">Returned</div>
+  </div>
+<div class="container">
+  <table class="table text-center custom-table">
+    <thead class="thead table-dark">
+    <tr>
+      <td>Products</td>
+      <td>Amount</td>
+      <td>Status</td>
+      <td>Ordered Date</td>
+      <td></td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order, iterStat : ${orders}">
+      <td>
+        <span th:if="${#lists.size(order.products) == 1}" th:text="${#lists.size(order.products)} + ' product'"></span>
+        <span th:if="${#lists.size(order.products) > 1}"  th:text="${#lists.size(order.products)} + ' products'"></span>
+      </td>
+      <td th:text="${order.amountPayed}"></td>
+      <td th:text="${order.currentStatus}"></td>
+      <td th:text="${order.orderedDate}"></td>
+      <td><a th:href="@{/admin/order-details/{orderId}(orderId=${order.orderId})}">view details</a></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      function filterOrdersByStatus(status){
+        console.log(status)
+        $.ajax({
+          url: '/admin/getOrdersByStatus',
+          type: 'GET',
+          dataType: 'json',
+          data: {status},
+          success: function (response){
+                console.log(response)
+                
+          },
+          error: function (error){
+            console.log('error in filterOrderBystatus function')
+          }
+        })
+      }
+//       function updateOrderTable(orders) {
+//   const tbody = $('.custom-table tbody');
+//   tbody.empty(); // Clear existing table rows
 
+//   orders.forEach(order => {
+//     const row = $('<tr>');
+//     row.html(`
+//       <td>
+//         <span th:if="${#lists.size(order.products) == 1}" th:text="${#lists.size(order.products)} + ' product'"></span>
+//         <span th:if="${#lists.size(order.products) > 1}" th:text="${#lists.size(order.products)} + ' products'"></span>
+//       </td>
+//       <td th:text="${order.amountPayed}"></td>
+//       <td th:text="${order.currentStatus}"></td>
+//       <td th:text="${order.orderedDate}"></td>
+//       <td><a th:href="@{/admin/order-details/{orderId}(orderId=${order.orderId})}">view details</a></td>
+//     `);
+//     tbody.append(row);
+//   });
+// }
+     
+   
+        document.addEventListener("DOMContentLoaded", function (event) {
+  
+            const showNavbar = (toggleId, navId, bodyId, headerId) => {
+                const toggle = document.getElementById(toggleId),
+                    nav = document.getElementById(navId),
+                    bodypd = document.getElementById(bodyId),
+                    headerpd = document.getElementById(headerId)
+  
+                // Validate that all variables exist
+                if (toggle && nav && bodypd && headerpd) {
+                    toggle.addEventListener('click', () => {
+                        // show navbar
+                        nav.classList.toggle('show')
+                        // change icon
+                        toggle.classList.toggle('bx-x')
+                        // add padding to body
+                        bodypd.classList.toggle('body-pd')
+                        // add padding to header
+                        headerpd.classList.toggle('body-pd')
+                    })
+                }
+            }
+  
+            showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header')
+  
+            /*===== LINK ACTIVE =====*/
+            const linkColor = document.querySelectorAll('.nav_link')
+  
+            function colorLink() {
+                if (linkColor) {
+                    linkColor.forEach(l => l.classList.remove('active'))
+                    this.classList.add('active')
+                }
+            }
+            linkColor.forEach(l => l.addEventListener('click', colorLink))
+  
+            // Your code to run since DOM is loaded and ready
+        });
+    </script>
+</body>
+</html>
 </body>
 </html>

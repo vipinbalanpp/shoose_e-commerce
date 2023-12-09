@@ -1,9 +1,12 @@
 package com.vipin.shoose.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vipin.shoose.dto.AddressDto;
 import org.springframework.stereotype.Service;
 
-@Service
+import java.util.List;
+
+
 public interface AddressService {
     void save(AddressDto addressDto);
 
@@ -12,4 +15,6 @@ public interface AddressService {
     void deleteAddress(Long addressId);
 
     void editAddress(Long addressId,AddressDto addressDto);
+
+    List<AddressDto> getCurrentUserAddressDtos() throws JsonProcessingException;
 }

@@ -3,15 +3,24 @@ package com.vipin.shoose.service;
 import com.vipin.shoose.dto.CategoryDto;
 import com.vipin.shoose.model.Category;
 import com.vipin.shoose.repository.CategoryRepository;
+import com.vipin.shoose.repository.ProductRepository;
+import com.vipin.shoose.util.ImageUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService{
     @Autowired
+    ProductRepository productRepository;
+    @Autowired
+    ProductService productService;
+    @Autowired
     CategoryRepository categoryRepository;
+    @Autowired
+    ImageUpload imageUpload;
 
     @Override
     public List<Category> getAllCategory() {
@@ -21,47 +30,113 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public void addCategory(CategoryDto categoryDto) {
-        Category category=new Category();
-        category.setCategoryName(categoryDto.getCategoryName());
-        category.setDescription(categoryDto.getDescription());
-        category.setEnabled(true);
-           categoryRepository.save(category);
+        try {
+            Category category=new Category();
+            category.setCategoryName(categoryDto.getCategoryName());
+            category.setDescription(categoryDto.getDescription());
+            category.setImage(imageUpload.saveImage(categoryDto.getCategoryImage()));
+            category.setEnabled(true);
+            categoryRepository.save(category);
+        }catch (Exception e){
+            throw new RuntimeException("An error occurred");
+        }
+
     }
 
     @Override
     public Category getCategoryByCategoryName(String categoryName) {
-        Category category=categoryRepository.findByCategoryName(categoryName);
-        return category;
+        try {
+            Category category=categoryRepository.findByCategoryName(categoryName);
+            return category;
+        }catch (Exception e){
+            throw new RuntimeException("An error Occurred");
+        }
+
     }
 
     @Override
     public void editCategory(CategoryDto categoryDto) {
-        Category category=categoryRepository.findByCategoryId(categoryDto.getCategoryId());
-        if(categoryDto.getCategoryName()!=""){
-            category.setCategoryName(categoryDto.getCategoryName());
-        }if(categoryDto.getDescription()!=""){
-            category.setDescription(categoryDto.getDescription());
+        try {
+            Category category=categoryRepository.findByCategoryId(categoryDto.getCategoryId());
+            if(categoryDto.getCategoryName()!=""){
+                category.setCategoryName(categoryDto.getCategoryName());
+            }if(categoryDto.getDescription()!=""){
+                category.setDescription(categoryDto.getDescription());
+            }
+            categoryRepository.save(category);
+        }catch (Exception e){
+            throw new RuntimeException("An error Occurred");
         }
-        categoryRepository.save(category);
+
     }
 
     @Override
     public Category getCategoryById(Long categoryId) {
-        return categoryRepository.findByCategoryId(categoryId);
+        try {
+            return categoryRepository.findByCategoryId(categoryId);
+        }catch (Exception e){
+            throw new RuntimeException("An error occurred");
+        }
+
     }
 
     @Override
     public void blockCategory(Long categoryId) {
-        Category category=categoryRepository.findByCategoryId(categoryId);
-        category.setEnabled(false);
-        categoryRepository.save(category);
+        try {
+            Category category=categoryRepository.findByCategoryId(categoryId);
+            category.setEnabled(false);
+            categoryRepository.save(category);
+        }catch (Exception e){
+            throw new RuntimeException("An error Occurred");
+        }
+
     }
 
     @Override
     public void unBlockCategory(Long categoryId) {
-        Category category=categoryRepository.findByCategoryId(categoryId);
-        category.setEnabled(true);
+        try {
+            Category category=categoryRepository.findByCategoryId(categoryId);
+            category.setEnabled(true);
+            categoryRepository.save(category);
+        }catch (Exception e){
+            throw new RuntimeException("An error occurred");
+        }
+
+    }
+
+    @Override
+    public List<Category> getCategoriesForEditingProduct(Long productId) {
+        List<Category>categories=categoryRepository.findAll();
+        categories.remove(productRepository.findByProductId(productId).getCategory());
+        return categories;
+    }
+
+    @Override
+    public void addOffer(Long categoryId, Integer offerPercentage, LocalDate startDate, LocalDate endDate) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
+        category.setIsHavingOffer(true);
+        category.setOfferInPercentage(offerPercentage);
+        category.setStartDate(startDate);
+        category.setExpiryDate(endDate);
         categoryRepository.save(category);
+        productService.setOfferToProducts(categoryId);
+    }
+
+    @Override
+    public void editOffer(Long categoryId, Integer offerPercentage, LocalDate endDate) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
+        if(offerPercentage!=null){
+            category.setOfferInPercentage(offerPercentage);
+        }
+        if(endDate!=null){
+            category.setExpiryDate(endDate);
+        }categoryRepository.save(category);
+        productService.setOfferToProducts(categoryId);
+    }
+
+    @Override
+    public List<Category> getAllActiveCategory() {
+        return categoryRepository.findByEnabled();
     }
 
 

@@ -1,199 +1,342 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
+  <head>
+    <meta charset="UTF-8" />
     <title>Shoose</title>
-    <link th:rel="stylesheet" th:href="@{/css/product-details.css}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link th:rel="stylesheet" th:href="@{/css/home.css}">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-</head>
-<body>
-<div th:include="~{fragment::navbar}"></div>
-<div class="container">
-    <div class=" row">
-        <div class="col-lg-6">
-            <div class="d-flex ms-5">
-                <div class="d-flex flex-column mt-5">
-                    <th:block th:each="image, iterStat : ${image}">
-                        <div class="side-image">
-                            <img class="card-img-top" th:src="@{/img/product-images/__${image}__}" th:data-index="${iterStat.index}" />
-                        </div>
-                    </th:block>
-                </div>
-
-                <div id="large" class="large">
-                    <img id="largeImage" class="img" th:src="@{/img/product-images/__${image[0]}__}" />
-                </div>
-
+    <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+    <link th:rel="stylesheet" th:href="@{/css/product-details.css}" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div th:include="~{fragment::navbar}"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 d-flex">
+          <div class="d-flex ms-5">
+            <div class="d-flex flex-column mt-5">
+              <div id="image-container"></div>
+            </div>
+          </div>
+          <div class="large-image-container mt-5 ms-5">
+            <img id="large-image" />
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="mt-5">
+            <h2 th:text="${product.brand}"></h2>
+            <h4 class="mt-3" th:text="${product.productName}"></h4>
+            <br />
+            <h5 class="text-dark" th:text="${product.description}"></h5>
+            <br />
+            <h5 class="text-danger" th:text="'₹' + ${product.actualPrice}"></h5>
+            <div class="mt-3">
+              <div th:each="color, iterStat : ${colors}">
+                <label th:for="${color}"></label>
+                <input
+                  type="radio"
+                  th:onclick="updateProductImage([[${product.productId}]], [[${color}]])"
+                  name="color"
+                  th:value="${color}"
+                  th:checked="${iterStat.index == 0}"
+                  th:text="${color}"
+                />
+              </div>
+            </div>
+            <br /><br />
+            <div class="mt-3">
+              <label for="size">Sizes:</label>
+              <div id="size">
+                <!-- Sizes will be dynamically added here by JavaScript -->
+              </div>
             </div>
 
-        </div>
-        <div class="col-lg-6">
-            <div class="mt-5">
-                <h2 th:text="${product.brand}"></h2>
-                <h4 class="mt-3" th:text="${product.productName}"></h4>
-                <br>
-                <h5 class="text-dark" th:text="${product.description}" ></h5>
-                <br>
-                <h5 class="text-danger" th:text="'₹' + ${product.price}" ></h5>
-                <div class="mt-3">
-                    <div th:each="color : ${colors}">
-                        <label th:for="${color}"></label>
-                            <input type="radio" name="color" th:value="${color}" th:text="${color}">
-                    </div>
-
-                </div><br><br>
-                <div class="mt-3">
-                    <label for="category">Size:</label>
-                    <select id="category" name="size">
-                        <option hidden value="">Select Size</option>
-                        <th:block th:each="size : ${sizes}">
-                            <option th:value="${size}" th:text="${size}"></option>
-                        </th:block>
-                    </select>
-                </div><br>
-                <div class="d-flex">
-                    <div class="me-3">
-                        <form>
-                            <button class="btn btn-danger text-white">Add to Wishlist</button>
-                        </form>
-                    </div>
-                    <div>
-                        <form>
-                            <button class="btn btn-info text-white me-3">Add to Cart</button>
-                        </form>
-                    </div>
+            <div
+              class="modal fade"
+              id="addToCartModal"
+              tabindex="-1"
+              aria-labelledby="addToCartModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="addToCartModalLabel">
+                      Product Added to Cart
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    The product has been added to your cart.
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                  </div>
                 </div>
+              </div>
             </div>
+
+            <br />
+            <div>
+              <p id="quantity"></p>
+            </div>
+            <div class="d-flex">
+              <div>
+                <form>
+                  <button class="btn btn-danger text-white">
+                    Add to Wishlist
+                  </button>
+                </form>
+              </div>
+              <div class="ms-3">
+                <button
+                  id="cartButton"
+                  class="btn btn-info text-white me-3"
+                  th:onclick="addToCart()"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
-<br><br><br><br>
-<div class="container">
-    <div class="row ms-3">
-        <h2 class="text-center">Related Products</h2>
-        <div class="col-lg-4 col-md-6 col-12">
-            <div class="card">
-                <div class="img">
-                    <img class="card-img-top" th:src="@{/img/sh1.jpg}" alt="Card image cap">
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title"><b>CAMPUS</b></h5>
-                    <p class="card-text">ROLLZ Running Shoes For Men (White)</p>
-                    <p class="price card-text text-danger"><b>₹1399</b></p>
-                    <a href="#" class="cardbutton btn">View Details</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-12">
-            <div class="card" >
-                <div class="img">
-                    <img class="card-img-top" th:src="@{/img/sh1.jpg}" alt="Card image cap">
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title"><b>CAMPUS</b></h5>
-                    <p class="card-text">ROLLZ Running Shoes For Men (White)</p>
-                    <p class="price card-text text-danger"><b>₹1399</b></p>
-                    <a href="#" class="cardbutton btn">View Details</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-12">
-            <div class="card" >
-                <div class="img">
-                    <img class="card-img" th:src="@{/img/sh1.jpg}" alt="Card image cap">
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title"><b>CAMPUS</b></h5>
-                    <p class="card-text">ROLLZ Running Shoes For Men (White)</p>
-                    <p class="price card-text text-danger"><b>₹1399</b></p>
-                    <a href="#" class="cardbutton btn">View Details</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<footer>
-    <div th:include="~{fragment::footer}"></div>
-</footer>
-<script type="text/javascript">
-    document.addEventListener("DOMContentLoaded", function () {
-        const smallImages = document.querySelectorAll(".side-image img");
-        const largeImage = document.getElementById("largeImage");
+    <br /><br /><br /><br />
+      <div th:include="~{fragment::footer}"></div>
+    <script type="text/javascript">
+          document.addEventListener("DOMContentLoaded", function () {
 
-<!--        // Set the source of largeImage to the URL of the first small image-->
-<!--        largeImage.src = smallImages[0].src;-->
+            var checkedRadioButton = document.querySelector('input[name="color"]:checked');
 
-        smallImages.forEach(function (image) {
-            image.addEventListener("click", function () {
-                // Get the data-index attribute to identify the clicked image
-                const dataIndex = image.getAttribute("data-index");
+            if (checkedRadioButton) {
+                var checkedColor = checkedRadioButton.value;
+                var productId = [[${product.productId}]];
+                console.log(checkedColor)
+                updateProductImage(productId, checkedColor);
 
-                // Update the source of the large image container
-                largeImage.src = smallImages[dataIndex].src;
-            });
+            }
         });
-    });
-</script>
-<script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var options = {
-            width: 400,
-            zoomWidth: 300,
-            offset: {vertical: 60, horizontal: 30}
-        };
-        new ImageZoom(document.getElementById("large"), options);
-    });
-</script>
-<!-- Add this script to your HTML file -->
-<!-- Add this script to your HTML file -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const smallImages = document.querySelectorAll(".side-image img");
-      const largeImage = document.getElementById("largeImage");
-      const radioButtons = document.querySelectorAll("input[name='color']");
-       const productId = /*[[${product.productId}]]*/;
+        function updateProductImage(productId,color){
+            console.log(color);
+            console.log(productId)
+               $.ajax({
+            url: '/get-product-images',
+            type: "GET",
+            dataType: "json", // Set the data type to JSON
+            data: { productId: productId, color: color },
+            success: function (response) {
+                    const images = response.images;
+                const sizes = response.sizes;
+                const largeImage = document.querySelector("#large-image");
+                const largeImageUrl="/img/product-images/"+images[0];
+                largeImage.style.width = "500px"; // Set the desired width
+    largeImage.style.height = "500px";
+                console.log(largeImageUrl);
+        largeImage.setAttribute("src", largeImageUrl);
+              var imageContainer=document.getElementById("image-container");
+                const sizeDiv = document.getElementById("size");
+                 sizeDiv.innerHTML = '';
+                imageContainer.innerHTML = '';
 
-      // Function to update product images
-      function updateProductImages(selectedColor) {
-        // Make an AJAX request to fetch product images for the selected color and productId
-        $.ajax({
-          url: "/getProductImages", // Replace with your server endpoint
-          type: "GET", // Use the appropriate HTTP method
-          data: { productId: productId, selectedColor: selectedColor },
-          success: function (response) {
-            // Handle the response from the server, which should contain the product images
-            const images = response.images;
 
-            // Update the 'img' variable with the new images
-            img = images;
-
-            // Update the 'largeImage.src' with the first image from the updated list
-            largeImage.src = images[0];
-          },
-          error: function (error) {
-            console.error("Error:", error);
+                sizes.forEach(function (size, index) {
+          var sizeInput = document.createElement("input");
+          var sizeSpan = document.createElement("span");
+          sizeInput.type = "radio";
+          sizeInput.name = "size";
+          sizeInput.value = size;
+          sizeInput.className = "sizes";
+          sizeInput.onclick = getQuantity;
+          var sizeLabel = document.createElement("label");
+          sizeLabel.htmlFor = size;
+          sizeLabel.textContent = size;
+          if (index === 0) {
+              console.log("yes im in")
+              sizeInput.checked = true;
           }
+
+          sizeDiv.appendChild(sizeInput);
+          sizeDiv.appendChild(sizeLabel);
+      });
+
+
+          images.forEach(function (image, index) {
+                      var imageElement = document.createElement("img");
+                      imageElement.className = "small-image";
+                      imageElement.src = "/img/product-images/" + image;
+                      imageElement.dataset.index = index; // You can use this index if needed
+      //  imageElement.style.maxWidth = "100%";
+                      // imageElement.style.maxHeight = "100%";
+                      imageElement.style.width = "100%";
+                      imageElement.style.height = "100%";
+                      imageElement.style.marginTop = "20px";
+                      // Append the image to the container
+                      imageContainer.appendChild(imageElement);
+
+                  });
+                  const smallImages = document.querySelectorAll(".small-image");
+        smallImages.forEach(function(smallImage) {
+          smallImage.addEventListener("click", function() {
+            const newImageUrl = smallImage.getAttribute("src");
+            largeImage.setAttribute("src", newImageUrl);
+            largeImage.style.width = "600px"; // Set the desired width
+    largeImage.style.height = "400px";
+          });
+        }); getQuantity();
+
+            }
+
         });
+        }
+        function getQuantity(){
+          var selectedColor = $("input[name='color']:checked").val();
+          var selectedSize = $("input[name='size']:checked").val();
+          console.log(selectedSize+"this is that method")
+          console.log(selectedColor+"this is that method")
+          var productId = [[${product.productId}]];
+          $.ajax({
+          url: '/getProductQuantity',
+          type: 'GET',
+          dataType: 'json',
+          data: { productId: productId, color: selectedColor, size: selectedSize },
+          success: function (response) {
+              console.log(response)
+              console.log(quantity)
+              const quantityElement=document.getElementById("quantity");
+            if (response==0) {
+              var cartButton=document.getElementById("cartButton");
+              quantityElement.textContent = "Out of stock";
+              quantityElement.style.color = "red";
+            } else if(response<=10){
+              quantityElement.textContent = "Only "+response+" items left";
+              quantityElement.style.color = "red";
+            }else{
+              $('#addToCartButton').prop('disabled', true);
+              quantityElement.textContent = "in stock";
+              quantityElement.style.color = "green";
+            }
+          },
+          error: function () {
+            // Handle AJAX error here if necessary
+            alert('quantity not found.');
+          },
+        });
+        }
+
+        function addToCart() {
+        var selectedColor = $("input[name='color']:checked").val();
+        var selectedSize = $("input[name='size']:checked").val();
+        var productId = [[${product.productId}]];
+        $.ajax({
+          url: '/getProductQuantity',
+          type: 'GET',
+          dataType: 'json',
+          data: { productId: productId, color: selectedColor, size: selectedSize },
+          success: function (response) {
+            if (response === 0) {
+              return;
+            } $.ajax({
+          url: '/addToCart',
+          type: 'GET',
+          dataType: 'json',
+          data: { productId: productId, color: selectedColor, size: selectedSize },
+          success: function (response) {
+            if (response) {
+              showToastMessage();
+            } else {
+              showItemExistsInCart();
+            }
+          },
+          error: function () {
+            // Handle AJAX error here if necessary
+            alert('An error occurred while processing your request.');
+          },
+        });
+
+          }}
+            );
       }
 
-      // Set the source of largeImage to the URL of the first small image
-      largeImage.src = smallImages[0].src;
+      function showToastMessage() {
+        Toastify({
+          text: "Item added to cart",
+          duration: 1000,
+          newWindow: true,
+          close: false,
+          gravity: "top",
+          position: "center",
+          stopOnFocus: true,
+          style: {
+            background: "green",
+          },
+          onClick: function() {
+            // Callback after click
+            console.log("Toast clicked");
+          }
+        }).showToast();
+      }
+      function showItemExistsInCart() {
+        Toastify({
+          text: "Item is alredy there in Your Cart",
+          duration: 1000,
+          newWindow: true,
+          close: false,
+          gravity: "top",
+          position: "center",
+          stopOnFocus: true,
+          style: {
+            background: "red",
+          },
+          onClick: function() {
+            // Callback after click
+            console.log("Toast clicked");
+          }
+        }).showToast();
+      }
+    </script>
 
-      // Add a click event listener to each radio button
-      radioButtons.forEach(function (radioButton) {
-        radioButton.addEventListener("click", function () {
-          const selectedColor = radioButton.value;
-
-          // Update product images when a color is selected
-          updateProductImages(selectedColor);
-        });
-      });
-    });
-</script>
-
-
-</body>
+    <!-- <script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
+<script>
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     var options = {
+    //         width: 400,
+    //         zoomWidth: 300,
+    //         offset: {vertical: 60, horizontal: 30}
+    //     };
+    //     new ImageZoom(document.getElementById("image-container"), options);
+    // });
+</script> -->
+  </body>
 </html>

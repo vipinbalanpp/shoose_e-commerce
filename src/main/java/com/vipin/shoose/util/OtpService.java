@@ -21,6 +21,7 @@ public class OtpService {
     public String generateOtp(){
         Random random=new Random();
         int otp=100000+random.nextInt(999999);
+        System.out.println(otp);
         return String.valueOf(otp);
     }
     public void sendEmail(String recipientEmail) {

@@ -13,9 +13,9 @@ public class ProductToShopPage {
     private Long productId;
     private String productName;
     private String Brand;
-
-    private String price;
-
+    private Float actualPrice;
+    private Float discountPrice;
+    private Boolean isCategoryHavingOffer;
     private String productImage;
 
 }

@@ -1,50 +1,173 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Shoes</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-          crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
-</head>
-<body>
-<div th:replace="fragment::admin-navbar"></div>
-<div class="m-5 p-5">
-    <form th:action="@{/admin/add-product-images}" method="post" enctype="multipart/form-data">
-        <ul class="">
-            <li th:each="color : ${product.getColors}">
-                <label th:text="${color}"></label>
-               <input type="hidden" th:value="${product.productId}" name="productId" required>
-                <!-- Change the input field name to match the DTO -->
-                <input type="file" name="productImages" accept="image/png, image/jpeg" multiple="multiple" onchange="displaySelectedImages(this, 'image-preview')" />
-                <input type="file" name="productImages" accept="image/png, image/jpeg" multiple="multiple" onchange="displaySelectedImages(this, 'image-preview')" />
-                <input type="file" name="productImages" accept="image/png, image/jpeg" multiple="multiple" onchange="displaySelectedImages(this, 'image-preview')" />
-                <div id="image-preview"></div>
-            </li>
-        </ul>
-        <button type="submit" class="btn btn-primary">Upload Images</button>
-    </form>
+ <html lang="en" xmlns:th="http://www.thymeleaf.org">
+ <head>
+     <meta charset="UTF-8" />
+     <title>Shoes</title>
+     <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon" />
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+     <link th:rel="stylesheet" th:href="@{/css/add-product-image.css}" />
+     <link th:rel="stylesheet" th:href="@{/css/product-list.css}" />
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/boxicons/2.0.7/css/boxicons.min.css">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" 
+     integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" 
+     crossorigin="anonymous" referrerpolicy="no-referrer" />
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" integrity="sha512-hKT5NxGx1yyGmKFUpjhp9B3p8PDTz/EcwKdRr0SfTpK1I87IF2DR2bOZuSI1tcW1jzfiYPFh7q8ZE4lNV8lT+g==" crossorigin="anonymous" />
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js" integrity="sha512-Lab9BO1C2gO8OhDN7eGq3ATo8Kj8OYRkU/sPVx9CQhnlwOw8o7pR5RplQ7VY/f5oiMWJGllY6ebnxkxxzOtAyA==" crossorigin="anonymous"></script>
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+ </head>
+ <body>
+     <div class="m-5 p-5">
+         <form th:action="@{/admin/add-product-images}" method="post" enctype="multipart/form-data" oninput="validateFileUpload()" onsubmit="submitForm()">
+             <th:block th:each="color, colorIndex : ${product.getColors}">
+                 <div class="row justify-content-center mt-5">
+                     <div class="card">
+                         <div class="p-4">
+                             <p class="text-center fs-5">Select Images for <span class="fw-bold" th:text="${color}"></span> color variant</p>
+                         </div>
+                         <input type="hidden" th:value="${product.productId}" name="productId" required />
+                         <div class="input-fields d-flex justify-content-center gap-5">
+                             <div class="custom-file-input d-flex justify-content-center align-items-center">
+                                 <label th:for="'one' + ${colorIndex.index}" class="custom-file-label" th:id="'fileLabel1'+${colorIndex.index}">
+                                     <span class="plus-button">+</span> Add Image1
+                                 </label>
+                                 <input th:id="'one' + ${colorIndex.index}" type="file" name="productImages" accept="image/*" multiple="multiple" th:onchange="'validateFileUpload(this, \'previewImage1' + ${colorIndex.index} + '\', \'fileLabel1' + ${colorIndex.index} + '\'); initializeCropper(this)'" class="input-for-image" />
+                                 <img th:id="${'previewImage1'+colorIndex.index}" class="img-preview" />
+                             </div>
+                             <div class="custom-file-input d-flex justify-content-center align-items-center">
+                                 <label th:for="'two' + ${colorIndex.index}" class="custom-file-label" th:id="'fileLabel2'+${colorIndex.index}">
+                                     <span class="plus-button">+</span> Add Image2
+                                 </label>
+                                 <input th:id="'two' + ${colorIndex.index}" type="file" name="productImages" accept="image/*" multiple="multiple" th:onchange="'validateFileUpload(this, \'previewImage2' + ${colorIndex.index} + '\', \'fileLabel2' + ${colorIndex.index} + '\'); initializeCropper(this)'" class="input-for-image" />
+                                 <img th:id="${'previewImage2'+colorIndex.index}" class="img-preview" />
+                             </div>
+                             <div class="custom-file-input d-flex justify-content-center align-items-center">
+                                 <label th:for="'three' + ${colorIndex.index}" class="custom-file-label" th:id="'fileLabel3'+${colorIndex.index}">
+                                     <span class="plus-button">+</span> Add Image3
+                                 </label>
+                                 <input th:id="'three' + ${colorIndex.index}" type="file" name="productImages" accept="image/*" multiple="multiple" th:onchange="'validateFileUpload(this, \'previewImage3' + ${colorIndex.index} + '\', \'fileLabel3' + ${colorIndex.index} + '\'); initializeCropper(this)'" class="input-for-image" />
+                                 <img th:id="${'previewImage3'+colorIndex.index}" class="img-preview" />
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </th:block>
+             <div class="ps-5 pe-5">
+                 <button type="submit" class="btn btn-primary form-control mt-5">Upload Images</button>
+             </div>
+         </form>
+     </div>
+     <script th:inline="javascript">
+         function validateFileUpload(input, previewId, labelId) {
+             var previewImage = document.getElementById(previewId);
+             var fileLabel = document.getElementById(labelId);
+ 
 
-</div>
-<script th:inline="javascript">
-    function displaySelectedImages(input, previewId) {
-        var preview = document.getElementById(previewId);
-        preview.innerHTML = '';
+             fileLabel.style.display = "none";
+ 
 
-        for (var i = 0; i < input.files.length; i++) {
-            var file = input.files[i];
-            var image = document.createElement('img');
-            image.src = URL.createObjectURL(file);
-            image.style.width = '200px'; // Set the width
-            image.style.height = '200px'; // Set the height
-            preview.appendChild(image);
+             if (previewImage) {
+                 previewImage.parentNode.removeChild(previewImage);
+             }
+ 
+
+             var newImage = document.createElement("img");
+             newImage.id = previewId;
+             newImage.className = "img-preview";
+             newImage.alt = "Selected Image";
+ 
+
+             var divWidth = input.parentNode.offsetWidth;
+             var divHeight = input.parentNode.offsetHeight;
+ 
+     
+             newImage.style.width = divWidth + "px";
+             newImage.style.height = divHeight + "px";
+ 
+
+             input.parentNode.appendChild(newImage);
+ 
+    
+             var file = input.files[0];
+             if (file) {
+                 var reader = new FileReader();
+                 reader.onload = function (e) {
+                     newImage.src = e.target.result;
+                 };
+                 reader.readAsDataURL(file);
+             }
+ 
+  
+             input.dataset.preview = previewId;
+         }
+ 
+         function initializeCropper(input) {
+             var previewId = input.dataset.preview;
+             var previewImage = document.getElementById(previewId);
+ 
+          
+             var cropper = new Cropper(previewImage, {
+                 aspectRatio: 4 / 4, 
+                 viewMode: 1,     
+                 autoCropArea: 1,
+             });
+             input.dataset.cropper = JSON.stringify(cropper);
+         }
+ 
+         function submitForm() {
+             var inputs = document.querySelectorAll('[data-cropper]');
+             inputs.forEach(function (input) {
+                 var cropper = JSON.parse(input.dataset.cropper);
+                 cropper.getCroppedCanvas().toBlob(function (blob) {
+                     input.files = [new File([blob], "cropped-image.png", { type: "image/png" })];
+                 });
+             });
+         }
+     </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function (event) {
+
+        const showNavbar = (toggleId, navId, bodyId, headerId) => {
+            const toggle = document.getElementById(toggleId),
+                nav = document.getElementById(navId),
+                bodypd = document.getElementById(bodyId),
+                headerpd = document.getElementById(headerId)
+
+            // Validate that all variables exist
+            if (toggle && nav && bodypd && headerpd) {
+                toggle.addEventListener('click', () => {
+                    // show navbar
+                    nav.classList.toggle('show')
+                    // change icon
+                    toggle.classList.toggle('bx-x')
+                    // add padding to body
+                    bodypd.classList.toggle('body-pd')
+                    // add padding to header
+                    headerpd.classList.toggle('body-pd')
+                })
+            }
         }
-    }
-</script>
 
-</body>
-</html>
+        showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header')
+
+        /*===== LINK ACTIVE =====*/
+        const linkColor = document.querySelectorAll('.nav_link')
+
+        function colorLink() {
+            if (linkColor) {
+                linkColor.forEach(l => l.classList.remove('active'))
+                this.classList.add('active')
+            }
+        }
+        linkColor.forEach(l => l.addEventListener('click', colorLink))
+
+        // Your code to run since DOM is loaded and ready
+    });
+</script>
+ </body>
+ </html>
+ 

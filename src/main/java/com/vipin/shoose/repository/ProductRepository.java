@@ -1,5 +1,6 @@
 package com.vipin.shoose.repository;
 
+import com.vipin.shoose.model.Category;
 import com.vipin.shoose.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,8 +14,11 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 
     Product findByProductName(String productName);
 
+
     Product findByProductId(Long id);
 
     @Query(value = "SELECT * FROM product WHERE is_enabled = 'true'",nativeQuery = true)
     List<Product> findByEnabled();
+
+    List<Product> findByCategory(Category byCategoryId);
 }

@@ -1,12 +1,22 @@
-.side-image{
+#image-container{
 width:50px;
 height:80px;
 
 }
-.img{
-width:500px;
-height:500px;
+#large-image{
+width:400px;
+height:300px;}
+
+.out-of-stock {
+    color: red;
 }
+
+.in-stock {
+    color: green;
+}
+.large-image-container{
+width:600px;
+height:450px;}
 
 
 

@@ -1,31 +1,34 @@
 package com.vipin.shoose.controller.auth;
+import com.vipin.shoose.dto.ProductToShopPage;
 import com.vipin.shoose.dto.UserDto;
 import com.vipin.shoose.dto.VerifyOtpDto;
 import com.vipin.shoose.exception.MailAlreadyExistException;
 import com.vipin.shoose.exception.OtpInvalidException;
+import com.vipin.shoose.model.Category;
+import com.vipin.shoose.model.Product;
+import com.vipin.shoose.model.ProductImage;
 import com.vipin.shoose.model.User;
+import com.vipin.shoose.repository.CategoryRepository;
 import com.vipin.shoose.repository.UserRepository;
-import com.vipin.shoose.service.UserService;
+import com.vipin.shoose.service.*;
 import com.vipin.shoose.util.OtpService;
 import jakarta.servlet.http.HttpSession;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.time.LocalDateTime;
-import java.util.Set;
-
+import java.util.*;
 
 
 @Controller
@@ -36,10 +39,22 @@ public class AuthController {
     UserRepository userRepository;
     @Autowired
     UserService userService;
+    @Autowired
+    ProductService productService;
+    @Autowired
+    CategoryService categoryService;
+    @Autowired
+
+    CategoryRepository categoryRepository;
+    @Autowired
+    ProductImageService productImageService;
 
     @GetMapping("/")
-    public String home(){
+    public String home(Model model){
+        model.addAttribute("categories",categoryService.getAllActiveCategory());
+        model.addAttribute("productList", productService.getProductToHome());
         return "user/home";
+
     }
     @GetMapping("/home")
     public String AuthRedirect(){
@@ -55,10 +70,7 @@ public class AuthController {
         }
         return "redirect:/user/home";
     }
-    @GetMapping("/admin/home")
-    public String adminHome(){
-        return "admin/home";
-    }
+
     @PostMapping("/login")
     public String loginPost(@RequestParam(name = "error", required=false)String error ,Model model){
         if(error != null){
@@ -126,6 +138,7 @@ public class AuthController {
        UserDto userDto= (UserDto) session.getAttribute("unverifiedUser");
        String email=userDto.getEmail();
        String otp=otpService.generateOtp();
+        System.out.println(otp);
        otpService.resendOTPEmail(email,otp);
        userDto.setOtp(otp);
        redirectAttributes.addFlashAttribute("resend","New otp has been sen to your email");
@@ -192,4 +205,17 @@ public class AuthController {
         redirectAttributes.addFlashAttribute("resend","New Otp send to your email");
         return "redirect:/forgot-password-otp";
     }
+    @GetMapping("/checkReferralId")
+    @ResponseBody
+    @CrossOrigin(origins = "http://localhost:8080")
+    public ResponseEntity<Boolean> checkReferralId(@RequestParam("referralId")String referralId){
+        return new ResponseEntity<>(  userService.verifyReferralId(referralId), HttpStatus.OK);
+    }
+    @GetMapping("/toShopByCategory")
+    public String showProductsByCategory(@RequestParam Long categoryId, Model model) {
+        List<Product> products = productService.getProductsByCategory(categoryId);
+        model.addAttribute("productList", products);
+        return "/user/shop";
+    }
+
 }

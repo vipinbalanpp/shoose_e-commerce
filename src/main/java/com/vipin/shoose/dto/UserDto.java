@@ -18,5 +18,6 @@ public class UserDto {
     private String password;
     private String otp;
     private LocalDateTime otpGeneratedTime;
+    private String referalId;
 
 }

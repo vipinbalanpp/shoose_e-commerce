@@ -1,92 +1,183 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
+  <head>
+    <meta charset="UTF-8" />
     <title>Shoose</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link th:rel="stylesheet" th:href="@{/css/home.css}">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-</head>
-<body>
-<nav class="navbar bg-body-tertiary p-3" style="border-bottom:1px solid black">
-    <div class="container-fluid d-flex justify-content-between align-items-middle" style="background-color:white;">
+    <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <link th:rel="stylesheet" th:href="@{/css/home.css}" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <nav
+      class="navbar bg-body-tertiary p-3"
+      style="border-bottom: 1px solid black"
+    >
+      <div
+        class="container-fluid d-flex justify-content-between align-items-middle"
+        style="background-color: white"
+      >
         <div class="align-self-start">
-            <a class="navbar-brand" href="/homepage">
-                <img th:src="@{/img/logo.png}" style="height:60px; width:150px;"  alt="">
-            </a>
+          <a class="navbar-brand" href="/homepage">
+            <img
+              th:src="@{/img/logo.png}"
+              style="height: 60px; width: 150px"
+              alt=""
+            />
+          </a>
         </div>
         <h6 class="text=danger fw-bold" th:text="${empty}"></h6>
-        <div class=" me-5">
-            <div class="d-flex gap-5 align-items-center">
+        <div class="me-5">
+          <div class="d-flex gap-5 align-items-center">
+            <div>
+              <a class="text-decoration-none text-dark" th:href="@{/user/cart}">
+                <i class="fa-solid fa-cart-shopping"></i><span> Cart</span>
+              </a>
+            </div>
+            <div>
+              <a class="text-decoration-none text-dark" th:href="@{/shop}">
+                <i class="fa-solid fa-cart-shopping"></i><span> Shop</span>
+              </a>
+            </div>
+            <div>
+              <a class="text-decoration-none text-dark" th:href="@{/user/profile}">
+                <i class="fa-solid fa-cart-shopping"></i><span> Profile</span>
+              </a>
+            </div>
+            <div class="dropdown">
+              <button
+                class="btn text-dark dropdown-toggle"
+                type="button"
+                id="profile button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                click
+              </button>
+              <ul id="profile-dropdown" class="dropdown-menu p-3">
+                <li class="ms-3">
+                  <div
+                    th:if=" ${#authorization.expression('isAuthenticated()')}"
+                  >
+                    <a th:href="@{/user/profile}">profile</a>
+                  </div>
+                </li>
+                <li class="ms-3 mt-4">
+                  <form
+                    th:if=" ${#authorization.expression('isAuthenticated()')}"
+                    th:method="post"
+                    th:action="@{/logout}"
+                  >
+                    <input
+                      class="btn btn-danger text-white"
+                      type="submit"
+                      value="Logout"
+                    />
+                  </form>
+                  <a
+                    class="btn btn-info"
+                    th:href="@{/login}"
+                    th:if="not ${#authorization.expression('isAuthenticated()')}"
+                    >Sign in</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div id="img-div" class="container-fluid p-0 mt-2">
+      <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img class="d-block w-100" th:src="@{/img/white.webp}" alt="First slide" />
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" th:src="@{/img/pumma-banner.webp}" alt="Second slide" />
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" th:src="@{/img/newbanner.png}" alt="Third slide" />
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
 
-                <div>
-                    <a class="text-decoration-none text-dark" href="">
-                        <i class="fa-solid fa-heart"></i><span> Wishlist</span>
-                    </a>
-                </div>
-                <div>
-                    <a class="text-decoration-none text-dark" href="">
-                        <i class="fa-solid fa-cart-shopping"></i><span> Cart</span>
-                    </a>
-                </div>
-                <div>
-                    <a class="text-decoration-none text-dark" th:href="@{/shop}">
-                        <i class="fa-solid fa-cart-shopping"></i><span> Shop</span>
-                    </a>
-                </div>
-                <div>
-                    <a class="text-decoration-none text-dark" href="">
-                        <i class="fa-solid fa-cart-shopping"></i><span> Profile</span>
-                    </a>
-                </div>
-                <div class="dropdown">
-                    <button  class="btn text-dark dropdown-toggle" type="button" id="profile button" data-bs-toggle="dropdown" aria-expanded="false">
-                        click
-                    </button>
-                    <ul id="profile-dropdown" class="dropdown-menu p-3">
-                        <li class="ms-3">
-                            <div th:if=" ${#authorization.expression('isAuthenticated()')}">
-                                <a th:href="@{/user/profile}">profile</a>
-                            </div>
-                        </li>
-                        <li class="ms-3 mt-4">
-                            <form th:if=" ${#authorization.expression('isAuthenticated()')}" th:method="post"  th:action="@{/logout}">
-                                <input class="btn btn-danger text-white"  type="submit" value="Logout">
-                            </form>
-                            <a class="btn btn-info" th:href="@{/login}" th:if="not ${#authorization.expression('isAuthenticated()')}">Sign in</a>
-                        </li>
-                    </ul>
+    <br />
+    <div class="container mb-5">
+        <div class="row">
+          <h1 class="text-center">Select By category</h1>
+          <div class="container">
+            <div class="row ms-3">
+              <div
+                th:each="category : ${categories}"
+                class="col-lg-3 col-md-4 col-sm-6 col-12"
+              >
+              <div class="card" style="width: 18rem; margin: 10px;">
+                <img class="category-image card-img-top img-fluid" th:src="@{/img/product-images/__${category.image}__}" alt="Category Image">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${category.categoryName}"></h5>
+                    <a th:href="@{'/toShopByCategory?categoryId=' + ${category.categoryId}}" class="btn btn-primary">View Products</a>
                 </div>
             </div>
-        </div>
-    </div>
-</nav>
-    <div class="container-fluid p-0 mt-2">
-        <img class="img-fluid" th:src="@{/img/newbanner.png}"   alt="">
-    </div>
-<br>
-    <div class="text-center mt-5">
-        <h1>Most Popular Products</h1>
-    </div>
-<div class="container">
-    <div class="row ms-3">
-        <div th:each="product : ${productList}" class="col-lg-3 col-md-4 col-sm-6 col-12">
-            <div class="card">
-                <div class="img">
-                    <img class="card-img-top" th:src="@{/img/product-images/__${product.productImage}__}" />
-                </div>
-                <div class="card-body position-relative">
-                    <h5 class="card-title"><b><span th:text="${product.brand}"></span></b></h5>
-                    <p th:text="${product.productName}" class="card-text"></p>
-                    <p th:text="'₹' + ${product.price}" class="price card-text text-danger"></p>
-                    <a th:href="@{'/product-details?productId=' + ${product.productId}}" class="cardbutton btn">View Details</a>
-                </div>
+            
+              </div>
             </div>
+          </div>
         </div>
     </div>
-</div>
-<footer>
-    <div th:include="~{fragment::footer}"></div>
-</footer>
-</body>
+ 
+    <!-- <div class="container mt-5">
+      <div class="row ms-3">
+        <div
+          th:each="product : ${productList}"
+          class="col-lg-3 col-md-4 col-sm-6 col-12"
+        >
+          <div class="card">
+            <div class="img">
+              <img
+                class="card-img-top"
+                th:src="@{/img/product-images/__${product.image}__}"
+              />
+            </div>
+            <div class="card-body position-relative">
+              <h5 class="card-title">
+                <b><span th:text="${product.brand}"></span></b>
+              </h5>
+              <p th:text="${product.productName}" class="card-text"></p>
+              <p th:unless="${product.isCategoryHavingOffer}" class="price card-text text-danger">
+                <span >₹<span th:text="${product.actualPrice}"></span></span>
+            </p>
+              <p th:if="${product.isCategoryHavingOffer}" class="price card-text text-danger">
+              <span style="text-decoration: line-through;" class="me-3" th:text="${product.actualPrice}"></span>₹<span th:text="${product.discountPrice}"></span>
+          </p>
+              <a
+                th:href="@{'/product-details?productId=' + ${product.productId}}"
+                class="cardbutton btn"
+                >View Details</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+      <div th:include="~{fragment::footer}"></div>
+  </body>
 </html>

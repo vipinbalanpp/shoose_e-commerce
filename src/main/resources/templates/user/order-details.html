@@ -1,0 +1,315 @@
+    <!DOCTYPE html>
+    <html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Shoes</title>
+        <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon" />
+        <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <link
+                rel="stylesheet"
+                type="text/css"
+                href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+        /> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" 
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet" type="text/css" />
+        <link th:rel="stylesheet" th:href="@{/css/checkout.css}" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    </head>
+    <body>
+    <nav
+            class="navbar bg-body-tertiary p-3"
+            style="border-bottom: 1px solid black"
+    >
+        <div
+                class="container-fluid d-flex justify-content-between align-items-middle"
+                style="background-color: white"
+        >
+            <div class="align-self-start">
+                <a class="navbar-brand" th:href="@{/home}">
+                    <img
+                            th:src="@{/img/logo.png}"
+                            style="height: 60px; width: 150px"
+                            alt=""
+                    />
+                </a>
+            </div>
+            <h6 class="text=danger fw-bold" th:text="${empty}"></h6>
+            <div class="me-5">
+                <div class="d-flex gap-5 align-items-center">
+                    <div>
+                        <a class="text-decoration-none text-dark" th:href="@{/user/cart}">
+                            <i class="fa-solid fa-cart-shopping"></i><span> Cart</span>
+                        </a>
+                    </div>
+                    <div>
+                        <a class="text-decoration-none text-dark" th:href="@{/shop}">
+                            <i class="fa-brands fa-shopify"></i><span> Shop</span>
+                        </a>
+                    </div>
+                    <div>
+                        <a class="text-decoration-none text-dark" th:href="@{/user/profile}">
+                            <i class="fa-solid fa-user"></i><span> Profile</span>
+                        </a>
+                    </div>
+                    <div>
+                        <form
+                        th:if=" ${#authorization.expression('isAuthenticated()')}"
+                        th:method="post"
+                        th:action="@{/logout}"
+                >
+                         <label for="sign-out"><i class="fa-solid fa-right-from-bracket"></i></label>
+                        <input hidden type="submit" id="sign-out">
+                        </form>  
+                        <a   class="btn btn-info"   th:href="@{/login}" th:if="not ${#authorization.expression('isAuthenticated()')}" >Sign in</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="text-center">
+        <h2>Order Details</h2>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="product">
+                    <div id="productCard"  th:each="product : ${products}" class="card"  style="width: 500px; height: 100px;">
+                        <div class="card-body d-flex justify-content-center" style="padding: 0px;">
+                            <div style="flex: 1;" class="me-5">
+                                <img th:src="@{/img/product-images/__${product.image}__}" class="image">
+                            </div>
+                            <div style="flex: 2;">
+                                <h5 th:text="${product.productName}" class="card-title"><span th:text="${product.brand}"></span></h5>
+                                <p th:text="${product.color}" class="card-text"></p><span th:text="${product.size}"></span>
+                                <p th:text="${product.actualPrice}" class="card-text text-danger"></p>
+                            </div>
+                            <div>
+                                <p>Quantity:<span th:text="${product.quantity}"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div id="orderDetails" class="d-flex fs-5" >
+                    <div class="order-details">
+                        <p>OrderedDate:</p>
+                        <p>Amount:</p>
+                        <p>PaymentMethod:</p>
+                        <p>OrderStatus:</p>
+                    </div>
+                    <div class="orderData">
+                        <p id="order-id" th:text="${order.orderId}" style="display:none"></p>
+                        <p th:text="${order.orderedDate}"></p>
+                        <p class="text-danger" th:text="${order.amount}"></p>
+                        <p th:text="${order.paymentMethode}"></p>
+                        <p id="order-status" th:text="${order.orderStatus}" th:class="${order.orderStatus == 'CANCELLED' or order.orderStatus == 'REJECTED'} ? 'text-danger' : ''"></p>
+
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end" th:if="${order.orderStatus != 'CANCELLED' and order.orderStatus != 'REJECTED' and order.orderStatus != 'DELIVERED' and order.orderStatus != 'RETURN_REQUESTED' and order.orderStatus != 'RETURNED'}">
+                    <form th:action="@{/user/cancel-order}" method="post">
+                        <input hidden name="order.orderId" th:field="${order.orderId}">
+                        <button type="submit" id="cancelButton" class="btn btn-danger mt-2">Cancel</button>
+                    </form>
+                </div>
+                <div id="return-div" class="d-flex justify-content-end" >
+                    <form th:action="@{/user/returnRequest}" method="post">
+                        <input hidden name="order.orderId" th:field="${order.orderId}">
+                        <button id="return-button" type="submit"  class="btn btn-danger mt-2">return</button>
+                    </form>
+                </div>
+
+
+        </div>
+    </div>
+        <div class="container py-5">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col">
+            <div class="card card-stepper" style="border-radius: 10px;">
+                <div class="card-body p-4">
+                <hr class="my-4">
+
+                <div class="d-flex flex-row justify-content-between align-items-center align-content-center" th:if="${order.orderStatus != 'CANCELLED' and order.orderStatus != 'REJECTED'}">
+                        <span id="processing-span"  ></span>
+                        <hr class="flex-fill track-line"><span id="shipped-span"></span>
+                        <hr class="flex-fill track-line"><span id="out-for-delivery-span" ></span>
+                        <hr class="flex-fill track-line"><span id="delivered-span"></span>
+                </div>
+
+                <div class="d-flex flex-row justify-content-between align-items-center" th:if="${order.orderStatus != 'CANCELLED' and order.orderStatus != 'REJECTED'}">
+                    <div class="d-flex flex-column justify-content-center"><span id="processing-text">Order
+                        Processing</span></div>
+                    <div class="d-flex flex-column justify-content-center align-items-center"><span id="shipping-text">Order Shipped</span></div>
+                    <div class="d-flex flex-column align-items-center"><span id="out-text">Out for
+                        delivery</span></div>
+                    <div class="d-flex flex-column align-items-end"><span id="delivered-text">Delivered</span></div>
+                </div>
+    
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+     </div>
+            <div th:include="~{fragment::footer}"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    var status = document.getElementById("order-status").textContent;
+    var orderId = document.getElementById("order-id").textContent;
+    var returnDiv = document.getElementById("return-div");
+    var returnButton = document.getElementById("return-button");
+    if(status==='RETURN_REQUESTED'){
+        var statusTag=document.getElementById("order-status")
+        statusTag.textContent='requested for return'
+        statusTag.style.color='red'
+    }
+    if (status === 'DELIVERED') {
+        $.ajax({
+            type: "GET",
+            url: "/user/isAbleForReturn",
+            data: { orderId },
+            dataType: 'json',
+            success: function (response) {
+                console.log("Ajax request successful:", response);
+                if (response === true) {
+                    console.log("yes");
+                    // Hide the return div
+                    console.log(returnDiv)
+                    returnDiv.style.display = 'block'
+                    returnButton.style.display='block'
+                } else {
+                    console.log("no or false");
+                    returnDiv.style.display = 'none';
+                    returnButton.style.display='none' // Show or handle the return div accordingly
+                }
+            },
+            error: function () {
+                console.error("Error in the AJAX request");
+            }
+        });
+    }else{
+        returnDiv.style.display='none'
+        returnButton.style.display='none'
+    }
+});
+
+        inputStailing();
+        var cancelMessage = "[[${cancel}]]";
+            if (cancelMessage !== "") {
+            cancelSuccess();
+            }
+        function cancelSuccess(){
+        Toastify({
+    text: "Order Cancelled Successfully",
+    duration: 1000,
+    newWindow: true,
+    close: false,
+    gravity: "top",
+    position: "center",
+    stopOnFocus: true,
+    style: {
+        background: "red",
+    },
+    onClick: function(){}
+    }).showToast();
+        }
+        function inputStailing(){
+                var orderId = [[${order.orderId}]];
+                $.ajax({
+                    url: '/user/getOrderStatus',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { orderId: orderId},
+                    success: function(response) { 
+                        var status=response.orderStatus
+                        var statuses=response.statuses
+                        console.log(status)
+                        console.log(statuses)
+                        var statusTag=document.getElementById("order-status")
+                        var processingSpan=document.getElementById("processing-span")
+                        var shippingSpan=document.getElementById("shipped-span")
+                        var outForDeliverySpan=document.getElementById("out-for-delivery-span")
+                        var deliverySpan=document.getElementById("delivered-span")
+                        var processingText=document.getElementById("processing-text")
+                        var shippingText=document.getElementById("shipping-text")
+                        var outForDeliveryText=document.getElementById("out-text")
+                        var deliveredText=document.getElementById("delivered-text")
+                        processingText.innerText='order processing'
+                        shippingText.innerText='order shipped'
+                        outForDeliveryText.innerText='order out for delivery'
+                        deliveredText.innerText='order delivered'
+                        processingSpan.classList.add("dot")
+                        shippingSpan.classList.add("dot")
+                        outForDeliverySpan.classList.add("dot")
+                        deliverySpan.classList.add("dot")
+                    if(status==='PROCESSING'){
+                        processingSpan.classList.add("big-dot","fa","fa-check","text-white","text-center","p-1")
+                        processingText.innerText=statuses[0];
+                        processingText.style.color='blue'
+                        statusTag.innerText ='Processing';
+                        }else if(status==='SHIPPED'){
+                            processingSpan.classList.add("big-dot","fa","fa-check","text-white","text-center","p-1")
+                        shippingSpan.classList.add("big-dot","fa","fa-check","text-white","text-center","p-1")
+                        processingText.innerText=statuses[0];
+                        processingText.style.color='blue'
+                        shippingText.innerText=statuses[1]
+                        shippingText.style.color='blue'
+                        
+                        }else if(status==='OUT_FOR_DELIVERY'){
+                            processingSpan.classList.add("big-dot","fa","fa-check","text-white","text-center","p-1")
+                            shippingSpan.classList.add("big-dot","fa","fa-check","text-white","text-center","p-1")
+                        outForDeliverySpan.classList.add("big-dot","fa","fa-check","text-white","text-center","p-1")
+                        processingText.innerText=statuses[0];
+                        processingText.style.color='blue'
+                        shippingText.innerText=statuses[1]
+                        shippingText.style.color='blue'
+                        outForDeliveryText.innerText=statuses[2]
+                        outForDeliveryText.style.color='blue'
+                        statusTag.innerText ='Out for Delivery';
+                        }else if(status==='DELIVERED'){
+                            processingSpan.classList.add("big-dot","fa","fa-check","text-white","text-center","p-1")
+                            shippingSpan.classList.add("big-dot","fa","fa-check","text-white","text-center","p-1")
+                        outForDeliverySpan.classList.add("big-dot","fa","fa-check","text-white","text-center","p-1")
+                            deliverySpan.classList.add("big-dot","fa","fa-check","text-white","text-center","p-1")
+                            processingText.innerText=statuses[0];
+                        processingText.style.color='blue'
+                        shippingText.innerText=statuses[1]
+                        shippingText.style.color='blue'
+                        outForDeliveryText.innerText=statuses[2]
+                        outForDeliveryText.style.color='blue'
+                        deliveredText.innerText=statuses[3]
+                        deliveredText.style.color='blue'
+                        statusTag.innerText ='Delivered';
+                        }else if(status==='RETURNED'){
+                            processingSpan.classList.add("big-dot","fa","fa-check","text-white","text-center","p-1")
+                            shippingSpan.classList.add("big-dot","fa","fa-check","text-white","text-center","p-1")
+                        outForDeliverySpan.classList.add("big-dot","fa","fa-check","text-white","text-center","p-1")
+                            deliverySpan.classList.add("big-dot","fa","fa-check","text-white","text-center","p-1")
+                            processingText.innerText=statuses[0];
+                        processingText.style.color='blue'
+                        shippingText.innerText=statuses[1]
+                        shippingText.style.color='blue'
+                        outForDeliveryText.innerText=statuses[2]
+                        outForDeliveryText.style.color='blue'
+                        deliveredText.innerText=statuses[3]
+                        deliveredText.style.color='blue'
+                        statusTag.innerText ='Returned';
+                        }
+                    },
+                    error: function(error) {
+                        // Handle error, e.g., show an error message
+                        console.error('Error updating order status:', error);
+                    }
+                });
+            }
+
+
+
+    </script>
+    </body>
+    </html>

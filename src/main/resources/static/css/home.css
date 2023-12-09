@@ -19,7 +19,7 @@ img{
 width:100vw;
 }
 .card{
-height:500px;
+height:400px;
 width:300px;
 margin-top:20px;
 text-align:center;
@@ -49,5 +49,11 @@ border:1px solid black;
 }
 #profile-dropdown{
 height:150px;
+}
+
+.category-image{
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
 }
 

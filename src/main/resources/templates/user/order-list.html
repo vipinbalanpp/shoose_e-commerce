@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Shoes</title>
+    <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet" type="text/css" />
+    <link th:rel="stylesheet" th:href="@{/css/checkout.css}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+</head>
+<body>
+<nav
+        class="navbar bg-body-tertiary p-3"
+        style="border-bottom: 1px solid black"
+>
+    <div
+            class="container-fluid d-flex justify-content-between align-items-middle"
+            style="background-color: white"
+    >
+        <div class="align-self-start">
+            <a class="navbar-brand" href="/homepage">
+                <img
+                        th:src="@{/img/logo.png}"
+                        style="height: 60px; width: 150px"
+                        alt=""
+                />
+            </a>
+        </div>
+        <h6 class="text=danger fw-bold" th:text="${empty}"></h6>
+        <div class="me-5">
+            <div class="d-flex gap-5 align-items-center">
+                <div>
+                    <a class="text-decoration-none text-dark" href="">
+                        <i class="fa-solid fa-heart"></i><span> Wishlist</span>
+                    </a>
+                </div>
+                <div>
+                    <a class="text-decoration-none text-dark" th:href="@{/user/cart}">
+                        <i class="fa-solid fa-cart-shopping"></i><span> Cart</span>
+                    </a>
+                </div>
+                <div>
+                    <a class="text-decoration-none text-dark" th:href="@{/shop}">
+                        <i class="fa-solid fa-cart-shopping"></i><span> Shop</span>
+                    </a>
+                </div>
+                <div>
+                    <a class="text-decoration-none text-dark" th:href="@{/user/profile}">
+                        <i class="fa-solid fa-cart-shopping"></i><span> Profile</span>
+                    </a>
+                </div>
+                <div class="dropdown">
+                    <button
+                            class="btn text-dark dropdown-toggle"
+                            type="button"
+                            id="profile button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        click
+                    </button>
+                    <ul id="profile-dropdown" class="dropdown-menu p-3">
+                        <li class="ms-3">
+                            <div
+                                    th:if=" ${#authorization.expression('isAuthenticated()')}"
+                            >
+                                <a th:href="@{/user/profile}">profile</a>
+                            </div>
+                        </li>
+                        <li class="ms-3 mt-4">
+                            <form
+                                    th:if=" ${#authorization.expression('isAuthenticated()')}"
+                                    th:method="post"
+                                    th:action="@{/logout}"
+                            >
+                                <input
+                                        class="btn btn-danger text-white"
+                                        type="submit"
+                                        value="Logout"
+                                />
+                            </form>
+                            <a
+                                    class="btn btn-info"
+                                    th:href="@{/login}"
+                                    th:if="not ${#authorization.expression('isAuthenticated()')}"
+                            >Sign in</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <table class="table text-center custom-table">
+        <thead class="thead">
+        <tr>
+
+            <td>Products</td>
+            <td>Amount</td>
+            <td>Status</td>
+            <td>Ordered Date</td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order, iterStat : ${orders}">
+
+            <td>
+                <span th:if="${#lists.size(order.products) == 1}" th:text="${#lists.size(order.products)} + ' product'"></span>
+                <span th:if="${#lists.size(order.products) > 1}" th:text="${#lists.size(order.products)} + ' products'"></span>
+            </td>
+
+            <td th:text="${order.amountPayed}"></td>
+            <td th:text="${order.currentStatus}"></td>
+            <td th:text="${order.orderedDate}"></td>
+            <td><a th:href="@{/user/order-details/{orderId}(orderId=${order.orderId})}">View Details</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded",function(){
+        
+    })
+</script>
+</body>
+</html>

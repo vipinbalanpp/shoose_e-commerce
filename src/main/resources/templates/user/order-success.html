@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Shoes</title>
+    <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet" type="text/css" />
+    <link th:rel="stylesheet" th:href="@{/css/checkout.css}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <link th:rel="stylesheet" th:href="@{/css/home.css}" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .bg-light {
+            background-color: #f8d7da;
+        }
+
+        .checkmark {
+            color: #28a745;
+        }
+
+        h1 {
+            color: #28a745;
+        }
+
+        dt {
+            color: #495057;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #218838;
+        }
+
+        .text-dark {
+            color: #343a40;
+        }
+
+        .text-dark:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+  <p th:text="#{orderId}"></p>
+<section>
+    <div class="card p-5 mt-3 bg-white border-radius shadow d-inline-block text-center">
+        <div class="bg-light ms-5" style="border-radius: 50%; height: 100px; width: 100px; display: flex; align-items: center; justify-content: center;">
+            <i class="checkmark fas fa-check-circle text-success" style="font-size: 50px;"></i>
+        </div>
+        <h1 class="text-success">Success</h1>
+        <dt>We received your purchase request;<br />we'll be in touch shortly!</dt>
+        <br>
+        <div>
+          
+            <a th:href="@{/user/order-details/{orderId}(orderId=${orderId})}" class="btn btn-success px-5 vw-80">Track Order</a>
+        </div>
+        <br>
+        <a th:href="@{/shop}" class="text-dark fw-bold text-decoration-none">Go To Home</a>
+    </div>
+</section>
+
+</body>
+</html>

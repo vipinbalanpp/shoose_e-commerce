@@ -5,30 +5,31 @@ import com.vipin.shoose.model.Category;
 import com.vipin.shoose.repository.CategoryRepository;
 import com.vipin.shoose.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
+@RequestMapping("/admin")
 public class CategoryController {
     @Autowired
     CategoryService categoryService;
     @Autowired
     CategoryRepository categoryRepository;
 
-    @GetMapping("/admin/categories")
+    @GetMapping("/categories")
     public String categories(Model model){
         List<Category> allCategories=categoryService.getAllCategory();
         model.addAttribute("categories",allCategories);
         return "admin/categories";
     }
 
-    @PostMapping("admin/add-category")
+    @PostMapping("/add-category")
     public String addCategory(CategoryDto categoryDto,
                               RedirectAttributes redirectAttributes){
         if(categoryRepository.existsByCategoryName(categoryDto.getCategoryName())){
@@ -38,7 +39,7 @@ public class CategoryController {
         categoryService.addCategory(categoryDto);
         return "redirect:/admin/categories";
     }
-    @PostMapping("/admin/edit-category")
+    @PostMapping("/edit-category")
     public String renameCategory( CategoryDto categoryDto,
                                   RedirectAttributes redirectAttributes,Model model){
         if(categoryRepository.existsByCategoryName(categoryDto.getCategoryName())){
@@ -48,17 +49,42 @@ public class CategoryController {
         categoryService.editCategory(categoryDto);
         return "redirect:/admin/categories";
     }
-    @PostMapping("admin/block-category/{categoryId}")
+    @PostMapping("/block-category/{categoryId}")
     public String blockCategory(@PathVariable("categoryId") Long categoryId
                                 ,RedirectAttributes redirectAttributes){
         categoryService.blockCategory(categoryId);
         return "redirect:/admin/categories";
     }
-    @PostMapping("admin/unBlock-category/{categoryId}")
+    @PostMapping("/unBlock-category/{categoryId}")
     public String unBlockCategory(@PathVariable("categoryId") Long categoryId
                                  ,RedirectAttributes redirectAttributes){
         categoryService.unBlockCategory(categoryId);
         return "redirect:/admin/categories";
     }
+    @PostMapping("/add-offer")
+    public String addOffer(@RequestParam Long categoryId,
+                           @RequestParam Integer offerPercentage,
+                           @RequestParam LocalDate startDate,
+                           @RequestParam LocalDate endDate,
+                           RedirectAttributes redirectAttributes) {
+        categoryService.addOffer(categoryId,offerPercentage,startDate,endDate);
+        redirectAttributes.addFlashAttribute("offerAddingSuccess","Offer Added SuccessFully");
+
+
+        return "redirect:/admin/categories"; // Redirect to the dashboard or any other page
+    }
+    @PostMapping("/edit-offer")
+    public String editOffer(@RequestParam Long categoryId,
+                           @RequestParam Integer offerPercentage,
+                           @RequestParam LocalDate startDate,
+                           @RequestParam LocalDate endDate,
+                           RedirectAttributes redirectAttributes) {
+        categoryService.editOffer(categoryId,offerPercentage,endDate);
+        redirectAttributes.addFlashAttribute("offerEditingSuccess","Offer Added SuccessFully");
+
+
+        return "redirect:/admin/categories"; // Redirect to the dashboard or any other page
+    }
+
 
 }

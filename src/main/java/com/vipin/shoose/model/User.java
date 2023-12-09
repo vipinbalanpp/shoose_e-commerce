@@ -3,12 +3,15 @@ package com.vipin.shoose.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "users")
 public class User {
     @Id
@@ -26,4 +29,11 @@ public class User {
     private  LocalDateTime createdTime;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Address>addresses;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<OrderInfo> orders;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JoinColumn(name = "wallet_id")
+    private Wallet wallet;
+    private String referralId;
 }

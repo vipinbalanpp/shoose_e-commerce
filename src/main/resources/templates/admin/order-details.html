@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Shoes</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet" type="text/css" />
+    <link th:rel="stylesheet" th:href="@{/css/checkout.css}" />
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
+    />
+    <link th:rel="stylesheet" th:href="@{/css/product-list.css}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/boxicons/2.0.7/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+     integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" 
+     crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <div th:replace="~{fragment::admin-dashboard}"></div>
+<div class="text-center">
+    <h2>Order Details</h2>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="product">
+                <div id="productCard"  th:each="product : ${products}" class="card"  style="width: 500px; height: 100px;">
+                    <div class="card-body d-flex justify-content-center" style="padding: 0px;">
+                        <div style="flex: 1;" class="me-5">
+                            <img th:src="@{/img/product-images/__${product.image}__}" class="image">
+                        </div>
+                        <div style="flex: 2;">
+                            <h5 th:text="${product.productName}" class="card-title"><span th:text="${product.brand}"></span></h5>
+                            <p th:text="${product.color}" class="card-text"></p><span th:text="${product.size}"></span>
+                            <p th:text="${product.actualPrice}" class="card-text text-danger"></p>
+                          
+                        </div>
+                        <div>
+                            <p>Quantity:<span th:text="${product.quantity}"></span></p>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="order-details" class="col-lg-6">
+            <div id="orderDetails" class="d-flex fs-5" >
+                <div class="order-details">
+                    <p>Customer Name</p>
+                    <p>OrderedDate:</p>
+                    <p>Amount:</p>
+                    <p>PaymentMethod:</p>
+                    <p>OrderStatus:</p>
+                  
+                
+                </div>
+                <div class="orderData">
+                    <p th:text="${order.customerName}"></p>
+                    <p th:text="${order.orderedDate}"></p>
+                    <p class="text-danger" th:text="${order.amount}"></p>
+                    <p th:text="${order.paymentMethode}"></p>
+                    <p id="status"></p>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end mt-3" th:if="${order.orderStatus == 'RETURN_REQUESTED'}">
+                <form th:action="@{/admin/acceptReturn}" method="post">
+                    <input hidden name="order.orderId" th:field="${order.orderId}">
+                    <button type="submit" class="btn btn-danger">Accept Return Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <h5  class="text-center mt-5" th:if="${order.orderStatus != 'CANCELLED' and order.orderStatus != 'REJECTED'}">Update Order Status</h5>
+    <div th:if="${order.orderStatus != 'CANCELLED' and order.orderStatus != 'REJECTED'}" id="status-update-div" class="d-flex flex-row justify-content-between align-items-center align-content-center">
+        <span id="processing-span" class="dot big-dot fa fa-check p-1 text-white text-center"  ></span> <input  id="processing-input" type="checkbox" onclick="updateOrderStatus('PROCESSING')">
+        <hr class="flex-fill track-line"><span id="shipping-span" class="dot big-dot fa fa-check p-1 text-white text-center"  ></span><input id="shipped-input" onclick="updateOrderStatus('SHIPPED')" type="checkbox"  >
+        <hr class="flex-fill track-line"><span id="out-span" class="dot big-dot fa fa-check p-1 text-white text-center"  ></span><input id="out-for-delivery-input" onclick="updateOrderStatus('OUT_FOR_DELIVERY')" type="checkbox" >
+        <hr class="flex-fill track-line"><span id="delivered-span" class="dot big-dot fa fa-check p-1 text-white text-center"  ></span><input id="delivered-input" onclick="updateOrderStatus('DELIVERED')" type="checkbox" >
+    </div>
+
+    <div class="d-flex flex-row justify-content-between align-items-center" th:if="${order.orderStatus != 'CANCELLED' and order.orderStatus != 'REJECTED'}">
+        <div  class="d-flex flex-column justify-content-center"><span id="order-processing-span">Order
+                      Processing</span></div>
+        <div class="d-flex flex-column justify-content-center align-items-center"><span id="order-shipped-span">Order Shipped</span></div>
+        <div class="d-flex flex-column align-items-center"><span id="order-out-for-delivery-span">Out for
+                      delivery</span></div>
+        <div class="d-flex flex-column align-items-end"><span id="order-delivered-span">Delivered</span></div>
+    </div>
+
+</div>
+    <script>
+    inputStailing();  
+        function updateOrderStatus(newStatus) {
+            var orderId = [[${order.orderId}]];
+            console.log(newStatus)
+            console.log(orderId)
+            $.ajax({
+                url: '/admin/updateOrderStatus',
+                type: 'GET',
+                dataType: 'json',
+                data: { orderId: orderId, newStatus: newStatus },
+                success: function(response) {
+                    const order=response;
+                    var statusTag=document.getElementById("status")
+                    statusTag.innerText =response.orderStatus;
+                    console.log(response.orderStatus)
+                    inputStailing();
+                },
+                error: function(error) {
+                    // Handle error, e.g., show an error message
+                    console.error('Error updating order status:', error);
+                }
+            });
+        }
+        function inputStailing(){
+            var orderId = [[${order.orderId}]];
+            $.ajax({
+                url: '/admin/getOrderStatus',
+                type: 'GET',
+                dataType: 'json',
+                data: { orderId: orderId},
+                success: function(response) { 
+                    const order=response;
+                    var statuses=response.statuses
+                    var status=response.orderStatus;
+                    console.log(statuses)
+                    console.log(status)
+                    var statusTag=document.getElementById("status")
+                    var processingInput=document.getElementById("processing-input")
+                    var shippingInput=document.getElementById("shipped-input")
+                    var outForDeliveryInput=document.getElementById("out-for-delivery-input")
+                    var deliveryInput=document.getElementById("delivered-input")
+                    var processingspan=document.getElementById("order-processing-span")
+                    var shippedspan=document.getElementById("order-shipped-span")
+                    var outfordeliveryspan=document.getElementById("order-out-for-delivery-span")
+                    var deliveryspan=document.getElementById("order-delivered-span")
+                    var processingdot=document.getElementById("processing-span")
+                    var shippingdot=document.getElementById("shipping-span")
+                    var outForDeliverydot=document.getElementById("out-span")
+                    var deliverydot=document.getElementById("delivered-span")
+                    if(status!='CANCELLED'){
+                        processingspan.innerText="Processing"
+                    shippedspan.innerText="Shipped"
+                    outfordeliveryspan.innerText="Out for delivery"
+                    deliveryspan.innerText="Delivered"
+                    processingdot.style.display='none'
+                    shippingdot.style.display='none'
+                    outForDeliverydot.style.display='none'
+                    deliverydot.style.display='none'
+                    }if(status==='CANCELLED'){
+                        statusTag.innerText ='Cancelled';
+                        statusTag.style.color='red'
+                    }
+                    else if(status==='PENDING'){
+                        statusTag.innerText ='Pending';
+                        console.log('pending')
+                        shippingInput.disabled=true
+                        outForDeliveryInput.disabled=true
+                        deliveryInput.disabled=true;
+                    }else if(status==='PROCESSING'){
+                        processingInput.style.display='none'
+                        processingdot.style.display='block'
+                        outForDeliveryInput.disabled=true
+                        deliveryInput.disabled=true
+                        shippingInput.disabled=false
+                        processingspan.innerText=statuses[0]
+                        processingspan.style.color = "blue";
+                        statusTag.innerText ='Processing';
+                    }else if(status==='SHIPPED'){
+                        processingInput.style.display='none'
+                        processingdot.style.display='block'
+                        shippingInput.style.display='none'
+                        shippingdot.style.display='block'
+                        deliveryInput.disabled=true
+                        outForDeliveryInput.disabled=false
+                        processingspan.innerText=statuses[0]
+                        processingspan.style.color = "blue";
+                        shippedspan.innerText=statuses[1]
+                        shippedspan.style.color = "blue";
+                        statusTag.innerText ='Shipped';
+                    }else if(status==='OUT_FOR_DELIVERY'){
+                        processingInput.style.display='none'
+                        processingdot.style.display='block'
+                        shippingInput.style.display='none'
+                        shippingdot.style.display='block'
+                        outForDeliveryInput.style.display='none'
+                        outForDeliverydot.style.display='block'
+                        deliveryInput.disabled=false
+                        processingspan.innerText=statuses[0]
+                        processingspan.style.color = "blue";
+                        shippedspan.innerText=statuses[1]
+                        shippedspan.style.color = "blue";
+                        outfordeliveryspan.innerText=statuses[2]
+                        outfordeliveryspan.style.color = "blue";
+                        statusTag.innerText ='Out for delivery';
+                    }else if(status==='DELIVERED'){
+                        processingInput.style.display='none'
+                        processingdot.style.display='block'
+                        shippingInput.style.display='none'
+                        shippingdot.style.display='block'
+                        outForDeliveryInput.style.display='none'
+                        outForDeliverydot.style.display='block'
+                        deliveryInput.style.display='none'
+                        deliverydot.style.display='block'
+                        processingspan.innerText=statuses[0]
+                        processingspan.style.color = "blue";
+                        shippedspan.innerText=statuses[1]
+                        shippedspan.style.color = "blue";
+                        outfordeliveryspan.innerText=statuses[2]
+                        outfordeliveryspan.style.color = "blue";
+                        deliveryspan.innerText=statuses[3]
+                        deliveryspan.style.color = "blue";
+                        statusTag.innerText ='Delivered';
+                        processingInput.style.display='none'
+                        processingdot.style.display='block'
+                    }else if(status==='RETURN_REQUESTED'){
+                        processingInput.style.display='none'
+                        processingdot.style.display='block'
+                        shippingInput.style.display='none'
+                        shippingdot.style.display='block'
+                        outForDeliveryInput.style.display='none'
+                        outForDeliverydot.style.display='block'
+                        deliveryInput.style.display='none'
+                        deliverydot.style.display='block'
+                        processingspan.innerText=statuses[0]
+                        processingspan.style.color = "blue";
+                        shippedspan.innerText=statuses[1]
+                        shippedspan.style.color = "blue";
+                        outfordeliveryspan.innerText=statuses[2]
+                        outfordeliveryspan.style.color = "blue";
+                        deliveryspan.innerText=statuses[3]
+                        deliveryspan.style.color = "blue";
+                        statusTag.innerText ='Requested for Return'
+                        statusTag.style.color='red'
+                        processingInput.style.display='none'
+                        processingdot.style.display='block'
+                    }else if(status==='RETURNED'){
+                        processingInput.style.display='none'
+                        processingdot.style.display='block'
+                        shippingInput.style.display='none'
+                        shippingdot.style.display='block'
+                        outForDeliveryInput.style.display='none'
+                        outForDeliverydot.style.display='block'
+                        deliveryInput.style.display='none'
+                        deliverydot.style.display='block'
+                        processingspan.innerText=statuses[0]
+                        processingspan.style.color = "blue";
+                        shippedspan.innerText=statuses[1]
+                        shippedspan.style.color = "blue";
+                        outfordeliveryspan.innerText=statuses[2]
+                        outfordeliveryspan.style.color = "blue";
+                        deliveryspan.innerText=statuses[3]
+                        deliveryspan.style.color = "blue";
+                        statusTag.innerText ='Returned'
+                        statusTag.style.color='red'
+                        processingInput.style.display='none'
+                        processingdot.style.display='block'
+                    }
+                },
+                error: function(error) {
+                    // Handle error, e.g., show an error message
+                    console.error('Error updating order status:', error);
+                }
+            });
+        }
+ 
+    document.addEventListener("DOMContentLoaded", function (event) {
+
+        const showNavbar = (toggleId, navId, bodyId, headerId) => {
+            const toggle = document.getElementById(toggleId),
+                nav = document.getElementById(navId),
+                bodypd = document.getElementById(bodyId),
+                headerpd = document.getElementById(headerId)
+
+            // Validate that all variables exist
+            if (toggle && nav && bodypd && headerpd) {
+                toggle.addEventListener('click', () => {
+                    // show navbar
+                    nav.classList.toggle('show')
+                    // change icon
+                    toggle.classList.toggle('bx-x')
+                    // add padding to body
+                    bodypd.classList.toggle('body-pd')
+                    // add padding to header
+                    headerpd.classList.toggle('body-pd')
+                })
+            }
+        }
+
+        showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header')
+
+        /*===== LINK ACTIVE =====*/
+        const linkColor = document.querySelectorAll('.nav_link')
+
+        function colorLink() {
+            if (linkColor) {
+                linkColor.forEach(l => l.classList.remove('active'))
+                this.classList.add('active')
+            }
+        }
+        linkColor.forEach(l => l.addEventListener('click', colorLink))
+
+        // Your code to run since DOM is loaded and ready
+    });
+</script>
+
+
+
+
+</body>
+</html>

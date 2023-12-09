@@ -1,94 +1,396 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
-    <title>Shoose</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet" type="text/css" />
-    <link th:rel="stylesheet" th:href="@{/css/profile.css}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link th:rel="stylesheet" th:href="@{/css/home.css}">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <meta charset="UTF-8" />
+  <title>Shoes</title>
+  <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css"
+    rel="stylesheet"
+    type="text/css"
+  />
+  <link th:rel="stylesheet" th:href="@{/css/cart.css}" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link th:rel="stylesheet" th:href="@{/css/home.css}" />
 </head>
 <body>
-<div class="container">
-    <div class="row">
-        <div class="col-lg-9 mt-5">
-            <div class="cart">
-                <div class="product">
-                    <div id="product-image">
-                        <img th:src="@{/img/sh1.jpg}"alt="Product 1">
-                    </div>
-                    <div class="product-details ms-3">
-                        <h5>Product 1</h5>
-                        <p>color,size</p>
-                    </div>
-                    <div>
-
-                    </div>
-                    <div class="quantity me-5">
-                        <button class="btn-minus">-</button>
-                        <input type="number" min="0" value="1">
-                        <button class="btn-plus">+</button>
-                    </div>
-                    <div class="mx-5 d-flex align-items-center">
-                        <p class="text-danger fw-bold">$19.99</p>
-                    </div>
-                    <button class="btn btn-remove text-danger fw-bold">x</button>
+ <div th:include="~{fragment::navbar}"></div>
+    <div class="container m-0 p-0 custom-div">
+      <div class="row m-0 p-0 d-flex">
+         <div class="col-lg-9 col-md-10 col-sm-12 p-5" id="cart-table-div">
+           <table  class="table table-striped border shadow-lg">
+             <thead id="cart-table" class="table table-striped border shadow-lg">
+              <tr>
+             
+               <td>Product</td>
+                <td>Price</td>
+                <td>Quantity</td>
+                <td>Subtotal</td>
+                <td></td>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            </table>
+          </div>
+          <div id="cartEmpty" style="height: 500px;">
+            <div class="card" style="width: 18rem; text-align: center; margin-top: 102px; margin-left: 626px;">
+                <div class="card-body">
+                    <h5 class="card-title mt-5 text-danger">Your Cart is Empty</h5>
+                    <p class="card-text mt-5">Explore our shop and add some amazing products to your cart.</p>
+                    <a th:href="@{/shop}" class="btn btn-primary mt-5">Go To Shop</a>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
-                <div id="coupon" class="card mb-3">
-                    <div class="card-body">
-                        <form>
-                            <div class="form-group"> <label>Have coupon?</label>
-                                <div class="input-group"> <input type="text" class="form-control coupon" name="" placeholder="Coupon code"> <span class="input-group-append"> <button class="btn btn-primary btn-apply coupon">Apply</button> </span> </div>
-                            </div>
-                        </form>
-                        <br><hr>
-                        <p class="fw-bold">Price After applying coupon:</p>
-                    </div>
-                </div>
-                <div id="amount" class="card">
-                    <div class="card-body">
-                        <dl class="dlist-align">
-                            <dt>Total price:</dt>
-                            <dd class="text-right ml-3">$69.97</dd>
-                        </dl>
-                        <dl class="dlist-align">
-                            <dt>Total:</dt>
-                            <dd class="text-right text-dark b ml-3"><strong>$59.97</strong></dd>
-                        </dl>
-                        <hr> <a href="#" class="btn btn-out btn-primary btn-square btn-main" data-abc="true"> Place Order</a>
-                    </div>
-                </div>
+      <div class="col-lg-3">
+        <div id="total-prize"  style="border: 0px;">
+          <div class="card shadow-0 border " style="height: 255px; width: 421px;">
+            <div class="card-body">
+              <div class="d-flex justify-content-between">
+                <p class="mb-2">Total price:</p>
+                <div id="sub-total"><span class="text-danger" id="actual-amount"></span></div>
+              </div>
+              <div class="d-flex justify-content-between">
+                <p class="mb-2">Discount:</p>
+                <p  class="mb-2 text-danger" id="discountAmount">0.00</p>
+              </div>
+              <hr />
+              <div class="d-flex justify-content-between">
+                <p class="mb-2">Amount to be payed:</p>
+                <p class="mb-2 text-danger" id="totalSumSpan" ></p>
+              </div>
+              <div id="place-order-button-div" class="post">
+                <a id="place-order-button" class="btn btn-dark"  th:href="@{/user/check-out}">Place Order</a>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-    const cart = document.querySelector(".cart");
+</div>
+<div class="position-absolute w-100 d-flex justify-content-center align-items-center">
+  <div id="confirmationModal" class="modal">
+    <div class="modal-content w-25 custom-confirmation-modal">
+      <p>Are you sure you want to remove this item from the cart?</p>
+      <button id="confirmRemove" class="btn btn-danger">Yes</button>
+      <button id="cancelRemove" class="btn btn-secondary">No</button>
+    </div>
+  </div>
+</div>
+  <div th:insert="~{fragment::footer}"></div>
+  <script>
+        
+    var cartData = [];
+    let totalAmountTocheckout;
+    function getCartItems() {
+      $.ajax({
+        url: '/getCartItems', 
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+          const products = response;
+          console.log(products); 
+          const placeOrderbtn=document.getElementById("place-order-button");
+          if(products.length===0){
+            var cartTablediv=document.getElementById("cart-table-div")
+            var cartEmtpy=document.getElementById("cartEmpty")
+            cartEmtpy.style.display="block"
+            cartTablediv.style.display="none";
+            placeOrderbtn.style.display = "none";
+            const cartTable=document.getElementById("cart-table");
+            cartTable.style.display="none";
+            const totalPrize=document.getElementById("total-prize");
+            totalPrize.style.display="none";
+          }else{
+            var cartEmtpy=document.getElementById("cartEmpty")
+            cartEmtpy.style.display="none"
+          }
+          const tableBody = $('.table tbody');
+          tableBody.addClass('table-body'); 
 
-    cart.addEventListener("click", function(e) {
-        if (e.target.classList.contains("btn-minus")) {
-            const quantityInput = e.target.nextElementElement;
-            if (quantityInput.value > 0) {
-                quantityInput.value = parseInt(quantityInput.value) - 1;
+        
+          tableBody.empty();
+          let totalAmount=0;
+        
+          $.each(products, function (index, product) {
+            const variantIdToCheck = product.variantId;
+            const existingItem = cartData.find(item => item.variantId === variantIdToCheck);
+            if (!existingItem) {
+            var item={
+              variantId : product.variantId,
+              quantity : product.quantity,
+              price : product.price,
+              image : product.image
             }
-        }
+            cartData.push(item);
+          }
+            const row = $('<tr>');
+            row.addClass('custom-table-row');
 
-        if (e.target.classList.contains("btn-plus")) {
-            const quantityInput = e.target.previousElementSibling;
-            quantityInput.value = parseInt(quantityInput.value) + 1;
-        }
+       
+            const productData = $('<td>');
+            const imageDiv = $('<div>', { class: 'd-flex p-2' });
+            const productImage = $('<img>', {
+              id: 'product-image',
+              class: 'product-image',
+              src: '/img/product-images/' + product.image,
+            });
+            const productDetails = $('<div>', { class: 'ms-3' });
+            const productName = $('<h5>', { text: product.productName });
+              const color = $('<p>').text('Color: ' + product.color).css('margin-bottom', '0px');
 
-        if (e.target.classList.contains("btn-remove")) {
-            const product = e.target.parentElement;
-            cart.removeChild(product);
+            const size = $('<p>').text('Size: ' + product.size);
+
+            productDetails.append(productName, color, size);
+            imageDiv.append(productImage);
+            imageDiv.append(productDetails);
+            productData.append(imageDiv);
+
+         
+            const quantityData = $('<td>');
+            const quantityDiv = $('<div>', { class: 'quantity' });
+              const minusButton = $('<button>', { class: 'btn btn-outline-secondary btn-minus', text: '-', id: 'minus' + index });
+            let quantityInput = $('<input>', { type: 'number', min: 1, value: product.quantity ,id:"input"+index,disabled: 'disabled'});
+            console.log(quantityInput.attr('id'));
+            const plusButton = $('<button>', { class: 'btn btn-outline-secondary btn-plus', text: '+', id: index });
+              console.log(product.quantity)
+
+            
+            if (product.stock === 0) {
+                    const stockOutMessage = $('<p>', { text: 'Stock Out', class: 'text-danger' });
+                 productDetails.append(stockOutMessage);
+                 placeOrderbtn.style.display = "none";
+
+            }
+
+       
+            totalAmount += product.totalPrice;
+              console.log(totalAmount);
+           console.log(product.stock);
+            plusButton.click(function () {
+                increaseQuantity(product, plusButton.attr('id'),totalAmount);
+             });
+             minusButton.click(function () {
+                decreaseQuantity(product,minusButton.attr('id'),totalAmount);
+             });
+
+            quantityDiv.append(minusButton, quantityInput, plusButton);
+            quantityData.append(quantityDiv);
+
+         
+            const priceData = $('<td>');
+              if (!product.isCategoryHavingOffer) {
+
+                   const actualPriceWithRupee = $('<span>').text('₹' + product.actualPrice).css('color', 'red');
+                   priceData.append(actualPriceWithRupee);
+            } else {
+
+                       const actualPriceWithStrikeThrough = $('<s>').text('₹' + product.actualPrice).css('color', 'grey');
+                      const discountPriceWithRupee = $('<span>').text('₹' + product.discountPrice).css('color', 'red');
+                      priceData.append(actualPriceWithStrikeThrough, ' ', discountPriceWithRupee);
+}
+
+            const totalPriceData = $('<td>', { text: product.totalPrice ,id:"total"+index, style: 'color: red'});
+      
+          
+            const removeButtonData = $('<td>');
+            const removeButton = $('<button>', {
+              class: 'btn btn-remove text-danger fw-bold',
+              id:"remove"+index,
+            });
+            const trashIcon = $('<i>', {
+           class: 'fas fa-trash',
+          });
+            removeButton.append(trashIcon);
+            removeButtonData.append(removeButton);
+            removeButton.click(function () {
+                removeItemFromCart(product);
+             });
+
+          
+            row.append(productData, priceData, quantityData, totalPriceData, removeButtonData);
+
+         
+            tableBody.append(row);
+          });
+          totalAmountTocheckout=totalAmount;
+          console.log("total amount to checkout:"+totalAmountTocheckout);
+          const totalAmountTag=document.getElementById("totalSumSpan");
+      totalAmountTag.textContent=totalAmount;
+      console.log(cartData)
+        },
+      });
+    
+    }
+
+    function increaseQuantity(product,plusButtonId) {
+      const inputId = 'input' + plusButtonId;
+      const totalId="total"+plusButtonId;
+      const totalPrice=document.getElementById(totalId);
+      console.log(totalPrice.textContent)
+      const input = document.getElementById(inputId);
+      const currentValue = input.value;
+      if(currentValue<product.stock){
+        $.ajax({
+          url: '/increaseQuantity',
+          type: 'GET',
+          dataType: 'json',
+          data:{variantId:product.variantId},
+          success: function(response){
+              console.log(response);
+          }
+         });
+        const newValue = Number(currentValue)+1;
+        const itemToUpdate = cartData.find((item) => item.variantId === product.variantId);
+        if (itemToUpdate) {
+            itemToUpdate.quantity = newValue;
+        }console.log(itemToUpdate);
+        const newTotalPrice=Number(totalPrice.textContent)+product.price;
+        totalPrice.textContent=newTotalPrice;
+        const totalAmountTag=document.getElementById("totalSumSpan");
+        let totalAmount = parseFloat(totalAmountTag.textContent);
+         totalAmount += product.price;
+         totalAmountTag.textContent = totalAmount;
+      input.value = newValue;
+      }else{
+        quantityExceeds();
+      }
+}
+
+
+
+    function decreaseQuantity(product,minusButtonId) {
+      const lastChar = minusButtonId.charAt(minusButtonId.length - 1);
+  console.log("Last character as a string:", lastChar);
+  const inputId = 'input' + lastChar;
+  const totalId="total"+lastChar;
+  const totalPrice=document.getElementById(totalId);
+      const input = document.getElementById(inputId);
+      const currentValue = input.value;
+      if (currentValue > 1) {
+        $.ajax({
+          url: '/decreaseQuantity',
+          type: 'GET',
+          dataType: 'json',
+          data:{variantId:product.variantId},
+          success: function(response){
+              console.log(response);
+          }
+         });
+        const newValue = Number(currentValue)-1;
+        input.value = Number(currentValue)-1;
+        const itemToUpdate = cartData.find((item) => item.variantId === product.variantId);
+        if (itemToUpdate) {
+            itemToUpdate.quantity = newValue;
+        }console.log(itemToUpdate);
+        const newTotalPrice=Number(totalPrice.textContent)-product.price;
+        totalPrice.textContent=newTotalPrice;
+        const totalAmountTag=document.getElementById("totalSumSpan");
+        let totalAmount = parseFloat(totalAmountTag.textContent);
+         totalAmount -= product.price;
+         console.log(totalAmount);
+         totalAmountTag.textContent = totalAmount;
+      }if(currentValue==1){
+        minimumQuantity();
+      }
+    }
+    function removeItemFromCart(product){
+      const variantIdToRemove = product.variantId;
+      const confirmationModal = document.getElementById('confirmationModal');
+  const confirmButton = document.getElementById('confirmRemove');
+  const cancelButton = document.getElementById('cancelRemove');
+  confirmationModal.style.display = 'block';
+
+  confirmButton.addEventListener('click', function () {
+    const itemIndexToRemove = cartData.findIndex((item) => item.variantId === variantIdToRemove);
+
+        if (itemIndexToRemove !== -1) {
+           
+            cartData.splice(itemIndexToRemove, 1);
+            console.log(variantIdToRemove);
+            console.log(cartData);
         }
+    $.ajax({
+      url: '/removeItemFromCart',
+      type: 'GET',
+      data: { variantId: product.variantId },
+      success: function (response) {
+       removeSuccess();
+       getCartItems();
+      },
     });
-});
+    console.log("modal is active");
 
-</script>
+    confirmationModal.style.display = 'none';
+  });
+
+  cancelButton.addEventListener('click', function () {
+    confirmationModal.style.display = 'none';
+  });
+        console.log(product);
+    }
+
+    function quantityExceeds(){
+      Toastify({
+  text: "Quantity cannot be increased. Stock is insufficient.",
+  duration: 1000,
+  newWindow: true,
+  close: false,
+  gravity: "top",
+  position: "center", 
+  stopOnFocus: true, 
+  style: {
+    background: "red",
+  },
+  onClick: function(){} 
+}).showToast();
+    }
+    function minimumQuantity(){
+      Toastify({
+  text: "You must select atlead one quantity.",
+  duration: 1000,
+  newWindow: true,
+  close: false,
+  gravity: "top",
+  position: "center", 
+  stopOnFocus: true, 
+  style: {
+    background: "red",
+  },
+  onClick: function(){} 
+}).showToast();
+    }
+
+    function removeSuccess(){
+      Toastify({
+  text: "Item removed successfully.",
+  duration: 1000,
+  newWindow: true,
+  close: false,
+  gravity: "top",
+  position: "center", 
+  stopOnFocus: true, 
+  style: {
+    background: "green",
+  },
+  onClick: function(){} 
+}).showToast();
+    }
+    getCartItems();
+    console.log(JSON.stringify(cartData));
+
+    document.getElementById("placeOrderButton").addEventListener("click", function () {
+      console.log(cartData+"lsdfosifhsoifgwhsfgiohwsfgiowhsgiow");
+document.getElementById("cartDataField").value = JSON.stringify(cartData);
+document.getElementById("totalAmountField").value = JSON.stringify(totalAmountTocheckout);
+        document.getElementById("checkoutForm").submit();
+    });
+  </script>
 </body>
 </html>
