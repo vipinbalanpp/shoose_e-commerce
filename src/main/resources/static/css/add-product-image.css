@@ -1,0 +1,50 @@
+.card{
+    width: 90%;
+    height: 500px;
+    background-color: ghostwhite;
+}
+  .custom-file-input {
+    width: 400px;
+    height: 300px;
+    background-color: rgb(132, 134, 134);
+  }
+  .custom-file-input {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .custom-file-input .input-for-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .custom-file-input .custom-file-label {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .custom-file-input .plus-button {
+    font-size: 20px;
+    margin-right: 8px;
+  }
+  
+  /* Additional styling for better visual appearance */
+  .custom-file-input:hover .custom-file-label {
+    background-color: #0056b3;
+  }
+  .product-image-heading {
+    text-align: center;
+    font-size: 24px; /* You can adjust the font size as needed */
+    color: #421515; /* You can set the color as per your design */
+    margin-bottom: 20px; /* You can adjust the margin as needed */
+}

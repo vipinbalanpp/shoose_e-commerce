@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shoes</title>
+  <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet" type="text/css" />
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+</head>
+<body>
+<div th:include="~{fragment::admin-navbar}"></div>
+<div class="container">
+  <table class="table text-center custom-table">
+    <thead class="thead">
+    <tr>
+      <td>Products</td>
+      <td>Amount</td>
+      <td>Status</td>
+      <td>Ordered Date</td>
+      <td></td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order, iterStat : ${orders}">
+      <td>
+        <span th:if="${#lists.size(order.products) == 1}" th:text="${#lists.size(order.products)} + ' product'"></span>
+        <span th:if="${#lists.size(order.products) > 1}"  th:text="${#lists.size(order.products)} + ' products'"></span>
+      </td>
+      <td th:text="${order.amountPayed}"></td>
+      <td th:text="${order.currentStatus}"></td>
+      <td th:text="${order.orderedDate}"></td>
+      <td><a th:href="@{/admin/order-details/{orderId}(orderId=${order.orderId})}">view details</a></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+
+<style>
+  .container {
+      box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2); /* Add more shadow to the container */
+  }
+</style>
+
+  <div class="header d-flex justify-content-center" style="margin-top: 10px;">
+    <h1 >Order List</h1>
+    </div>
+
+    <div class="text-end me-2 mb-2">
+      <a href="/admin/orders/return-request">
+        <button type="submit" class="btn btn-outline-danger" style="border-radius: 10px;">
+        </button>
+      </a>
+    </div>
+
+    <div class="container">
+          
+            <table class="table table-bordered table-striped table-hover mt-3">
+              <thead class="table-dark">
+                <tr>
+                  <th scope="col">Sr No</th>
+                  <th scope="col">Order ID</th>
+                  <th scope="col">Customer ID</th>
+                  <th scope="col">Ordered Date</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Payment Method</th>
+                  <th scope="col">Payment Status</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Actions</th> <!-- Added column for actions -->
+                </tr>
+              </thead>
+
+            <tbody>
+             
+            </tbody>
+        </table>
+        
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      function changeOrderStatus(orderId,index){
+        console.log("hai");
+        const statusSelect = document.getElementById(statusSelect${index})
+        const newStatus = statusSelect.value
+
+       fetch(/admin/updateorderstatus/${orderId},{
+        method:'PUT',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({status:newStatus})
+       })
+       .then(response => {
+        if(!response.ok) {
+          throw new Error("response not ok");
+        }
+        return response.json()
+       })
+       .then(data =>{
+        console.log(data,"received from controller");
+        // console.log(data.neworder.PaymentStatus);
+         const paymentStatusCell = document.getElementById(paymentStatusCell${index})
+        paymentStatusCell.textContent = data.neworder.PaymentStatus
+       })
+       
+      .catch(error =>{
+        console.error("Error:",error);
+      })
+      }
+    </script>
+</body>
+</html>
+</body>
+</html>
