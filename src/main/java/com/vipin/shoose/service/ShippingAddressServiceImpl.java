@@ -16,17 +16,21 @@ public class ShippingAddressServiceImpl implements ShippingAddressService{
     AddressRepository addressRepository;
     @Override
     public ShippingAddress  createOrderShippingAddress(Long addressId) {
-        System.out.println("shipping addresss method");
-        Address address=addressRepository.findByAddressId(addressId);
-        ShippingAddress shippingAddress=new ShippingAddress();
-        shippingAddress.setFullName(address.getFullName());
-        shippingAddress.setPhoneNumber(address.getPhoneNumber());
-        shippingAddress.setBuildingName(address.getBuildingName());
-        shippingAddress.setStreetName(address.getStreetName());
-        shippingAddress.setCity(address.getCity());
-        shippingAddress.setState(address.getState());
-        shippingAddress.setPostalCode(address.getPostalCode());
-        shippingAddressRepository.save(shippingAddress);
-        return shippingAddress;
+        try {
+            Address address=addressRepository.findByAddressId(addressId);
+            ShippingAddress shippingAddress=new ShippingAddress();
+            shippingAddress.setFullName(address.getFullName());
+            shippingAddress.setPhoneNumber(address.getPhoneNumber());
+            shippingAddress.setBuildingName(address.getBuildingName());
+            shippingAddress.setStreetName(address.getStreetName());
+            shippingAddress.setCity(address.getCity());
+            shippingAddress.setState(address.getState());
+            shippingAddress.setPostalCode(address.getPostalCode());
+            shippingAddressRepository.save(shippingAddress);
+            return shippingAddress;
+        }catch (Exception e){
+            throw new RuntimeException();
+        }
+
     }
 }

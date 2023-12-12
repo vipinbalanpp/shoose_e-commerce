@@ -13,8 +13,8 @@ public class ProductToShopPage {
     private Long productId;
     private String productName;
     private String Brand;
-    private Float actualPrice;
-    private Float discountPrice;
+    private Integer actualPrice;
+    private Integer discountPrice;
     private Boolean isCategoryHavingOffer;
     private String productImage;
 

@@ -13,7 +13,10 @@ public class OrderDto {
     private List<SelectedProducts>products;
     private LocalDate orderedDate;
     private String customerName;
-    private Float amount;
+    private Float totalAmount;
+    private Float totalDiscount;
+    private Float amountPaid;
+    private String shippingAddress;
     private String paymentMethode;
     private String orderStatus;
     private List<String>statuses;

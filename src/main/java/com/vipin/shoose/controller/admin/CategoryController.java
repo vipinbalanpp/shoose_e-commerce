@@ -65,25 +65,23 @@ public class CategoryController {
     public String addOffer(@RequestParam Long categoryId,
                            @RequestParam Integer offerPercentage,
                            @RequestParam LocalDate startDate,
-                           @RequestParam LocalDate endDate,
-                           RedirectAttributes redirectAttributes) {
-        categoryService.addOffer(categoryId,offerPercentage,startDate,endDate);
-        redirectAttributes.addFlashAttribute("offerAddingSuccess","Offer Added SuccessFully");
-
-
+                           @RequestParam LocalDate expiryDate) {
+        categoryService.addOffer(categoryId,offerPercentage,startDate,expiryDate);
         return "redirect:/admin/categories"; // Redirect to the dashboard or any other page
     }
     @PostMapping("/edit-offer")
     public String editOffer(@RequestParam Long categoryId,
                            @RequestParam Integer offerPercentage,
-                           @RequestParam LocalDate startDate,
-                           @RequestParam LocalDate endDate,
-                           RedirectAttributes redirectAttributes) {
+                           @RequestParam LocalDate endDate) {
         categoryService.editOffer(categoryId,offerPercentage,endDate);
-        redirectAttributes.addFlashAttribute("offerEditingSuccess","Offer Added SuccessFully");
 
 
         return "redirect:/admin/categories"; // Redirect to the dashboard or any other page
+    }
+    @PostMapping("/remove-offer")
+    public String removeOffer(@RequestParam("categoryId")Long categoryId){
+        categoryService.removeOffer(categoryId);
+        return  "redirect:/admin/categories";
     }
 
 

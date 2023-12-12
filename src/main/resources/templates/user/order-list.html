@@ -113,7 +113,7 @@
                 <span th:if="${#lists.size(order.products) > 1}" th:text="${#lists.size(order.products)} + ' products'"></span>
             </td>
 
-            <td th:text="${order.amountPayed}"></td>
+            <td th:text="${order.amountPaid}"></td>
             <td th:text="${order.currentStatus}"></td>
             <td th:text="${order.orderedDate}"></td>
             <td><a th:href="@{/user/order-details/{orderId}(orderId=${order.orderId})}">View Details</a></td>

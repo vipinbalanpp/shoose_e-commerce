@@ -1,7 +1,7 @@
 #sidebar{
 width:200px;
 height:400px;
-border:1px solid black;
+box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
 }
 #profile-details{
 
@@ -27,14 +27,14 @@ margin-top:80px;
 }
 
 
-#sidebar{
-border-radius:20px;
+#sidebar-user{
 width:350px;
+border-radius: 20px;
 
 }
 #userDetails{
 border-radius:20px;
-border:1px solid black;
+box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2); /* Add more shadow to the container */
 width:350px;
 
 }
@@ -47,12 +47,12 @@ border-radius:40px;
 width:100px;
 }
 #address{
-border:1px solid black;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
 }
 #add-address-button{
 border:none;
 }#add-btn{
-border:1px solid black;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
 height:60px;
 }
 .add-man{

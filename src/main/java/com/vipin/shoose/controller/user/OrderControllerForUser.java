@@ -32,17 +32,7 @@ public class OrderControllerForUser {
     OrderRepository orderRepository;
     @Autowired
     CouponService couponService;
-    @GetMapping("/check-out")
-    public String checkOut(Model model,RedirectAttributes redirectAttributes) throws JsonProcessingException {
-        List<SelectedProducts>products=cartService.getProductsToCheckOut();
-        List <AddressDto>addressDtos=addressService.getCurrentUserAddressDtos();
-        List<Address>addresses= userService.getAddresses(userService.getCurrentUser());
-        model.addAttribute("totalAmount",cartService.getTotalAmount(products));
-        model.addAttribute("products",products);
-        model.addAttribute("adds",addressDtos);
-        model.addAttribute("addresses",addresses);
-        return "/user/check-out";
-    }
+
     @PostMapping("/add-address-from-checkout")
     public  String addAddress(AddressDto addressDto){
         addressService.save(addressDto);
@@ -58,12 +48,14 @@ public class OrderControllerForUser {
                              @RequestParam("totalAmount") Float totalAmount,
                              @RequestParam("paymentMethod")String paymentMethod,
                               @RequestParam("discountCode")String discountCode,
+                             @RequestParam("totalDiscount")Float totalDiscount,
                              RedirectAttributes redirectAttributes)  {
+        System.out.println(totalDiscount);
         System.out.println(addressId);
         System.out.println(totalAmount);
         System.out.println(paymentMethod);
         System.out.println("discountCode :"+discountCode);
-        Long orderId=orderService.placeOrder(addressId, totalAmount,paymentMethod,discountCode);
+        Long orderId=orderService.placeOrder(addressId, totalAmount,paymentMethod,discountCode,totalDiscount);
        redirectAttributes.addFlashAttribute("orderId",orderId);
         return "redirect:/user/place-order";
     }

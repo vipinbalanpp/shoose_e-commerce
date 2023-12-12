@@ -2,6 +2,7 @@ package com.vipin.shoose.service;
 
 import com.vipin.shoose.dto.EditProductDto;
 import com.vipin.shoose.dto.ProductDto;
+import com.vipin.shoose.model.Category;
 import com.vipin.shoose.model.Product;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -37,4 +38,6 @@ public interface ProductService {
     List<Product> getProductToHome();
 
     List<Product> getProductsByCategory(Long categoryId);
+
+    void updateProductsAfterOfferExpiration(List<Category> categoriesWithExpiredOffers);
 }

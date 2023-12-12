@@ -22,16 +22,14 @@
     </style>
 </head>
 <body>
-    <p th:text="${offerAddingSuccess}" class="bg-success text-white"></p>
-    <p th:text="${offerEditingSuccess}" class="bg-success text-white"></p>
     <div th:replace="~{fragment::admin-dashboard}"></div>
     <div class="m-0 p-0">
         <p class="text-danger text-center m-0 p-0" th:text="${categoryExists}"></p>
     </div>
     <div class="d-flex justify-content-end p-5">
         <!-- Button to trigger the modal -->
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-            Add Category
+        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+            <span class="fw-bold">+</span> Add Category
         </button>
 
         <!-- Modal for adding a new category -->
@@ -58,8 +56,8 @@
                             </div>
                             <div class="modal-footer">
                                 <!-- Submit button to add category -->
-                                <button type="submit" class="btn btn-primary">Add Category</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-dark">Add Category</button>
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                             </div>
                         </form>
                     </div>
@@ -136,8 +134,11 @@
                         <span th:if="${category.isHavingOffer}" data-bs-toggle="modal" th:data-bs-target="'#editOfferModal-' + ${category.categoryId}">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </span>
-                        <button th:if="${not category.isHavingOffer}"  class="btn btn-primary" data-bs-toggle="modal" th:data-bs-target="'#addOfferModal-' + ${category.categoryId}">
-                            Add Offer<i class="fa-regular fa-plus"></i>
+                        <span class="ms-3" th:if="${category.isHavingOffer}" data-bs-toggle="modal" th:data-bs-target="'#removeOfferModal-' + ${category.categoryId}">
+                            <i class="fas fa-trash text-danger"></i>
+                        </span>
+                        <button th:if="${not category.isHavingOffer}"  class="btn btn-dark" data-bs-toggle="modal" th:data-bs-target="'#addOfferModal-' + ${category.categoryId}">
+                            <i class="fa-regular fa-plus"></i> Add Offer
                         </button>
                     </td>
                   
@@ -180,6 +181,34 @@
             </div>
         </div>
     </div>
+
+    <div th:each="category : ${categories}">
+        <!-- Modal for adding offer -->
+        <div class="modal fade" th:id="'removeOfferModal-' + ${category.categoryId}" tabindex="-1" aria-labelledby="'removeOfferModalLabel-' + ${category.categoryId}" aria-hidden="true">
+            <!-- Modal content -->
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" th:id="'removeOfferModalLabel-' + ${category.categoryId}">Remove Offer</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form to add offer -->
+                        <form th:action="@{/admin/remove-offer}" th:method="post">
+                            <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
+                            <div class="form-group">
+                                <p>Are you sure you want to remove this offer ?</p>
+                                     <button id="confirmRemove" type="submit" class="btn btn-danger">Yes</button>
+                                    
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div th:each="category : ${categories}">
         <!-- Modal for adding offer -->
         <div class="modal fade" th:id="'editOfferModal-' + ${category.categoryId}" tabindex="-1" aria-labelledby="'editOfferModalLabel-' + ${category.categoryId}" aria-hidden="true">
@@ -196,13 +225,13 @@
                             <input type="hidden" name="categoryId" th:value="${category.categoryId}" />
                             <div class="form-group">
                                 <label for="offerPercentage">Discount Percentage:</label>
-                                <input type="number" min="0" max="100" class="form-control" id="offerPercentage" name="offerPercentage" >
+                                <input type="number" min="0" max="100" class="form-control" id="offerPercentage" name="offerPercentage" th:value="${category.offerInPercentage}">
                             </div>
                             <div class="form-group">
                                 <label for="endDate">Expiry Date:</label>
-                                <input type="date" class="form-control" id="endDate" name="expiryDate" >
+                                <input type="date" class="form-control" id="endDate" name="endDate" th:value="${category.expiryDate}" >
                             </div>
-                            <button type="submit" class="btn btn-primary mt-5">Add Offer</button>
+                            <button type="submit" class="btn btn-primary mt-5">Save</button>
                         </form>
                     </div>
                 </div>
@@ -216,14 +245,16 @@
             var startDate=document.getElementById("startDateForAddOffer").value
             var expiryDate=document.getElementById("endDateForAddOffer").value
             var today = new Date().toISOString().split('T')[0];
-             if (startDate < today) {
-                 Swal.fire({
-                     icon: 'error',
-                    title: 'Invalid Input',
-                    text: 'Start date should be atleast Today. '
-             });
-                     return false; 
-             }
+            var startDateObject = new Date(startDate);
+
+if (startDateObject < today) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Invalid Input',
+        text: 'Start date should be at least today.'
+    });
+    return false;
+}
 
              if (discountPercentage < 1 || discountPercentage > 100) {
                 console.log(discountPercentage)

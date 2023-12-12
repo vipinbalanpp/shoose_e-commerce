@@ -38,19 +38,29 @@ public class CouponServiceImpl implements CouponService{
 
     @Override
     public Boolean checkCouponExists(String couponCode) {
-        if(couponRepository.existsByCouponCode(couponCode)) {
-            LocalDate currentDate = LocalDate.now();
-            Coupon coupon = couponRepository.findByCouponCode(couponCode);
-            if(!currentDate.isAfter(coupon.getExpiryDate())){
-                return !coupon.getUsedCustomers().contains(userService.getCurrentUser());
-            }
-        }return false;
+        try {
+            if(couponRepository.existsByCouponCode(couponCode)) {
+                LocalDate currentDate = LocalDate.now();
+                Coupon coupon = couponRepository.findByCouponCode(couponCode);
+                if(!currentDate.isAfter(coupon.getExpiryDate())){
+                    return !coupon.getUsedCustomers().contains(userService.getCurrentUser());
+                }
+            }return false;
+        }catch (Exception e){
+            throw  new RuntimeException();
+        }
+
     }
 
     @Override
     public Float applyCoupon(String couponCode, float totalAmount) {
-        Coupon coupon=couponRepository.findByCouponCode(couponCode);
-        return totalAmount-coupon.getDiscountPercentage();
+        try {
+            Coupon coupon=couponRepository.findByCouponCode(couponCode);
+            return totalAmount-coupon.getDiscountPercentage();
+        }catch (Exception e){
+            throw new RuntimeException();
+        }
+
     }
 
     @Override
@@ -60,15 +70,35 @@ public class CouponServiceImpl implements CouponService{
 
     @Override
     public void couponApplied(String couponCode, User currentUser) {
-        Coupon coupon=couponRepository.findByCouponCode(couponCode);
-        List<User>usedCustomers=new LinkedList<>();
-        usedCustomers.add(currentUser);
-        coupon.setUsedCustomers(usedCustomers);
-        couponRepository.save(coupon);
+        try {
+            Coupon coupon=couponRepository.findByCouponCode(couponCode);
+            List<User>usedCustomers=new LinkedList<>();
+            usedCustomers.add(currentUser);
+            coupon.setUsedCustomers(usedCustomers);
+            couponRepository.save(coupon);
+        }catch (Exception e){
+            throw new RuntimeException();
+        }
+
     }
 
     @Override
     public Float getMinumumPurchaseAmount(String couponCode) {
         return couponRepository.findByCouponCode(couponCode).getMinimumPurchaseAmount();
+    }
+
+    @Override
+    public void deleteCoupon(Long couponId) {
+        try {
+            couponRepository.delete(couponRepository.findByCouponId(couponId));
+        }catch (Exception e){
+            throw  new RuntimeException();
+        }
+    }
+
+    @Override
+    public boolean getCouponByCouponCode(String couponCode) {
+        Coupon coupon=couponRepository.findByCouponCode(couponCode);
+        return coupon != null;
     }
 }

@@ -10,7 +10,7 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
-    <link th:rel="stylesheet" th:href="@{/css/home.css}" />
+    <link th:rel="stylesheet" th:href="@{/css/shop.css}" />
     <style>
       .card {
         margin-bottom: 20px;
@@ -27,20 +27,109 @@
     ></script>
   </head>
   <body>
-    <div th:include="~{fragment::navbar}"></div>
+    <nav
+        class="navbar bg-body-tertiary p-3"
+        style="border-bottom: 1px solid black"
+      >
+        <div
+          class="container-fluid d-flex justify-content-between align-items-middle"
+          style="background-color: white"
+        >
+          <div class="align-self-start">
+            <a class="navbar-brand" th:href="@{/home}">
+              <img
+                th:src="@{/img/logo.png}"
+                style="height: 60px; width: 150px"
+                alt=""
+              />
+            </a>
+          </div>
+          <div class="me-5">
+            <div class="d-flex gap-5 align-items-center">
+              <form class="d-flex" role="search">
+                <input
+                  class="form-control me-2"
+                  type="search"
+                  placeholder="Search"
+                  aria-label="Search"
+                />
+                <button class="btn btn-info text-white" type="submit">
+                  Search
+                </button>
+              </form>
+              <div>
+                <a class="text-decoration-none text-dark" th:href="@{/user/cart}">
+                  <i class="fa-solid fa-cart-shopping"></i><span> Cart</span>
+                </a>
+              </div>
+              <div
+                      th:if=" ${#authorization.expression('isAuthenticated()')}"
+              >
+              <a class="text-decoration-none text-dark" th:href="@{/user/profile}">profile</a>
+              </div>
+              <div>
+                <a class="text-decoration-none text-dark" href="">
+                  <i class="fa-solid fa-cart-shopping"></i><span> Shop</span>
+                </a>
+              </div>
+              <div>
+                <div class="dropdown">
+                  <button
+                    class="btn text-dark dropdown-toggle"
+                    type="button"
+                    id="profile button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    Profile
+                  </button>
+                  <ul id="profile-dropdown" class="dropdown-menu p-3">
+                    <li class="ms-3">
+                      <div
+                        th:if=" ${#authorization.expression('isAuthenticated()')}"
+                      >
+                        <a th:href="@{/user/profile}">profile</a>
+                      </div>
+                    </li>
+                    <li class="ms-3 mt-4">
+                      <form
+                        th:if=" ${#authorization.expression('isAuthenticated()')}"
+                        th:method="post"
+                        th:action="@{/logout}"
+                      >
+                        <input
+                          class="btn btn-danger text-white"
+                          type="submit"
+                          value="Logout"
+                        />
+                      </form>
+                      <a
+                        class="btn btn-into"
+                        th:href="@{/login}"
+                        th:if="not ${#authorization.expression('isAuthenticated()')}"
+                        >Sign in</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
     <div class="container-fluid">
       <div class="row ms-3">
         <div th:if="${productList}"
           th:each="product : ${productList}"
           class="col-lg-3 col-md-4 col-sm-6 col-12">
-          <div class="card">
-            <div class="img">
+          <div style="  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);" class="card">
+            <div  class="img">
               <img
                 class="card-img-top"
                 th:src="@{/img/product-images/__${product.image}__}"
               />
             </div>
-            <div class="card-body position-relative">
+            <div  class="card-body position-relative">
               <h5 class="card-title">
                 <b><span th:text="${product.brand}"></span></b>
               </h5>

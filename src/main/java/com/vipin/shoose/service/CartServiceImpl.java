@@ -71,10 +71,12 @@ public class CartServiceImpl implements CartService{
                 productToCart.setActualPrice(variant.getProduct().getActualPrice());
                 productToCart.setDiscountPrice(variant.getProduct().getDiscountPrice());
                 if(variant.getProduct().getIsCategoryHavingOffer()){
-                    productToCart.setTotalPrice(variant.getProduct().getDiscountPrice()*variants.get(variant));
+                    productToCart.setAmountToBePayed((int) (variant.getProduct().getDiscountPrice()*variants.get(variant)));
                 }else {
-                    productToCart.setTotalPrice(variant.getProduct().getActualPrice()*variants.get(variant));
+                    productToCart.setAmountToBePayed((int) (variant.getProduct().getActualPrice()*variants.get(variant)));
                 }
+                productToCart.setActualTotalAmount((int) (variant.getProduct().getActualPrice()*variants.get(variant)));
+                productToCart.setTotalDiscountAmount(productToCart.getActualTotalAmount()-productToCart.getAmountToBePayed());
                 productToCart.setIsCategoryHavingOffer(variant.getProduct().getIsCategoryHavingOffer());
                 productToCart.setSize(variant.getSize());
                 productToCart.setQuantity(variants.get(variant));

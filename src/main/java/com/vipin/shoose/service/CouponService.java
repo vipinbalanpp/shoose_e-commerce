@@ -20,4 +20,8 @@ public interface CouponService {
     void couponApplied(String couponCode, User currentUser);
 
     Float getMinumumPurchaseAmount(String couponCode);
+
+    void deleteCoupon(Long couponId);
+
+    boolean getCouponByCouponCode(String couponCode);
 }

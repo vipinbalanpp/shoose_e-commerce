@@ -16,8 +16,8 @@ public class Product {
     private String description;
     private  String gender;
     private  String brand;
-    private Float actualPrice;
-    private Float discountPrice;
+    private Integer actualPrice;
+    private Integer discountPrice;
     private String image;
     private Boolean isCategoryHavingOffer=false;
     private Long quantity;

@@ -20,7 +20,7 @@ public class ProductDto {
     private String gender;
     private  String  brand;
     private MultipartFile image;
-    private Float price;
+    private Integer price;
     private  Long  categoryId;
     private List<VariantDto> variants;
 

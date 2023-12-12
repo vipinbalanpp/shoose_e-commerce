@@ -14,7 +14,7 @@ public interface OrderService {
     public List<OrderStatusEnum> getStatusesToUpdate(Long orderId);
 
 
-    Long  placeOrder(Long addressId, Float totalAmount, String paymentMethod,String discountCode);
+    Long  placeOrder(Long addressId, Float totalAmount, String paymentMethod,String discountCode,Float totalDiscount);
 
    OrderDto getOrderDetails(Long orderId);
 

@@ -29,4 +29,6 @@ public interface CategoryService {
     void editOffer(Long categoryId, Integer offerPercentage, LocalDate endDate);
 
     List<Category> getAllActiveCategory();
+
+    void removeOffer(Long categoryId);
 }

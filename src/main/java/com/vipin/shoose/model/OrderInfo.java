@@ -18,7 +18,7 @@ public class OrderInfo {
     private Long orderId;
     private PaymentMethod paymentMethode;
     private LocalDate orderedDate;
-    private Float amountPayed;
+    private Float amountPaid;
     private Float totalAmount;
     private Float discountAmount;
     @ManyToOne

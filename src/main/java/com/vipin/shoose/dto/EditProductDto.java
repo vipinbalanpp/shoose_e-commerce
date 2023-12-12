@@ -14,6 +14,6 @@ public class EditProductDto {
     private String description;
     private String gender;
     private  String  brand;
-    private Float price;
+    private Integer price;
     private  Long  categoryId;
 }

@@ -15,6 +15,8 @@ import com.vipin.shoose.service.VariantService;
 import com.vipin.shoose.util.ImageUpload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -165,5 +167,27 @@ public class ProductController {
         model.addAttribute("products",allProducts);
         return "admin/product-list";
     }
+    @GetMapping("/update-product-image/{productId}")
+    public String updateProductImage(@PathVariable("productId")Long productId, Model model){
+        List<ProductImage>productImages=productImageService.getProductImagesByProductId(productId);
+        model.addAttribute("images",productImages);
+        model.addAttribute("productId",productId);
+        return "/admin/edit-product-images";
+    }
+    @PostMapping("/update-product-image/{productId}")
+    public String getUpdateProductPage(@PathVariable("productId")Long productId){
+        return  "redirect:/admin/update-product-image/"+productId;
+    }
+    @PostMapping("/change-product-image")
+    public String changeProductImage(@RequestParam("imageId") Long imageId,
+                                                     @RequestParam("image") MultipartFile newImage,
+                                     @RequestParam("productId")Long productId) throws IOException {
+        System.out.println(imageId);
+        System.out.println(newImage.getOriginalFilename()); // Assuming you want to print the file name
+        // Process the file as needed, for example, save it to disk or update the corresponding entity
+productImageService.changeProductImage(imageId,newImage);
+        return "redirect:/admin/update-product-image/"+productId;
+    }
+
 
 }

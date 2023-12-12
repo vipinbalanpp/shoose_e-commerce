@@ -30,6 +30,7 @@
   </head>
   <body>
     <div th:replace="~{fragment::admin-dashboard}"></div>
+    <p class="text-center text-white bg-danger" th:text="${couponExists}"></p>
     <h2 class="text-center" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Coupons</h2>
     <div class="d-flex justify-content-end pt-5">
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCouponModal">Add Coupon</button>
@@ -38,24 +39,32 @@
     <table class="table text-center custom-table">
         <thead class="thead table-dark">
             <tr>
-                <th>Sl no</th>
+          
                 <th>Coupon Name</th>
                 <th>Coupon Code</th>
                 <th>Start Date</th>
                 <th>Expiry Date</th>
                 <th>DiscountAmount</th>
                 <th>Minumum Purchase Amount</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="coupon :${coupons}">
-                <td></td>
+         
                 <td th:text="${coupon.couponName}"></td>
                 <td th:text="${coupon.couponCode}"></td>
                 <td th:text="${coupon.startDate}"></td>
                 <td th:text="${coupon.expiryDate}"></td>
                 <td th:text="${coupon.discountPercentage}"></td>
                 <td th:text="${coupon.minimumPurchaseAmount}"></td>
+                <th>
+                    <form th:action="@{/admin/delete-coupon}" method="post" >
+                        <input hidden th:value="${coupon.couponId}" name="couponId">
+                        <button type="submit" > <i class="fas fa-trash text-danger"></i></button>
+                    </form>
+                    
+                </th>
             </tr>
         </tbody>
     </table>
@@ -91,7 +100,7 @@
                         <input type="date" class="form-control" id="expiryDate" name="expiryDate" >
                     </div>
                     <div class="form-group">
-                        <label for="discountAmount">Discount Percentage</label>
+                        <label for="discountAmount">Discount Amount</label>
                         <input type="number" class="form-control" id="discountAmount" name="discountPercentage" placeholder="Enter discount amount"  min="0">
                     </div>
                     <div class="form-group">

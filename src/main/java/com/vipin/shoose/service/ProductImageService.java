@@ -4,7 +4,9 @@ import com.vipin.shoose.dto.ProductImagesDTO;
 import com.vipin.shoose.model.Product;
 import com.vipin.shoose.model.ProductImage;
 import com.vipin.shoose.model.Variant;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ProductImageService {
@@ -21,4 +23,6 @@ public interface ProductImageService {
     void saveProductImage(ProductImagesDTO productImagesDTO, Product product);
 
     String getProductImage(Variant variant);
+
+    void changeProductImage(Long imageId, MultipartFile newImage) throws IOException;
 }

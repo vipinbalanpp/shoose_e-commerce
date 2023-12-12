@@ -14,7 +14,9 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" 
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" 
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-        
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-..."></script>
+
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet" type="text/css" />
         <link th:rel="stylesheet" th:href="@{/css/checkout.css}" />
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
@@ -98,35 +100,88 @@
                 <div id="orderDetails" class="d-flex fs-5" >
                     <div class="order-details">
                         <p>OrderedDate:</p>
-                        <p>Amount:</p>
-                        <p>PaymentMethod:</p>
+                        <p>Total Amount:</p>
+                        <p>Discount:</p>
+                        <p>Amount To Be Paid</p>
+                         <p>PaymentMethod:</p>
                         <p>OrderStatus:</p>
                     </div>
                     <div class="orderData">
                         <p id="order-id" th:text="${order.orderId}" style="display:none"></p>
                         <p th:text="${order.orderedDate}"></p>
-                        <p class="text-danger" th:text="${order.amount}"></p>
+                        <p class="text-danger" th:text="${order.totalAmount}"></p>
+                        <p class="text-danger" th:text="${order.totalDiscount}"></p>
+                        <p class="text-danger" th:text="${order.amountPaid}"></p>
                         <p th:text="${order.paymentMethode}"></p>
                         <p id="order-status" th:text="${order.orderStatus}" th:class="${order.orderStatus == 'CANCELLED' or order.orderStatus == 'REJECTED'} ? 'text-danger' : ''"></p>
 
                     </div>
                 </div>
                 <div class="d-flex justify-content-end" th:if="${order.orderStatus != 'CANCELLED' and order.orderStatus != 'REJECTED' and order.orderStatus != 'DELIVERED' and order.orderStatus != 'RETURN_REQUESTED' and order.orderStatus != 'RETURNED'}">
+                    <button type="button" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">Cancel</button>
+                </div>
+<!-- 
+                <div class="d-flex justify-content-end" th:if="${order.orderStatus != 'CANCELLED' and order.orderStatus != 'REJECTED' and order.orderStatus != 'DELIVERED' and order.orderStatus != 'RETURN_REQUESTED' and order.orderStatus != 'RETURNED'}">
                     <form th:action="@{/user/cancel-order}" method="post">
                         <input hidden name="order.orderId" th:field="${order.orderId}">
                         <button type="submit" id="cancelButton" class="btn btn-danger mt-2">Cancel</button>
                     </form>
-                </div>
-                <div id="return-div" class="d-flex justify-content-end" >
+                </div> -->
+                <!-- <div id="return-div" class="d-flex justify-content-end" >
                     <form th:action="@{/user/returnRequest}" method="post">
                         <input hidden name="order.orderId" th:field="${order.orderId}">
                         <button id="return-button" type="submit"  class="btn btn-danger mt-2">return</button>
                     </form>
+                </div> -->
+                <div id="return-div" class="d-flex justify-content-end">
+                    <button type="button" id="return-button" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#returnProductModal">Return Product</button>
                 </div>
-
+                
 
         </div>
+        <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to cancel this order?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <form th:action="@{/user/cancel-order}" method="post">
+                            <input hidden name="order.orderId" th:field="${order.orderId}">
+                            <button type="submit" id="cancelButton" class="btn btn-danger">Cancel Order</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <!-- Return Product Modal -->
+<div class="modal fade" id="returnProductModal" tabindex="-1" aria-labelledby="returnProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="returnProductModalLabel">Return Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to return this product?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <form th:action="@{/user/returnRequest}" method="post">
+                    <input hidden name="order.orderId" th:field="${order.orderId}">
+                    <button type="submit" class="btn btn-danger">Return Product</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
         <div class="container py-5">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col">

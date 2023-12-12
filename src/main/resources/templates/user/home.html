@@ -121,43 +121,38 @@
     </div>
 
     <br />
-    <div class="container mb-5">
-        <div class="row">
+   
           <h1 class="text-center">Select By category</h1>
           <div class="container">
-            <div class="row ms-3">
-              <div
-                th:each="category : ${categories}"
-                class="col-lg-3 col-md-4 col-sm-6 col-12"
-              >
-              <div class="card" style="width: 18rem; margin: 10px;">
-                <img class="category-image card-img-top img-fluid" th:src="@{/img/product-images/__${category.image}__}" alt="Category Image">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${category.categoryName}"></h5>
-                    <a th:href="@{'/toShopByCategory?categoryId=' + ${category.categoryId}}" class="btn btn-primary">View Products</a>
-                </div>
-            </div>
-            
+            <div class="row">
+              <div     th:each="category : ${categories}"  class="col-lg-4 col-md-4 col-sm-6 col-12">
+                  <div class="card" style="width: 18rem; margin: 10px; box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);">
+                      <img class="category-image card-img-top img-fluid" th:src="@{/img/product-images/__${category.image}__}" alt="Category Image">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                      <h5 class="card-title" th:text="${category.categoryName}"></h5>
+                      <a th:href="@{'/toShopByCategory?categoryId=' + ${category.categoryId}}" class="cardbutton btn text-white">View Products</a>
+                    </div>
+                  </div>
+                  <p class="text-danger text-center fw-bold" th:if="${category.isHavingOffer}"><span th:text="${category.offerInPercentage}"></span>% off</p>
               </div>
             </div>
-          </div>
-        </div>
+         
     </div>
  
-    <!-- <div class="container mt-5">
+    <div class="container-fluid mt-5">
       <div class="row ms-3">
         <div
           th:each="product : ${productList}"
           class="col-lg-3 col-md-4 col-sm-6 col-12"
         >
-          <div class="card">
+          <div style="  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);" class="card mt-5">
             <div class="img">
               <img
                 class="card-img-top"
                 th:src="@{/img/product-images/__${product.image}__}"
               />
             </div>
-            <div class="card-body position-relative">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center position-relative">
               <h5 class="card-title">
                 <b><span th:text="${product.brand}"></span></b>
               </h5>
@@ -168,7 +163,7 @@
               <p th:if="${product.isCategoryHavingOffer}" class="price card-text text-danger">
               <span style="text-decoration: line-through;" class="me-3" th:text="${product.actualPrice}"></span>₹<span th:text="${product.discountPrice}"></span>
           </p>
-              <a
+              <a style="background-color: white;"
                 th:href="@{'/product-details?productId=' + ${product.productId}}"
                 class="cardbutton btn"
                 >View Details</a
@@ -177,7 +172,7 @@
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
       <div th:include="~{fragment::footer}"></div>
   </body>
 </html>

@@ -1,6 +1,10 @@
 package com.vipin.shoose.controller.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.vipin.shoose.dto.AddressDto;
 import com.vipin.shoose.dto.SelectedProducts;
+import com.vipin.shoose.model.Address;
+import com.vipin.shoose.service.AddressService;
 import com.vipin.shoose.service.CartService;
 import com.vipin.shoose.service.UserService;
 import com.vipin.shoose.service.VariantService;
@@ -10,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -21,6 +26,8 @@ public class CartController {
     VariantService variantService;
     @Autowired
     UserService userService;
+    @Autowired
+    AddressService addressService;
     @Autowired
     CartService cartService;
     @GetMapping("/user/cart")
@@ -74,5 +81,26 @@ public class CartController {
     public ResponseEntity<String> decreaseQuantity(@RequestParam("variantId")Long variantId){
         cartService.decreaseQuantity(variantId);
         return new ResponseEntity<>("quantity increased",HttpStatus.OK);
+    }
+
+    @PostMapping("/user/checkout")
+    public String gotoCheckOut(@RequestParam("totalAmount")Integer totalAmount,
+                               @RequestParam("discountAmount")Integer discountAmount,
+                               @RequestParam("amountToBePayed")Integer amountToBePayed,
+                               Model model) throws JsonProcessingException {
+        System.out.println(totalAmount);
+        System.out.println(discountAmount);
+        System.out.println(amountToBePayed);
+        List<SelectedProducts>products=cartService.getProductsToCheckOut();
+        List <AddressDto>addressDtos=addressService.getCurrentUserAddressDtos();
+        List<Address>addresses= userService.getAddresses(userService.getCurrentUser());
+        model.addAttribute("totalAmount",totalAmount);
+        model.addAttribute("discountAmount",discountAmount);
+        model.addAttribute("amountToBePayed",amountToBePayed);
+        model.addAttribute("products",products);
+        model.addAttribute("adds",addressDtos);
+        model.addAttribute("addresses",addresses);
+        return "/user/check-out";
+
     }
 }

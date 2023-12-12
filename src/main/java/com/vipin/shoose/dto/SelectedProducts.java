@@ -15,14 +15,16 @@ public class SelectedProducts {
     private String productName;
     private String brand;
     private String color;
-    private Float actualPrice;
-    private Float discountPrice;
+    private Integer actualPrice;
+    private Integer discountPrice;
     private Boolean isCategoryHavingOffer=false;
     private String image;
     private Long size;
     private  Long quantity=0L;
     private Long stock;
-    private Float totalPrice=0.0F;
+    private Integer amountToBePayed=0;
+    private Integer actualTotalAmount;
+    private Integer totalDiscountAmount;
 
 
 }

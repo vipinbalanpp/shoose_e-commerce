@@ -2,10 +2,12 @@ package com.vipin.shoose.service;
 
 import com.vipin.shoose.dto.CategoryDto;
 import com.vipin.shoose.model.Category;
+import com.vipin.shoose.model.Product;
 import com.vipin.shoose.repository.CategoryRepository;
 import com.vipin.shoose.repository.ProductRepository;
 import com.vipin.shoose.util.ImageUpload;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -106,9 +108,14 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public List<Category> getCategoriesForEditingProduct(Long productId) {
-        List<Category>categories=categoryRepository.findAll();
-        categories.remove(productRepository.findByProductId(productId).getCategory());
-        return categories;
+        try {
+            List<Category>categories=categoryRepository.findAll();
+            categories.remove(productRepository.findByProductId(productId).getCategory());
+            return categories;
+        }catch (Exception e){
+            throw  new RuntimeException();
+        }
+
     }
 
     @Override
@@ -121,7 +128,22 @@ public class CategoryServiceImpl implements CategoryService{
         categoryRepository.save(category);
         productService.setOfferToProducts(categoryId);
     }
+    @Scheduled(cron = "59 59 23 * * *")
+    public void expireOffers() {
+        try {
+            LocalDate currentDate = LocalDate.now();
+            List<Category> categoriesWithExpiredOffers = categoryRepository.findByExpiryDateLessThanAndIsHavingOfferTrue(currentDate);
+            System.out.println("cronJob working");
+            for (Category category : categoriesWithExpiredOffers) {
+                category.setIsHavingOffer(false);
+            }
+            categoryRepository.saveAll(categoriesWithExpiredOffers);
+            productService.updateProductsAfterOfferExpiration(categoriesWithExpiredOffers);
+        }catch (Exception e){
+            throw new RuntimeException();
+        }
 
+    }
     @Override
     public void editOffer(Long categoryId, Integer offerPercentage, LocalDate endDate) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
@@ -137,6 +159,26 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public List<Category> getAllActiveCategory() {
         return categoryRepository.findByEnabled();
+    }
+
+    @Override
+    public void removeOffer(Long categoryId) {
+        try {
+            if(categoryRepository.findByCategoryId(categoryId)!=null){
+                Category category=categoryRepository.findByCategoryId(categoryId);
+                category.setIsHavingOffer(false);
+                List<Product>products=productRepository.findByCategory(category);
+                products.forEach(product ->
+                {
+                    product.setIsCategoryHavingOffer(false);
+                    productRepository.save(product);
+                });
+                categoryRepository.save(category);
+            }
+        }catch (Exception e){
+            throw new RuntimeException();
+        }
+
     }
 
 

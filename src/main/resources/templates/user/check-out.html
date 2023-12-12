@@ -218,14 +218,18 @@
                                 <p class="mb-2">Total price:</p>
                                 <div id="sub-total"><span class="text-danger" id="actual-amount" th:text="${totalAmount}"></span></div>
                               </div>
+                              <div class="d-flex justify-content-between" >
+                                <p class="mb-2" id="couponTitle" style="display: none;">Coupon discount:</p>
+                                <div style="display: none;" id="coupon-discount" class="text-danger"></div>
+                              </div>
                               <div class="d-flex justify-content-between">
-                                <p class="mb-2">Discount:</p>
-                                <p  class="mb-2 text-danger" id="discountAmount">0.00</p>
+                                <p class="mb-2">Total Discount:</p>
+                                <p  class="mb-2 text-danger" th:text="${discountAmount}" id="discountAmount">0.00</p>
                               </div>
                               <hr />
                               <div class="d-flex justify-content-between">
                                 <p class="mb-2">Amount to be payed:</p>
-                                <p class="mb-2 text-danger" id="amount-to-be-payed" th:text="${totalAmount}"></p>
+                                <p class="mb-2 text-danger" id="amount-to-be-payed" th:text="${amountToBePayed}"></p>
                               </div>
                             </div>
                           </div>
@@ -255,6 +259,7 @@
                               </div>
                               <input type="hidden" name="addressId" id="addressId" />
                               <input type="hidden" name="totalAmount" id="totalamount" th:value="${totalAmount}">
+                              <input type="hidden" name="totalDiscount" id="totalDiscount-input" th:value="${discountAmount}">
                               <input type="hidden" name="discountCode" id="discountCode">
                               <div class="justify-content-center">
                                 <button type="submit" class="btn btn-success mt-4" id="confirmOrderButton">
@@ -341,12 +346,22 @@ function applayCoupon() {
         return;
       }
 
-      // Move other code that depends on the response here
-      var discountAmount = document.getElementById("discountAmount");
-      discountAmount.textContent = response.discountAmount;
 
-      var amountTobePayed = document.getElementById("amount-to-be-payed");
-      amountTobePayed.textContent = response.totalAmount;
+      // Move other code that depends on the response here
+      var discountAmountTag = document.getElementById("discountAmount");
+      var discountAmount=Number(discountAmountTag.textContent)+response.discountAmount
+      discountAmountTag.textContent=discountAmount
+
+      var amountTobePayedTag = document.getElementById("amount-to-be-payed");
+      amountTobePayed=amountTobePayedTag.textContent;
+      amountTobePayedTag.textContent=Number(amountTobePayed)-response.discountAmount;
+      var couponDiscountTag=document.getElementById("coupon-discount")
+      couponDiscountTag.textContent=response.discountAmount
+      couponDiscountTag.style.display="block"
+      var couponDiscountTitle=document.getElementById("couponTitle")
+      couponDiscountTitle.style.display="block"
+      var totaldiscountInput=document.getElementById("totalDiscount-input")
+      totaldiscountInput.value=discountAmount;
 
       var couponSuccessTag = document.getElementById("coupon-success");
       couponSuccessTag.style.display = 'block';
@@ -379,6 +394,7 @@ function applayCoupon() {
           e.preventDefault()
           var orderForm = document.getElementById("order-form");
           var totalAmount = [[${totalAmount}]];
+          console.log(totalAmount)
           const addressInput = document.getElementById("addressId");
             var addresses = [[${adds}]]
       var selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
@@ -393,7 +409,7 @@ function applayCoupon() {
                 discountCodeForCheckeout.value='not-applied';
                 console.log(discountCodeForCheckeout)
         }
-
+    
       if (selectedPaymentMethod === 'razorpay') {
         $.ajax({
           url: '/user/createOrder',

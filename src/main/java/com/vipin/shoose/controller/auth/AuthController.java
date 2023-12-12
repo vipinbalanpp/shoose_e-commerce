@@ -213,7 +213,9 @@ public class AuthController {
     }
     @GetMapping("/toShopByCategory")
     public String showProductsByCategory(@RequestParam Long categoryId, Model model) {
+        System.out.println(categoryId);
         List<Product> products = productService.getProductsByCategory(categoryId);
+        System.out.println(products);
         model.addAttribute("productList", products);
         return "/user/shop";
     }

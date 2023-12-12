@@ -55,23 +55,18 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Long placeOrder(Long addressId, Float totalAmount, String paymentMethod,String couponCode) {
+    public Long placeOrder(Long addressId, Float totalAmount, String paymentMethod,String couponCode,Float totalDiscount) {
         try {
             Cart cart=cartRepository.findByUserId(userService.getCurrentUser().getUserId());
             OrderInfo order=new OrderInfo();
             User user=userService.getCurrentUser();
             order.setUser(user);
-            if(Objects.equals(couponCode, "not-applied")){
-                order.setAmountPayed(totalAmount);
-                order.setDiscountAmount(0.00F);
-                order.setTotalAmount(totalAmount);
-            }else {
-                order.setAmountPayed(couponService.applyCoupon(couponCode,totalAmount));
+            if(!Objects.equals(couponCode, "not-applied")){
                 couponService.couponApplied(couponCode,userService.getCurrentUser());
-                order.setAmountPayed(totalAmount- couponService.getDisCountAmount(couponCode));
-                order.setDiscountAmount(couponService.getDisCountAmount(couponCode));
-                order.setTotalAmount(totalAmount);
             }
+            order.setTotalAmount(totalAmount);
+            order.setDiscountAmount(totalDiscount);
+            order.setAmountPaid(totalAmount-totalDiscount);
             order.setOrderedDate(LocalDate.now());
             if(Objects.equals(paymentMethod, "razorpay")){
                 order.setPaymentMethode(PaymentMethod.RAZORPAY);
@@ -124,7 +119,9 @@ public class OrderServiceImpl implements OrderService{
             }
             orderDto.setOrderedDate(orderInfo.getOrderedDate());
             orderDto.setCustomerName(orderInfo.getShippingAddress().getFullName());
-            orderDto.setAmount(orderInfo.getAmountPayed());
+            orderDto.setTotalAmount(orderInfo.getTotalAmount());
+            orderDto.setTotalDiscount(orderInfo.getDiscountAmount());
+            orderDto.setAmountPaid(orderInfo.getAmountPaid());
             if(orderInfo.getPaymentMethode()==PaymentMethod.CASH_ON_DELIVERY){
                 orderDto.setPaymentMethode("Cash on Delivery");
             }else if(orderInfo.getPaymentMethode()==PaymentMethod.RAZORPAY){
@@ -179,7 +176,7 @@ public class OrderServiceImpl implements OrderService{
             orderInfo.setStatus(OrderStatusEnum.CANCELLED,LocalDate.now());
             orderRepository.save(orderInfo);
             if(orderInfo.getPaymentMethode().equals(PaymentMethod.WALLET)||orderInfo.getPaymentMethode().equals(PaymentMethod.RAZORPAY)){
-                userService.cancelOrderMoneyReturn(Double.valueOf(orderInfo.getAmountPayed()));
+                userService.cancelOrderMoneyReturn(Double.valueOf(orderInfo.getAmountPaid()));
             }
         }catch (Exception e){
             throw new RuntimeException("An error Occurred");
@@ -276,7 +273,7 @@ public class OrderServiceImpl implements OrderService{
             double totalSales=0.0;
             for(OrderInfo orderInfo:orders){
                 if(orderInfo.getCurrentStatus()==OrderStatusEnum.DELIVERED){
-                    totalSales+=orderInfo.getAmountPayed();
+                    totalSales+=orderInfo.getAmountPaid();
                 }
             }return totalSales;
         }catch (Exception e){
@@ -297,7 +294,7 @@ public class OrderServiceImpl implements OrderService{
                 LocalDate weekStart=weekStartDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 LocalDate weekEnd = weekEndDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 List<OrderInfo> list= orderRepository.getWeeklyFromStartToEnd(weekStart,weekEnd);
-                double totalOrderAmount = list.stream().mapToDouble(OrderInfo::getAmountPayed).sum();
+                double totalOrderAmount = list.stream().mapToDouble(OrderInfo::getAmountPaid).sum();
                 weeklySales.put(weekStart+"_"+weekEnd,totalOrderAmount);
             }return weeklySales;
         }catch (Exception e){
@@ -340,7 +337,7 @@ public class OrderServiceImpl implements OrderService{
                 Date date = calendar.getTime();
                 LocalDate currentDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 List<OrderInfo> list = orderRepository.getDailyFromCurrentDay(currentDate);
-                orderTotalAmount = list.stream().mapToDouble(OrderInfo::getAmountPayed).sum();
+                orderTotalAmount = list.stream().mapToDouble(OrderInfo::getAmountPaid).sum();
                 dailySale.put(currentDate.toString(), orderTotalAmount);
                 calendar.add(Calendar.DAY_OF_YEAR, -1);
             }
@@ -387,7 +384,7 @@ public class OrderServiceImpl implements OrderService{
                 LocalDate monthStart = targetYearMonth.atDay(1);
                 LocalDate monthEnd = targetYearMonth.atEndOfMonth();
                 List<OrderInfo> list = orderRepository.getMonthlyFromStartToEnd(monthStart, monthEnd);
-                double totalOrderAmount = list.stream().mapToDouble(OrderInfo::getAmountPayed).sum();
+                double totalOrderAmount = list.stream().mapToDouble(OrderInfo::getAmountPaid).sum();
                 monthlySales.put(targetMonth.toString(), totalOrderAmount);
             }
             return monthlySales;
@@ -431,7 +428,7 @@ public class OrderServiceImpl implements OrderService{
                 LocalDate yearStart = targetYear.atDay(1);
                 LocalDate yearEnd = targetYear.atMonth(Month.DECEMBER).atEndOfMonth();
                 List<OrderInfo> list = orderRepository.getYearlyFromStartToEnd(yearStart, yearEnd);
-                double totalOrderAmount = list.stream().mapToDouble(OrderInfo::getAmountPayed).sum();
+                double totalOrderAmount = list.stream().mapToDouble(OrderInfo::getAmountPaid).sum();
                 yearlySales.put(Integer.toString(targetYear.getValue()), totalOrderAmount);
             }
             return yearlySales;
@@ -517,7 +514,7 @@ public class OrderServiceImpl implements OrderService{
                     contentStream.showText(String.valueOf(orders.getPaymentMethode()));
                     contentStream.newLineAtOffset(100, 0);
                     contentStream.newLineAtOffset(50, 0);
-                    contentStream.showText(String.format("$%.2f", orders.getAmountPayed()));
+                    contentStream.showText(String.format("$%.2f", orders.getAmountPaid()));
                     contentStream.endText();
 
                     // Move to the next line for the next orders
@@ -655,37 +652,60 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public Boolean isAbleForReturn(Long orderId) {
-        OrderInfo order=orderRepository.findByOrderId(orderId);
-       LocalDate deliveredDate= order.getStatus().get(OrderStatusEnum.DELIVERED);
-       if(deliveredDate!=null){
-           LocalDate currentTime=LocalDate.now();
-           Period period=Period.between(deliveredDate,currentTime);
-           return period.getDays() <=10;
-       }return false;
+        try {
+            OrderInfo order=orderRepository.findByOrderId(orderId);
+            LocalDate deliveredDate= order.getStatus().get(OrderStatusEnum.DELIVERED);
+            if(deliveredDate!=null){
+                LocalDate currentTime=LocalDate.now();
+                Period period=Period.between(deliveredDate,currentTime);
+                return period.getDays() <=10;
+            }return false;
+        }catch (Exception e){
+            throw new RuntimeException();
+        }
+
     }
 
     @Override
     public void sendReturnRequest(Long orderId) {
-        OrderInfo orderInfo=orderRepository.findByOrderId(orderId);
-        orderInfo.setCurrentStatus(OrderStatusEnum.RETURN_REQUESTED);
-        orderInfo.setStatus(OrderStatusEnum.RETURN_REQUESTED,LocalDate.now());
-        orderRepository.save(orderInfo);
+        try {
+            OrderInfo orderInfo=orderRepository.findByOrderId(orderId);
+            orderInfo.setCurrentStatus(OrderStatusEnum.RETURN_REQUESTED);
+            orderInfo.setStatus(OrderStatusEnum.RETURN_REQUESTED,LocalDate.now());
+            orderRepository.save(orderInfo);
+        }catch (Exception e){
+            throw new RuntimeException();
+        }
+
     }
 
     @Override
     public void confirmReturn(Long orderId) {
-        OrderInfo orderInfo=orderRepository.findByOrderId(orderId);
-        orderInfo.setCurrentStatus(OrderStatusEnum.RETURNED);
-        orderInfo.setStatus(OrderStatusEnum.RETURNED,LocalDate.now());
-        orderRepository.save(orderInfo);
+        try {
+            OrderInfo orderInfo=orderRepository.findByOrderId(orderId);
+            orderInfo.setCurrentStatus(OrderStatusEnum.RETURNED);
+            orderInfo.setStatus(OrderStatusEnum.RETURNED,LocalDate.now());
+            variantService.updateStockonCancellingOrder(orderId);
+            if(orderInfo.getPaymentMethode().equals(PaymentMethod.WALLET)||orderInfo.getPaymentMethode().equals(PaymentMethod.RAZORPAY)){
+                userService.cancelOrderMoneyReturn(Double.valueOf(orderInfo.getAmountPaid()));
+            }
+            orderRepository.save(orderInfo);
+        }catch (Exception e){
+            throw new RuntimeException();
+        }
+
     }
 
     public List<OrderInfo> generateMonthlyReport(String stringStartDate, String stringEndDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate startDate = LocalDate.parse(stringStartDate, formatter);
-        LocalDate endDate = LocalDate.parse(stringEndDate, formatter);
-        List<OrderInfo> orders = orderRepository.monthlySalesReport(startDate, endDate);
-        return orders;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate startDate = LocalDate.parse(stringStartDate, formatter);
+            LocalDate endDate = LocalDate.parse(stringEndDate, formatter);
+            return orderRepository.monthlySalesReport(startDate, endDate);
+        }catch (Exception e){
+            throw new RuntimeException();
+        }
+
     }
 
 

@@ -18,18 +18,18 @@
   <link th:rel="stylesheet" th:href="@{/css/home.css}" />
 </head>
 <body>
- <div th:include="~{fragment::navbar}"></div>
+ <div th:replace="~{fragment::navbar}"></div>
     <div class="container m-0 p-0 custom-div">
       <div class="row m-0 p-0 d-flex">
          <div class="col-lg-9 col-md-10 col-sm-12 p-5" id="cart-table-div">
            <table  class="table table-striped border shadow-lg">
-             <thead id="cart-table" class="table table-striped border shadow-lg">
+             <thead id="cart-table" class="table fw-bold table-striped border shadow-lg">
               <tr>
              
                <td>Product</td>
                 <td>Price</td>
                 <td>Quantity</td>
-                <td>Subtotal</td>
+                <td>Sub Total</td>
                 <td></td>
               </tr>
             </thead>
@@ -37,7 +37,7 @@
             </tbody>
             </table>
           </div>
-          <div id="cartEmpty" style="height: 500px;">
+          <div id="cartEmpty" style="height: 200px;">
             <div class="card" style="width: 18rem; text-align: center; margin-top: 102px; margin-left: 626px;">
                 <div class="card-body">
                     <h5 class="card-title mt-5 text-danger">Your Cart is Empty</h5>
@@ -46,27 +46,32 @@
                 </div>
             </div>
         </div>
-      <div class="col-lg-3">
-        <div id="total-prize"  style="border: 0px;">
-          <div class="card shadow-0 border " style="height: 255px; width: 421px;">
-            <div class="card-body">
-              <div class="d-flex justify-content-between">
-                <p class="mb-2">Total price:</p>
-                <div id="sub-total"><span class="text-danger" id="actual-amount"></span></div>
+      <div id="total" class="col-lg-3">
+        <div id="total-prize" >
+          <div id="total-prize-card" class="card shadow-0 border mt-5" style="height: 255px; width: 421px;">
+            <form id="gotocheckout" th:action="@{/user/checkout}" method="post" onsubmit="setamounts(event)">
+              <div id="totalCardBody" class="card-body">
+                <div class="d-flex justify-content-between">
+                  <p class="mb-2">Total price:</p>
+                  <div id="sub-total"><span class="text-danger" id="actual-amount">0.00</span></div>
+                  <input hidden id="totalMount-input" name="totalAmount">
+                </div>
+                <div class="d-flex justify-content-between">
+                  <p class="mb-2">Discount:</p>
+                  <p  class="mb-2 text-danger" id="discountAmount">0.00</p>
+                  <input hidden id="discountAmount-input" name="discountAmount">
+                </div>
+                <hr />
+                <div class="d-flex justify-content-between">
+                  <p class="mb-2">Amount to be payed:</p>
+                  <p class="mb-2 text-danger" id="totalSumSpan" ></p>
+                  <input hidden id="amountToBepayed-input" name="amountToBePayed">
+                </div>
+                <div id="place-order-button-div" class="post">
+                  <button id="placeOrderButton" class="btn btn-dark" type="submit">Place Order</button>
+                </div>
               </div>
-              <div class="d-flex justify-content-between">
-                <p class="mb-2">Discount:</p>
-                <p  class="mb-2 text-danger" id="discountAmount">0.00</p>
-              </div>
-              <hr />
-              <div class="d-flex justify-content-between">
-                <p class="mb-2">Amount to be payed:</p>
-                <p class="mb-2 text-danger" id="totalSumSpan" ></p>
-              </div>
-              <div id="place-order-button-div" class="post">
-                <a id="place-order-button" class="btn btn-dark"  th:href="@{/user/check-out}">Place Order</a>
-              </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
@@ -102,32 +107,42 @@
             var cartEmtpy=document.getElementById("cartEmpty")
             cartEmtpy.style.display="block"
             cartTablediv.style.display="none";
-            placeOrderbtn.style.display = "none";
-            const cartTable=document.getElementById("cart-table");
-            cartTable.style.display="none";
-            const totalPrize=document.getElementById("total-prize");
-            totalPrize.style.display="none";
+            document.getElementById("total-prize-card").style.display = "none";
           }else{
             var cartEmtpy=document.getElementById("cartEmpty")
             cartEmtpy.style.display="none"
+            document.getElementById("total-prize-card").style.display = "block";
           }
           const tableBody = $('.table tbody');
           tableBody.addClass('table-body'); 
 
         
           tableBody.empty();
-          let totalAmount=0;
+          let amountToBePayed=0;
+          let actualAmount=0;
+          let discountAmount=0;
         
           $.each(products, function (index, product) {
             const variantIdToCheck = product.variantId;
             const existingItem = cartData.find(item => item.variantId === variantIdToCheck);
             if (!existingItem) {
-            var item={
+              if(product.isCategoryHavingOffer){
+                var item={
               variantId : product.variantId,
               quantity : product.quantity,
-              price : product.price,
+              actualPrice : product.actualPrice,
+              discountPrice:product.discountPrice,
               image : product.image
             }
+              }else{
+                var item={
+              variantId : product.variantId,
+              quantity : product.quantity,
+                actualPrice : product.actualPrice,
+              image : product.image
+              }
+              }
+          
             cartData.push(item);
           }
             const row = $('<tr>');
@@ -170,14 +185,16 @@
             }
 
        
-            totalAmount += product.totalPrice;
-              console.log(totalAmount);
+            amountToBePayed += product.amountToBePayed;
+            actualAmount+=product.actualTotalAmount;
+            discountAmount+=product.totalDiscountAmount
+              console.log(amountToBePayed);
            console.log(product.stock);
             plusButton.click(function () {
-                increaseQuantity(product, plusButton.attr('id'),totalAmount);
+                increaseQuantity(product, plusButton.attr('id'),amountToBePayed);
              });
              minusButton.click(function () {
-                decreaseQuantity(product,minusButton.attr('id'),totalAmount);
+                decreaseQuantity(product,minusButton.attr('id'),amountToBePayed);
              });
 
             quantityDiv.append(minusButton, quantityInput, plusButton);
@@ -196,7 +213,7 @@
                       priceData.append(actualPriceWithStrikeThrough, ' ', discountPriceWithRupee);
 }
 
-            const totalPriceData = $('<td>', { text: product.totalPrice ,id:"total"+index, style: 'color: red'});
+            const totalPriceData = $('<td>', { text: product.amountToBePayed ,id:"total"+index, style: 'color: red'});
       
           
             const removeButtonData = $('<td>');
@@ -219,10 +236,14 @@
          
             tableBody.append(row);
           });
-          totalAmountTocheckout=totalAmount;
-          console.log("total amount to checkout:"+totalAmountTocheckout);
-          const totalAmountTag=document.getElementById("totalSumSpan");
-      totalAmountTag.textContent=totalAmount;
+          amountToBePayedTocheckout=amountToBePayed;
+          console.log("total amount to checkout:"+amountToBePayedTocheckout);
+          const amountToBePayedTag=document.getElementById("totalSumSpan");
+          const actualAmountTag=document.getElementById("actual-amount")
+          const discountAmountTag=document.getElementById("discountAmount")
+          actualAmountTag.textContent=actualAmount
+          discountAmountTag.textContent=discountAmount
+      amountToBePayedTag.textContent=amountToBePayed;
       console.log(cartData)
         },
       });
@@ -232,35 +253,81 @@
     function increaseQuantity(product,plusButtonId) {
       const inputId = 'input' + plusButtonId;
       const totalId="total"+plusButtonId;
+      console.log(inputId)
       const totalPrice=document.getElementById(totalId);
-      console.log(totalPrice.textContent)
+      console.log(totalPrice)
       const input = document.getElementById(inputId);
+      console.log(input)
       const currentValue = input.value;
       if(currentValue<product.stock){
+        console.log("in this if statement")
         $.ajax({
           url: '/increaseQuantity',
           type: 'GET',
           dataType: 'json',
           data:{variantId:product.variantId},
           success: function(response){
-              console.log(response);
+              console.log(" increse quantity response");
           }
          });
         const newValue = Number(currentValue)+1;
+        console.log("new value"+newValue)
         const itemToUpdate = cartData.find((item) => item.variantId === product.variantId);
         if (itemToUpdate) {
             itemToUpdate.quantity = newValue;
         }console.log(itemToUpdate);
-        const newTotalPrice=Number(totalPrice.textContent)+product.price;
+       var newTotalPrice=Number(totalPrice.textContent) 
+       console.log(newTotalPrice)
+       console.log("product")
+       console.log(product)
+        if(product.isCategoryHavingOffer){
+          newTotalPrice=Number(totalPrice.textContent)+product.discountPrice;
+          console.log(product.discountPrice)
+          console.log(newTotalPrice)
+        }else{
+           newTotalPrice=Number(totalPrice.textContent)+product.actualPrice;
+
+        }
         totalPrice.textContent=newTotalPrice;
         const totalAmountTag=document.getElementById("totalSumSpan");
-        let totalAmount = parseFloat(totalAmountTag.textContent);
-         totalAmount += product.price;
+        const discountAmountTag=document.getElementById("discountAmount")
+        let discountAmount=discountAmountTag.textContent;
+        let totalAmount = totalAmountTag.textContent;
+      
+        if(product.isCategoryHavingOffer){
+          totalAmount = Number(totalAmount)+product.discountPrice;
+        }else{
+          totalAmount = Number(totalAmount)+product.actualPrice;
+        }   
+         let discountPrice=product.actualPrice-product.discountPrice;
+           discountAmount=Number(discountAmount)+discountPrice;
+        discountAmountTag.textContent=discountAmount;
+        const actualAmountTag=document.getElementById("actual-amount")
+        let actualAmount=actualAmountTag.textContent;
+        actualAmountTag.textContent=Number(actualAmount)+product.actualPrice
          totalAmountTag.textContent = totalAmount;
       input.value = newValue;
       }else{
         quantityExceeds();
       }
+}
+function setamounts(e){
+  e.preventDefault()
+  let totalAmountInput=document.getElementById("totalMount-input")
+  let discountAmountInput = document.getElementById("discountAmount-input");
+  let amountToBePayedInput=document.getElementById("amountToBepayed-input")
+  console.log(totalAmountInput)
+  console.log(discountAmountInput)
+  console.log(amountToBePayedInput)
+  const totalAmont=document.getElementById("actual-amount").textContent
+  const discountAmount=document.getElementById("discountAmount").textContent
+  const amountToBePayed=document.getElementById("totalSumSpan").textContent
+  totalAmountInput.value=totalAmont
+  discountAmountInput.value=discountAmount
+  amountToBePayedInput.value=amountToBePayed
+  const form=document.getElementById("gotocheckout")
+  form.submit();
+
 }
 
 
@@ -289,11 +356,30 @@
         if (itemToUpdate) {
             itemToUpdate.quantity = newValue;
         }console.log(itemToUpdate);
-        const newTotalPrice=Number(totalPrice.textContent)-product.price;
+        var newTotalPrice=Number(totalPrice.textContent)
+        if(product.isCategoryHavingOffer){
+           newTotalPrice=Number(totalPrice.textContent)-product.discountPrice;
+        }else{
+          newTotalPrice=Number(totalPrice.textContent)-product.actualPrice;
+        }
         totalPrice.textContent=newTotalPrice;
         const totalAmountTag=document.getElementById("totalSumSpan");
+        const discountAmountTag=document.getElementById("discountAmount")
         let totalAmount = parseFloat(totalAmountTag.textContent);
-         totalAmount -= product.price;
+        let discountAmount=discountAmountTag.textContent;
+        let discount=product.actualPrice-product.discountPrice;
+           discountAmount=Number(discountAmount)-discount;
+        discountAmountTag.textContent=discountAmount;
+        const actualAmountTag=document.getElementById("actual-amount")
+        let actualAmount=actualAmountTag.textContent;
+        actualAmountTag.textContent=Number(actualAmount)-product.actualPrice
+        if(product.isCategoryHavingOffer){
+          totalAmount -= product.discountPrice;
+        }else{
+          totalAmount -= product.actualPrice;
+
+        }
+        
          console.log(totalAmount);
          totalAmountTag.textContent = totalAmount;
       }if(currentValue==1){
@@ -385,12 +471,12 @@
     getCartItems();
     console.log(JSON.stringify(cartData));
 
-    document.getElementById("placeOrderButton").addEventListener("click", function () {
-      console.log(cartData+"lsdfosifhsoifgwhsfgiohwsfgiowhsgiow");
-document.getElementById("cartDataField").value = JSON.stringify(cartData);
-document.getElementById("totalAmountField").value = JSON.stringify(totalAmountTocheckout);
-        document.getElementById("checkoutForm").submit();
-    });
+//     document.getElementById("placeOrderButton").addEventListener("click", function () {
+//       console.log(cartData+"lsdfosifhsoifgwhsfgiohwsfgiowhsgiow");
+// document.getElementById("cartDataField").value = JSON.stringify(cartData);
+// document.getElementById("totalAmountField").value = JSON.stringify(totalAmountTocheckout);
+//         document.getElementById("checkoutForm").submit();
+    // });
   </script>
 </body>
 </html>

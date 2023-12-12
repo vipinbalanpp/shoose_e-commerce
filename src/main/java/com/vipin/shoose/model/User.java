@@ -25,6 +25,7 @@ public class User {
     private String email;
     private  String password;
     private  String roles;
+    private String image;
     private  boolean isEnabled=false;
     private  LocalDateTime createdTime;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

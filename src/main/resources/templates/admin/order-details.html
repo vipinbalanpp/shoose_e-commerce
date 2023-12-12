@@ -60,7 +60,9 @@
                 <div class="order-details">
                     <p>Customer Name</p>
                     <p>OrderedDate:</p>
-                    <p>Amount:</p>
+                    <p>Total Amount:</p>
+                        <p>Discount:</p>
+                        <p>Amount To Be Paid</p>
                     <p>PaymentMethod:</p>
                     <p>OrderStatus:</p>
                   
@@ -69,7 +71,9 @@
                 <div class="orderData">
                     <p th:text="${order.customerName}"></p>
                     <p th:text="${order.orderedDate}"></p>
-                    <p class="text-danger" th:text="${order.amount}"></p>
+                    <p class="text-danger" th:text="${order.totalAmount}"></p>
+                        <p class="text-danger" th:text="${order.totalDiscount}"></p>
+                        <p class="text-danger" th:text="${order.amountPaid}"></p>
                     <p th:text="${order.paymentMethode}"></p>
                     <p id="status"></p>
                 </div>

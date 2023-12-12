@@ -16,4 +16,6 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Long
     List<ProductImage> findByColor(String color);
     @Query(value = "SELECT * FROM product_image WHERE product_id = :productId AND color = :color", nativeQuery = true)
     List<ProductImage> findByProductColor(Long productId, String color);
+
+    ProductImage findByImageId(Long imageId);
 }

@@ -18,18 +18,13 @@ color:
 img{
 width:100vw;
 }
-/* .card{
+.card{
 height:400px;
 width:300px;
 margin-top:20px;
 text-align:center;
-} */
-/* .card-body{
-padding-top-0px;
-padding-left:40px;
-padding-right:40px;
-padding-bottom:40px;
-} */
+} 
+
 .img{
 width:200px;
 height:200px;
@@ -44,7 +39,7 @@ background-color:white;
 }
 .cardbutton{
 color:black;
-background-color:rgb(73, 117, 212);
+background-color:rgb(255, 255, 255);
 border:1px solid black;
 }
 #profile-dropdown{

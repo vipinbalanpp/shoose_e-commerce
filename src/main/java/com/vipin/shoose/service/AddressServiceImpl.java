@@ -87,21 +87,26 @@ public class AddressServiceImpl implements AddressService{
 
     @Override
     public List<AddressDto> getCurrentUserAddressDtos() throws JsonProcessingException {
-        List<AddressDto> addressDtos=new ArrayList<>();
-        ObjectMapper objectMapper=new ObjectMapper();
-        List<Address>addresses= userService.getAddresses(userService.getCurrentUser());
-        for(Address a:addresses){
-            AddressDto addressDto=new AddressDto();
-            addressDto.setAddressId(String.valueOf(a.getAddressId()));
-            addressDto.setFullName(a.getFullName());
-            addressDto.setPhoneNumber(a.getPhoneNumber());
-            addressDto.setBuildingName(a.getBuildingName());
-            addressDto.setStreetName(a.getStreetName());
-            addressDto.setCity(a.getCity());
-            addressDto.setState(a.getState());
-            addressDto.setPostalCode(a.getPostalCode());
-            objectMapper.writeValueAsString(addressDto);
-            addressDtos.add(addressDto);
-        }return addressDtos;
+        try {
+            List<AddressDto> addressDtos=new ArrayList<>();
+            ObjectMapper objectMapper=new ObjectMapper();
+            List<Address>addresses= userService.getAddresses(userService.getCurrentUser());
+            for(Address a:addresses){
+                AddressDto addressDto=new AddressDto();
+                addressDto.setAddressId(String.valueOf(a.getAddressId()));
+                addressDto.setFullName(a.getFullName());
+                addressDto.setPhoneNumber(a.getPhoneNumber());
+                addressDto.setBuildingName(a.getBuildingName());
+                addressDto.setStreetName(a.getStreetName());
+                addressDto.setCity(a.getCity());
+                addressDto.setState(a.getState());
+                addressDto.setPostalCode(a.getPostalCode());
+                objectMapper.writeValueAsString(addressDto);
+                addressDtos.add(addressDto);
+            }return addressDtos;
+        }catch (Exception e){
+            throw  new RuntimeException();
+        }
+
     }
 }

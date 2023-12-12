@@ -49,7 +49,12 @@
             <br />
             <h5 class="text-dark" th:text="${product.description}"></h5>
             <br />
-            <h5 class="text-danger" th:text="'₹' + ${product.actualPrice}"></h5>
+            <h5 th:unless="${product.isCategoryHavingOffer}" class="price card-text text-danger">
+              <span >₹<span th:text="${product.actualPrice}"></span></span>
+          </h5>
+            <h5 th:if="${product.isCategoryHavingOffer}" class="price card-text text-danger">₹
+            <span style="text-decoration: line-through;" class="me-3" th:text="${product.actualPrice}"></span>₹<span th:text="${product.discountPrice}"></span>
+        </h5>
             <div class="mt-3">
               <div th:each="color, iterStat : ${colors}">
                 <label th:for="${color}"></label>

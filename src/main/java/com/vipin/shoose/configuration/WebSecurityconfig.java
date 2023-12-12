@@ -24,7 +24,7 @@ public class WebSecurityconfig {
     public SecurityFilterChain securityFilterChain (HttpSecurity http,UserDetailsService userDetailsService)throws Exception{
         http.authorizeHttpRequests(request->
                         request.requestMatchers("/","/shop","/register","/verify-otp","/resend-otp","/forgot-password",
-                                "/forgot-password-otp","/new-password","/forgot-resend-otp","/checkReferralId","/product-details").permitAll()
+                                "/forgot-password-otp","/new-password","/forgot-resend-otp","/checkReferralId").permitAll()
                                 .requestMatchers("/user/**").hasAnyAuthority("USER","ADMIN").
                         requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
                                 .anyRequest().authenticated())

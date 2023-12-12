@@ -10,7 +10,9 @@ import com.vipin.shoose.repository.ProductRepository;
 import com.vipin.shoose.util.ImageUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +80,13 @@ public class ProductImageServiceImpl implements ProductImageService{
             throw new ProductImageNotFoundException("Product Image Not Exists");
         }
 
+    }
+
+    @Override
+    public void changeProductImage(Long imageId, MultipartFile newImage) throws IOException {
+        ProductImage image=productImageRepository.findByImageId(imageId);
+        image.setImage(imageUpload.saveImage(newImage));
+        productImageRepository.save(image);
     }
 
 
