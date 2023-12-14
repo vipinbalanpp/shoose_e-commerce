@@ -22,6 +22,7 @@ public class ProductDto {
     private MultipartFile image;
     private Integer price;
     private  Long  categoryId;
+    private String categoryName;
     private List<VariantDto> variants;
 
 

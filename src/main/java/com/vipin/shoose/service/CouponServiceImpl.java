@@ -101,4 +101,21 @@ public class CouponServiceImpl implements CouponService{
         Coupon coupon=couponRepository.findByCouponCode(couponCode);
         return coupon != null;
     }
+
+    @Override
+    public void editCoupon(CouponDto couponDto) {
+        try {
+            Coupon coupon=couponRepository.findByCouponId(couponDto.getCouponId());
+            coupon.setCouponName(couponDto.getCouponName());
+            coupon.setCouponCode(couponDto.getCouponCode());
+            coupon.setStartDate(couponDto.getStartDate());
+            coupon.setExpiryDate(couponDto.getExpiryDate());
+            coupon.setDiscountPercentage(couponDto.getDiscountPercentage());
+            coupon.setMinimumPurchaseAmount(couponDto.getMinimumPurchaseAmount());
+            System.out.println(coupon);
+            couponRepository.save(coupon);
+        }catch (Exception e){
+            throw  new RuntimeException();
+        }
+    }
 }

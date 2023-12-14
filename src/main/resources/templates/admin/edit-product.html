@@ -92,7 +92,7 @@
               <div class="col-lg-6 p-3">
                 <label for="category">Category:</label>
                 <select class="form-control" id="category" name="categoryId">
-                  <option    th:placeholder="${product.brand}"></option>
+                  <option    th:text="${product.categoryName}"></option>
                   <th:block th:each="cat : ${categories}">
                     <option
                       th:value="${cat.categoryId}"

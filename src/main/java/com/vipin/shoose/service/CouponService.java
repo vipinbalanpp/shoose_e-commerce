@@ -24,4 +24,6 @@ public interface CouponService {
     void deleteCoupon(Long couponId);
 
     boolean getCouponByCouponCode(String couponCode);
+
+    void editCoupon(CouponDto couponDto);
 }

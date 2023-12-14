@@ -50,11 +50,6 @@ public class OrderControllerForUser {
                               @RequestParam("discountCode")String discountCode,
                              @RequestParam("totalDiscount")Float totalDiscount,
                              RedirectAttributes redirectAttributes)  {
-        System.out.println(totalDiscount);
-        System.out.println(addressId);
-        System.out.println(totalAmount);
-        System.out.println(paymentMethod);
-        System.out.println("discountCode :"+discountCode);
         Long orderId=orderService.placeOrder(addressId, totalAmount,paymentMethod,discountCode,totalDiscount);
        redirectAttributes.addFlashAttribute("orderId",orderId);
         return "redirect:/user/place-order";
@@ -142,6 +137,10 @@ public class OrderControllerForUser {
     public  String addAddressFromCheckout(AddressDto addressDto){
         addressService.save(addressDto);
         return "redirect:/user/check-out";
+    }
+    @GetMapping("/getAddressesFromCheckout")
+    public ResponseEntity<List<Address>> getAddresses(){
+        return new ResponseEntity<>(userService.getAddresses(userService.getCurrentUser()),HttpStatus.OK);
     }
 
 

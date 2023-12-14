@@ -23,11 +23,12 @@ public class WebSecurityconfig {
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity http,UserDetailsService userDetailsService)throws Exception{
         http.authorizeHttpRequests(request->
-                        request.requestMatchers("/","/shop","/register","/verify-otp","/resend-otp","/forgot-password",
-                                "/forgot-password-otp","/new-password","/forgot-resend-otp","/checkReferralId").permitAll()
+                        request
                                 .requestMatchers("/user/**").hasAnyAuthority("USER","ADMIN").
                         requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
+                                .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated())
+
                 .formLogin(formLogin->
                         formLogin.loginPage("/login").successHandler(successHandler).permitAll())
                 .logout(logout->

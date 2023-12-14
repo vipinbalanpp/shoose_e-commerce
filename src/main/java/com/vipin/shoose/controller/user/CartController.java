@@ -82,6 +82,10 @@ public class CartController {
         cartService.decreaseQuantity(variantId);
         return new ResponseEntity<>("quantity increased",HttpStatus.OK);
     }
+    @GetMapping("/user/checkout")
+    public String getCheckout(){
+        return "redirect:/user/cart";
+    }
 
     @PostMapping("/user/checkout")
     public String gotoCheckOut(@RequestParam("totalAmount")Integer totalAmount,

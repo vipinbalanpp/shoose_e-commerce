@@ -293,13 +293,14 @@
         const discountAmountTag=document.getElementById("discountAmount")
         let discountAmount=discountAmountTag.textContent;
         let totalAmount = totalAmountTag.textContent;
-      
+        let discountPrice
         if(product.isCategoryHavingOffer){
           totalAmount = Number(totalAmount)+product.discountPrice;
+    discountPrice=product.actualPrice-product.discountPrice;
         }else{
-          totalAmount = Number(totalAmount)+product.actualPrice;
+          discountPrice=0
+          totalAmount=Number(totalAmount)+product.actualPrice
         }   
-         let discountPrice=product.actualPrice-product.discountPrice;
            discountAmount=Number(discountAmount)+discountPrice;
         discountAmountTag.textContent=discountAmount;
         const actualAmountTag=document.getElementById("actual-amount")
@@ -367,18 +368,22 @@ function setamounts(e){
         const discountAmountTag=document.getElementById("discountAmount")
         let totalAmount = parseFloat(totalAmountTag.textContent);
         let discountAmount=discountAmountTag.textContent;
-        let discount=product.actualPrice-product.discountPrice;
+        let discount
+        if(product.isCategoryHavingOffer){
+          totalAmount -= product.discountPrice;
+          discount=product.actualPrice-product.discountPrice;
+        }else{
+          totalAmount -= product.actualPrice;
+          discount=0
+
+        } 
+        console.log(product.discountPrice)
+     
            discountAmount=Number(discountAmount)-discount;
         discountAmountTag.textContent=discountAmount;
         const actualAmountTag=document.getElementById("actual-amount")
         let actualAmount=actualAmountTag.textContent;
         actualAmountTag.textContent=Number(actualAmount)-product.actualPrice
-        if(product.isCategoryHavingOffer){
-          totalAmount -= product.discountPrice;
-        }else{
-          totalAmount -= product.actualPrice;
-
-        }
         
          console.log(totalAmount);
          totalAmountTag.textContent = totalAmount;

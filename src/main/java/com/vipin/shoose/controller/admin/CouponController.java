@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.lang.model.element.NestingKind;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/admin")
@@ -41,6 +42,18 @@ public class CouponController {
     @PostMapping("delete-coupon")
     public String deleteCoupon(@RequestParam("couponId") Long couponId){
         couponService.deleteCoupon(couponId);
+        return "redirect:/admin/coupons";
+    }
+    @PostMapping("edit-coupon")
+    public String editCoupon(CouponDto couponDto,
+                             RedirectAttributes redirectAttributes){
+        if(couponService.getCouponByCouponCode(couponDto.getCouponCode())){
+           if(!Objects.equals(couponRepository.findByCouponCode(couponDto.getCouponCode()).getCouponId(), couponDto.getCouponId())){
+               redirectAttributes.addFlashAttribute("couponCodeExists","CouponCode Exists");
+               return "redirect:/admin/coupons";
+           }
+        }couponService.editCoupon(couponDto);
+
         return "redirect:/admin/coupons";
     }
 }

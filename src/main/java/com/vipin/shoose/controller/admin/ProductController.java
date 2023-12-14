@@ -182,9 +182,6 @@ public class ProductController {
     public String changeProductImage(@RequestParam("imageId") Long imageId,
                                                      @RequestParam("image") MultipartFile newImage,
                                      @RequestParam("productId")Long productId) throws IOException {
-        System.out.println(imageId);
-        System.out.println(newImage.getOriginalFilename()); // Assuming you want to print the file name
-        // Process the file as needed, for example, save it to disk or update the corresponding entity
 productImageService.changeProductImage(imageId,newImage);
         return "redirect:/admin/update-product-image/"+productId;
     }

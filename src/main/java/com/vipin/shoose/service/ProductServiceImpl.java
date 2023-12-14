@@ -217,6 +217,7 @@ public class ProductServiceImpl implements ProductService {
             productDto.setDescription(product.getDescription());
             productDto.setPrice(product.getActualPrice());
             productDto.setBrand(product.getBrand());
+            productDto.setCategoryName(product.getCategory().getCategoryName());
             return productDto;
         }catch (Exception e){
             throw new RuntimeException();
