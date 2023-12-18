@@ -76,7 +76,7 @@ public class AuthController {
         if(error != null){
             model.addAttribute("error","invalid credentials");
         }
-        return "/home";
+        return "home";
     }
     @GetMapping("/login")
     public String login(){
@@ -146,7 +146,7 @@ public class AuthController {
     }
   @GetMapping("/forgot-password")
     public String forgotPassword(){
-        return "/user/forgot-password";
+        return "user/forgot-password";
   }
   @PostMapping("/forgot-password")
     public String forgotPasswordEmail(@RequestParam ("email") String email,
@@ -167,7 +167,7 @@ public class AuthController {
     public String forgotPasswordOtp(HttpSession httpSession,
                                     Model model){
         UserDto userDto= (UserDto) httpSession.getAttribute("userDto");
-        return "/user/forgot-otp-validation";
+        return "user/forgot-otp-validation";
   }
     @PostMapping("/forgot-password-otp")
     public String forgotOtpVerification(@RequestParam ("otp") String otp,
@@ -184,7 +184,7 @@ public class AuthController {
     @GetMapping("/new-password")
     public String newPassword(HttpSession httpSession){
         UserDto userDto= (UserDto) httpSession.getAttribute("userDto");
-        return "/user/new-password-for-forgot-password";
+        return "user/new-password-for-forgot-password";
     }
     @PostMapping("/new-password")
     public String newPasswordSetting(HttpSession httpSession,
@@ -217,7 +217,7 @@ public class AuthController {
         List<Product> products = productService.getProductsByCategory(categoryId);
         System.out.println(products);
         model.addAttribute("productList", products);
-        return "/user/shop";
+        return "user/shop";
     }
 
 }

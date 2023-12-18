@@ -27,7 +27,7 @@ public class OrderController {
     @GetMapping("/orders-list")
     public String ordersList(Model model){
         model.addAttribute("orders",orderService.getAllOrders());
-        return "/admin/orders-list";
+        return "admin/orders-list";
     }
     @GetMapping("/order-details/{orderId}")
     public String productDetails( @PathVariable("orderId") Long orderId,
@@ -39,7 +39,7 @@ public class OrderController {
         model.addAttribute("orderId",orderId);
         model.addAttribute("order",orderDto);
         model.addAttribute("products",products);
-        return "/admin/order-details";
+        return "admin/order-details";
     }
     @GetMapping("/updateOrderStatus")
     @ResponseBody

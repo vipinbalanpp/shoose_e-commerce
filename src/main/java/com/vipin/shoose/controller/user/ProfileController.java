@@ -40,7 +40,7 @@ public class ProfileController {
         model.addAttribute("addresses",addressService.getCurrentUserAddresses());
 
         model.addAttribute("user", userService.getCurrentUser());
-        return "/user/profile";
+        return "user/profile";
 
     }
     @PostMapping("/change-username")
@@ -101,18 +101,18 @@ public class ProfileController {
     }
     @GetMapping ("/wishlist")
     public String userWishlist(){
-        return "/user/wishlist";
+        return "user/wishlist";
     }
     @GetMapping ("/orders")
     public String userOrders(){
-        return "/user/orders";
+        return "user/orders";
     }
     @GetMapping ("/wallet")
     public String userWallet(Model model){
         model.addAttribute("transactions",userService.getAllWalletTransactions());
        Double balance=userService.getWalletBalance();
         model.addAttribute("balance",balance);
-        return "/user/wallet";
+        return "user/wallet";
     }
     @PostMapping("/addMoney")
     public String addMoney(@RequestParam("amount")Double amount){

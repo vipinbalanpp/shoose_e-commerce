@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class UserOrderController {
     @GetMapping("/order-success")
     public String orderSuccess(){
-        return "/user/order-success";
+        return "user/order-success";
     }
 }

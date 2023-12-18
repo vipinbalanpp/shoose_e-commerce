@@ -50,7 +50,7 @@ public class UserController {
         List<String>colors=    productService.getProductColors(product);
         model.addAttribute("product",product);
         model.addAttribute("colors",colors);
-        return "/user/product-details";
+        return "user/product-details";
     }
     @GetMapping("/get-product-images")
     @ResponseBody

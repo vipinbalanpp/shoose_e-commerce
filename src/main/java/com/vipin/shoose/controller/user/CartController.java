@@ -32,7 +32,7 @@ public class CartController {
     CartService cartService;
     @GetMapping("/user/cart")
     public String userCart(Model model){
-        return "/user/cart";
+        return "user/cart";
     }
     @GetMapping("/getCartItems")
     public ResponseEntity<List<SelectedProducts>>cartItemsToCart(){
@@ -60,7 +60,6 @@ public class CartController {
                                             @RequestParam("size")Long size){
 
       Long quantity=variantService.getVariantQuantity(productId,color,size);
-        System.out.println(quantity);
       return new ResponseEntity<>(quantity,HttpStatus.OK);
     }
 
@@ -92,9 +91,6 @@ public class CartController {
                                @RequestParam("discountAmount")Integer discountAmount,
                                @RequestParam("amountToBePayed")Integer amountToBePayed,
                                Model model) throws JsonProcessingException {
-        System.out.println(totalAmount);
-        System.out.println(discountAmount);
-        System.out.println(amountToBePayed);
         List<SelectedProducts>products=cartService.getProductsToCheckOut();
         List <AddressDto>addressDtos=addressService.getCurrentUserAddressDtos();
         List<Address>addresses= userService.getAddresses(userService.getCurrentUser());
@@ -104,7 +100,7 @@ public class CartController {
         model.addAttribute("products",products);
         model.addAttribute("adds",addressDtos);
         model.addAttribute("addresses",addresses);
-        return "/user/check-out";
+        return "user/check-out";
 
     }
 }

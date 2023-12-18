@@ -40,7 +40,7 @@ public class OrderControllerForUser {
     }
     @GetMapping("/place-order")
     public String placeOrderGet(Model model)  {
-        return "/user/order-success";
+        return "user/order-success";
     }
 
     @PostMapping("/place-order")
@@ -58,11 +58,10 @@ public class OrderControllerForUser {
     public String productDetails( @PathVariable("orderId") Long orderId,
                                   Model model){
        OrderDto orderDto=orderService.getOrderDetails(orderId);
-        System.out.println(orderDto.getOrderId());
        List<SelectedProducts>products=orderService.setProductsToOrderDetailsPage(orderRepository.findByOrderId(orderId).getProducts());
        model.addAttribute("order",orderDto);
        model.addAttribute("products",products);
-        return "/user/order-details";
+        return "user/order-details";
     }
     @PostMapping("/order-details/{orderId}")
     public String trackOrder(@PathVariable("orderId") Long orderId, Model model) {
@@ -71,7 +70,7 @@ public class OrderControllerForUser {
     @GetMapping("/order-list")
     public String orderList(Model model){
         model.addAttribute("orders", userService.getCurrentUser().getOrders());
-        return "/user/order-list";
+        return "user/order-list";
     }
     @PostMapping("/cancel-order")
     public String cancelOrder(@RequestParam("orderId") Long orderId,

@@ -74,7 +74,7 @@ public class ProductController {
     public String editProduct(@PathVariable("productId") Long productId, Model model){
         model.addAttribute("product",productService.getProductDetailsToEdit(productId));
         model.addAttribute("categories", categoryService.getCategoriesForEditingProduct(productId));
-        return "/admin/edit-product";
+        return "admin/edit-product";
     }
     @PostMapping("/change-product-details/{productId}")
     public String changeProductDetails(@PathVariable("productId") Long productId,
@@ -101,7 +101,7 @@ public class ProductController {
         productImagesDTO.setProductId(productId);
         productImagesDTO.setColors(colors);
         model.addAttribute("product",productImagesDTO);
-        return "/admin/add-product-image";
+        return "admin/add-product-image";
     }
     @PostMapping("/add-product-images")
     public String saveProductImage(@ModelAttribute ProductImagesDTO productImagesDTO,
@@ -126,7 +126,7 @@ public class ProductController {
         List<Variant> variants = variantService.getVaraints(productId);
         model.addAttribute("product",product);
         model.addAttribute("variants",variants);
-        return "/admin/product-details";
+        return "admin/product-details";
     }
     @PostMapping("/increase-quantity/{productId},{variantId}")
     public String increaseQuantity( @RequestParam ("quantity") Long quantity,
@@ -172,7 +172,7 @@ public class ProductController {
         List<ProductImage>productImages=productImageService.getProductImagesByProductId(productId);
         model.addAttribute("images",productImages);
         model.addAttribute("productId",productId);
-        return "/admin/edit-product-images";
+        return "admin/edit-product-images";
     }
     @PostMapping("/update-product-image/{productId}")
     public String getUpdateProductPage(@PathVariable("productId")Long productId){
