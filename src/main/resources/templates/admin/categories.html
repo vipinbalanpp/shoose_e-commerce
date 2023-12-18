@@ -82,7 +82,7 @@
                 <tr th:each="category : ${categories}">
                     <td>
                         <div>
-                            <img th:id="'img-' + ${category.categoryId}"  class="category-image" th:src="@{/img/product-images/__${category.image}__}" data-category-id="${category.categoryId}" />
+                            <img th:id="'img-' + ${category.categoryId}"  class="category-image" th:src="@{'/img/product-images/' + ${category.image}}" data-category-id="${category.categoryId}" />
 
                           <label th:for="'image-' + ${category.categoryId}"  ><i class="fa-solid fa-upload"></i></label>
                           <input hidden th:id="'image-' + ${category.categoryId}" class="custom-file-input mt-4 mb-3" type="file" name="categoryImage" accept="image/*" multiple="multiple" required onchange="updateCategoryImage(this)">
