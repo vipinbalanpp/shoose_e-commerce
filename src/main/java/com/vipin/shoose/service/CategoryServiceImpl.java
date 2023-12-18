@@ -6,6 +6,7 @@ import com.vipin.shoose.model.Product;
 import com.vipin.shoose.repository.CategoryRepository;
 import com.vipin.shoose.repository.ProductRepository;
 import com.vipin.shoose.util.ImageUpload;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CategoryServiceImpl implements CategoryService{
     @Autowired
     ProductRepository productRepository;
@@ -40,6 +42,7 @@ public class CategoryServiceImpl implements CategoryService{
             category.setEnabled(true);
             categoryRepository.save(category);
         }catch (Exception e){
+            log.info("exception: "+e);
             throw new RuntimeException("An error occurred");
         }
 
@@ -48,8 +51,7 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public Category getCategoryByCategoryName(String categoryName) {
         try {
-            Category category=categoryRepository.findByCategoryName(categoryName);
-            return category;
+            return categoryRepository.findByCategoryName(categoryName);
         }catch (Exception e){
             throw new RuntimeException("An error Occurred");
         }
@@ -133,7 +135,6 @@ public class CategoryServiceImpl implements CategoryService{
         try {
             LocalDate currentDate = LocalDate.now();
             List<Category> categoriesWithExpiredOffers = categoryRepository.findByExpiryDateLessThanAndIsHavingOfferTrue(currentDate);
-            System.out.println("cronJob working");
             for (Category category : categoriesWithExpiredOffers) {
                 category.setIsHavingOffer(false);
             }
