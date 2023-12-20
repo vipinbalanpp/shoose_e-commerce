@@ -17,7 +17,7 @@ import java.util.UUID;
 public class ImageUpload {
     public String saveImage(MultipartFile multipartFile) throws IOException {
         String rootPath=System.getProperty("user.dir");
-        String uploadDir = Paths.get(rootPath, "target", "classes", "static", "img", "product-images").toString();
+        String uploadDir= rootPath + "/src/main/resources/static/img/product-images";
         File dir = new File(uploadDir);
         if(!dir.exists()){
             log.info("dir : "+dir);
@@ -26,6 +26,7 @@ public class ImageUpload {
         String fileName= UUID.randomUUID().toString()+"-"+multipartFile.getOriginalFilename();
         String filePath = uploadDir+"/"+fileName;
         Path path = Paths.get(filePath);
+        log.info("path"+path);
         Files.copy(multipartFile.getInputStream(),path,StandardCopyOption.REPLACE_EXISTING);
         return fileName;
     }
