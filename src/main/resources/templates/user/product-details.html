@@ -285,8 +285,8 @@
             }
           },
           error: function () {
-            // Handle AJAX error here if necessary
-            alert('An error occurred while processing your request.');
+            login()
+            
           },
         });
 
@@ -305,6 +305,24 @@
           stopOnFocus: true,
           style: {
             background: "green",
+          },
+          onClick: function() {
+            // Callback after click
+            console.log("Toast clicked");
+          }
+        }).showToast();
+      }
+      function login() {
+        Toastify({
+          text: "Please login to continue.",
+          duration: 1000,
+          newWindow: true,
+          close: false,
+          gravity: "top",
+          position: "center",
+          stopOnFocus: true,
+          style: {
+            background: "red",
           },
           onClick: function() {
             // Callback after click
@@ -331,17 +349,5 @@
         }).showToast();
       }
     </script>
-
-    <!-- <script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
-<script>
-    // document.addEventListener("DOMContentLoaded", function () {
-    //     var options = {
-    //         width: 400,
-    //         zoomWidth: 300,
-    //         offset: {vertical: 60, horizontal: 30}
-    //     };
-    //     new ImageZoom(document.getElementById("image-container"), options);
-    // });
-</script> -->
   </body>
 </html>

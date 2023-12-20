@@ -40,13 +40,7 @@ public class CategoryServiceImpl implements CategoryService{
             Category category=new Category();
             category.setCategoryName(categoryDto.getCategoryName());
             category.setDescription(categoryDto.getDescription());
-//            category.setImage(imageUpload.saveImage(categoryDto.getCategoryImage()));
-            String path = "C:\\Users\\vipin\\OneDrive\\Desktop\\shoose\\src\\main\\resources\\static\\img\\product-images\\";
-
-                String image = categoryDto.getCategoryImage().getOriginalFilename();
-                MultipartFile file=categoryDto.getCategoryImage();
-                file.transferTo(new File(path + file.getOriginalFilename()));
-                category.setImage(file.getOriginalFilename());
+ category.setImage(imageUpload.saveImage(categoryDto.getCategoryImage()));
             category.setEnabled(true);
             categoryRepository.save(category);
         }catch (Exception e){
