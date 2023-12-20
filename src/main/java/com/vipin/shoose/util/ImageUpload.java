@@ -21,7 +21,7 @@ public class ImageUpload {
         File dir = new File(uploadDir);
         if(!dir.exists()){
             log.info("dir : "+dir);
-            dir.mkdir();
+            dir.mkdirs();
         }
         String fileName= UUID.randomUUID().toString()+"-"+multipartFile.getOriginalFilename();
         String filePath = uploadDir+"/"+fileName;
