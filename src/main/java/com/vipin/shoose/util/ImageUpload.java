@@ -1,5 +1,6 @@
 package com.vipin.shoose.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,12 +13,14 @@ import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @Component
+@Slf4j
 public class ImageUpload {
     public String saveImage(MultipartFile multipartFile) throws IOException {
         String rootPath=System.getProperty("user.dir");
         String uploadDir= rootPath + "/src/main/resources/static/img/product-images";
         File dir = new File(uploadDir);
         if(!dir.exists()){
+            log.info("dir : "+dir);
             dir.mkdir();
         }
         String fileName= UUID.randomUUID().toString()+"-"+multipartFile.getOriginalFilename();

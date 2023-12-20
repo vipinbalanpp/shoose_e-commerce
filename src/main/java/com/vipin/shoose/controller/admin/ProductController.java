@@ -54,6 +54,16 @@ public class ProductController {
         model.addAttribute("categories", categories);
         return "admin/add-product";
     }
+    @GetMapping("/add-product-image")
+    public String addProductImage(@RequestParam("productId") Long productId, Model model){
+        ProductImagesDTO productImagesDTO=new ProductImagesDTO();
+        Product product= productRepository.findByProductId(productId);
+        List<String> colors = productService.getProductColors(product);
+        productImagesDTO.setProductId(productId);
+        productImagesDTO.setColors(colors);
+        model.addAttribute("product",productImagesDTO);
+        return "admin/add-product-image";
+    }
     @PostMapping("/add-product")
     public String addProductPost(@ModelAttribute ProductDto productDto,
                                  @RequestParam("variants.color") List<String> variantColors,
@@ -93,16 +103,7 @@ public class ProductController {
         return "redirect:/admin/product-details/"+productId;
     }
 
-    @GetMapping("/add-product-image")
-    public String addProductImage(@RequestParam("productId") Long productId, Model model){
-        ProductImagesDTO productImagesDTO=new ProductImagesDTO();
-        Product product= productRepository.findByProductId(productId);
-        List<String> colors = productService.getProductColors(product);
-        productImagesDTO.setProductId(productId);
-        productImagesDTO.setColors(colors);
-        model.addAttribute("product",productImagesDTO);
-        return "admin/add-product-image";
-    }
+
     @PostMapping("/add-product-images")
     public String saveProductImage(@ModelAttribute ProductImagesDTO productImagesDTO,
                                    RedirectAttributes redirectAttributes) throws IOException {
