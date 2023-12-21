@@ -5,18 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Shoose</title>
     <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-      crossorigin="anonymous"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" 
     integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" 
     crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link th:rel="stylesheet" th:href="@{/css/shop.css}" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+   
     <style>
       .card {
         margin-bottom: 20px;
@@ -31,11 +25,7 @@
       }
     </style>
     
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-      crossorigin="anonymous"
-    ></script>
+
   </head>
   <body>
       <nav class="navbar navbar-expand-lg d-flex justify-content-between col-lg-12 navbar-light bg-light mx-auto">
@@ -44,16 +34,22 @@
             <img th:src="@{/img/logo.png}" style="height: 60px; width: 150px" alt="" />
           </a>  
         </div>
-       <div class="d-sm-block d-none">
-         <form class="form-inline d-flex my-2 my-lg-0">
-           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-         </form>
-       </div>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-bs-expanded="false" aria-bs-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
+      
+        <button class="navbar-toggler " type="button" id="hamburger-icon"  data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+          <span class="material-symbols-outlined navbar-toggler-icon" id="tog" >
+            </span>
+            <span class="btn-close btn-close-black" id="close-button" style="display: none;">
+
+            </span>
         </button>
+
           <div class="collapse navbar-collapse md-d-flex justify-content-end" id="navbarSupportedContent">
+            <div class="  me-5">
+              <form class="form-inline d-flex my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </form>
+            </div>
             <ul class="navbar-nav mr-auto">
               <li class="nav-item active me-5">
                 <a class="text-decoration-none text-dark" th:href="@{/user/cart}">
@@ -83,12 +79,13 @@
               </li>
             </ul>
           </div>
+
       </nav>
     <div class="container-fluid">
-      <div class="row">
+      <div class="row"> 
         <div th:if="${productList}"
           th:each="product : ${productList}"
-          class="col-xl-2 col-lg-3 col-md-6  col-6 d-flex justify-content-center align-items-center">
+          class="col-xl-2 col-lg-3 col-md-6  col-12 d-flex justify-content-center align-items-center">
           <div style="  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);" class="card">
             <div  class="img">
               <img
@@ -122,5 +119,24 @@
       </div>
     </div>
       <div th:include="~{fragment::footer}"></div>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+      <script>
+        const btn=document.getElementById("hamburger-icon")
+        btn.addEventListener("click", function (){
+          const crossbtn=document.getElementById("close-button")
+          const hambtn=document.getElementById("tog")
+          if(crossbtn.style.display==="none"){
+            crossbtn.style.display="block"
+            hambtn.style.display="none"
+            console.log("if")
+          }else {
+            crossbtn.style.display="none"
+            hambtn.style.display="block"
+            console.log("else")
+          }
+
+        })
+      </script>
   </body>
 </html>
