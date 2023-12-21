@@ -15,15 +15,22 @@
     integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" 
     crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link th:rel="stylesheet" th:href="@{/css/shop.css}" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <style>
       .card {
         margin-bottom: 20px;
+      }
+      body{
+        padding: 0;
+        margin: 0;
       }
 
       .card-body {
         min-height: 150px; /* Set a fixed minimum height for the card body */
       }
     </style>
+    
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
@@ -31,14 +38,83 @@
     ></script>
   </head>
   <body>
-    <nav
+    <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light p-3" style="border-bottom: 1px solid black">
+      <div class="container-fluid d-flex justify-content-between">
+        <div>
+          <a class="navbar-brand" th:href="@{/home}">
+            <img th:src="@{/img/logo.png}" style="height: 60px; width: 150px" alt="" />
+          </a>
+        </div>
+        <div>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="d-flex justify-content-end">
+              <div class="d-flex gap-5 align-items-center">
+                <div class="d-flex gap-5 align-items-center">
+                  <form class="d-flex" role="search">
+                    <input
+                      class="form-control me-2"
+                      type="search"
+                      placeholder="Search"
+                      aria-label="Search"
+                    />
+                    <button class="btn btn-info text-white" type="submit">
+                      Search
+                    </button>
+                  </form>
+                  <div>
+                    <a class="text-decoration-none text-dark" th:href="@{/user/cart}">
+                        <i class="fa-solid fa-cart-shopping"></i><span> Cart</span>
+                    </a>
+                </div>
+                <div>
+                    <a class="text-decoration-none text-dark" th:href="@{/shop}">
+                        <i class="fa-brands fa-shopify"></i><span> Shop</span>
+                    </a>
+                </div>
+                <div>
+                    <a class="text-decoration-none text-dark" th:href="@{/user/profile}">
+                        <i class="fa-solid fa-user"></i><span> Profile</span>
+                    </a>
+                </div>
+                <div>
+                    <form
+                    th:if=" ${#authorization.expression('isAuthenticated()')}"
+                    th:method="post"
+                    th:action="@{/logout}"
+            >
+                     <label for="sign-out"><i class="fa-solid fa-right-from-bracket"></i></label>
+                    <input hidden type="submit" id="sign-out">
+                    </form>  
+                    <a   class="btn btn-info"   th:href="@{/login}" th:if="not ${#authorization.expression('isAuthenticated()')}" >Sign in</a>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav> -->
+    <!-- <nav
         class="navbar bg-body-tertiary p-3"
         style="border-bottom: 1px solid black"
       >
+      
         <div
           class="container-fluid d-flex justify-content-between align-items-middle"
           style="background-color: white"
         >
+        
           <div class="align-self-start">
             <a class="navbar-brand" th:href="@{/home}">
               <img
@@ -48,55 +124,111 @@
               />
             </a>
           </div>
-          <div class="me-5">
-            <div class="d-flex gap-5 align-items-center">
-              <form class="d-flex" role="search">
-                <input
-                  class="form-control me-2"
-                  type="search"
-                  placeholder="Search"
-                  aria-label="Search"
-                />
-                <button class="btn btn-info text-white" type="submit">
-                  Search
-                </button>
-              </form>
-              <div>
-                <a class="text-decoration-none text-dark" th:href="@{/user/cart}">
-                  <i class="fa-solid fa-cart-shopping"></i><span> Cart</span>
-                </a>
-              </div>
-              <div
-                      th:if=" ${#authorization.expression('isAuthenticated()')}"
-              >
-              <a class="text-decoration-none text-dark" th:href="@{/user/profile}">profile</a>
-              </div>
-              <div>
-                <a class="text-decoration-none text-dark" href="">
-                  <i class="fa-solid fa-cart-shopping"></i><span> Shop</span>
-                </a>
-              </div>
-              <div>
+          <div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+<i class="fa-solid fa-bars"></i>
+            </button>
+          </div>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="me-5">
+              <div class="d-flex gap-5 align-items-center">
+                <form class="d-flex" role="search">
+                  <input
+                    class="form-control me-2"
+                    type="search"
+                    placeholder="Search"
+                    aria-label="Search"
+                  />
+                  <button class="btn btn-info text-white" type="submit">
+                    Search
+                  </button>
+                </form>
                 <div>
-                  <div>
-                    <form th:if="${#authorization.expression('isAuthenticated()')}"  method="post" th:action="@{/logout}">
-                      <button style="background: none; border: 0;" type="submit" class="text-dark" 
-                      ><i class="fas fa-sign-out-alt me-2"></i></button
-                    >
-                    </form>
-                    <a th:if="not ${#authorization.expression('isAuthenticated()')}" th:href="@{/login}">Sign In<i class="fas fa-sign-out-alt me-2"></i></a>
-                  </div>
-                </div>
+                  <a class="text-decoration-none text-dark" th:href="@{/user/cart}">
+                      <i class="fa-solid fa-cart-shopping"></i><span> Cart</span>
+                  </a>
+              </div>
+              <div>
+                  <a class="text-decoration-none text-dark" th:href="@{/shop}">
+                      <i class="fa-brands fa-shopify"></i><span> Shop</span>
+                  </a>
+              </div>
+              <div>
+                  <a class="text-decoration-none text-dark" th:href="@{/user/profile}">
+                      <i class="fa-solid fa-user"></i><span> Profile</span>
+                  </a>
+              </div>
+              <div>
+                  <form
+                  th:if=" ${#authorization.expression('isAuthenticated()')}"
+                  th:method="post"
+                  th:action="@{/logout}"
+          >
+                   <label for="sign-out"><i class="fa-solid fa-right-from-bracket"></i></label>
+                  <input hidden type="submit" id="sign-out">
+                  </form>  
+                  <a   class="btn btn-info"   th:href="@{/login}" th:if="not ${#authorization.expression('isAuthenticated()')}" >Sign in</a>
+              </div>
               </div>
             </div>
           </div>
+          
         </div>
+      </nav> -->
+
+
+      <nav class="navbar navbar-expand-lg d-flex justify-content-between col-lg-12 navbar-light bg-light mx-auto">
+        <div>
+          <a class="navbar-brand" th:href="@{/home}">
+            <img th:src="@{/img/logo.png}" style="height: 60px; width: 150px" alt="" />
+          </a>  
+        </div>
+       <div class="d-sm-block d-none">
+         <form class="form-inline d-flex my-2 my-lg-0">
+           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+         </form>
+       </div>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-bs-expanded="false" aria-bs-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+          <div class="collapse navbar-collapse md-d-flex justify-content-end" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active me-5">
+                <a class="text-decoration-none text-dark" th:href="@{/user/cart}">
+                  <i class="fa-solid fa-cart-shopping"></i><span> Cart</span>
+              </a>
+              </li>
+              <li class="nav-item me-5">
+                <a class="text-decoration-none text-dark" th:href="@{/shop}">
+                  <i class="fa-brands fa-shopify"></i><span> Shop</span>
+              </a>
+              </li>
+              <li class="nav-item dropdown me-5">
+                <a class="text-decoration-none text-dark" th:href="@{/user/profile}">
+                  <i class="fa-solid fa-user"></i><span> Profile</span>
+              </a>
+              </li>
+              <li class="nav-item me-5">
+                <form
+                th:if=" ${#authorization.expression('isAuthenticated()')}"
+                th:method="post"
+                th:action="@{/logout}"
+        >
+                 <label for="sign-out"><i class="fa-solid fa-right-from-bracket"></i></label>
+                <input hidden type="submit" id="sign-out">
+                </form>  
+                <a   class="btn btn-info"   th:href="@{/login}" th:if="not ${#authorization.expression('isAuthenticated()')}" >Sign in</a>
+              </li>
+            </ul>
+          </div>
+
       </nav>
     <div class="container-fluid">
-      <div class="row ms-3">
+      <div class="row">
         <div th:if="${productList}"
           th:each="product : ${productList}"
-          class="col-lg-3  col-md-4  col-6">
+          class="col-xl-2 col-lg-3 col-md-6  col-12 d-flex justify-content-center align-items-center">
           <div style="  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);" class="card">
             <div  class="img">
               <img

@@ -44,27 +44,30 @@
           <div class="d-flex gap-5 align-items-center">
             <div>
               <a class="text-decoration-none text-dark" th:href="@{/user/cart}">
-                <i class="fa-solid fa-cart-shopping"></i><span> Cart</span>
+                  <i class="fa-solid fa-cart-shopping"></i><span> Cart</span>
               </a>
-            </div>
-            <div>
+          </div>
+          <div>
               <a class="text-decoration-none text-dark" th:href="@{/shop}">
-                <i class="fa-solid fa-cart-shopping"></i><span> Shop</span>
+                  <i class="fa-brands fa-shopify"></i><span> Shop</span>
               </a>
-            </div>
-            <div>
+          </div>
+          <div>
               <a class="text-decoration-none text-dark" th:href="@{/user/profile}">
-                <i class="fa-solid fa-cart-shopping"></i><span> Profile</span>
+                  <i class="fa-solid fa-user"></i><span> Profile</span>
               </a>
-            </div>
-            <div>
-              <form th:if="${#authorization.expression('isAuthenticated()')}"  method="post" th:action="@{/logout}">
-                <button style="background: none; border: 0;" type="submit" class="text-dark" 
-                ><i class="fas fa-sign-out-alt me-2"></i></button
-              >
-              </form>
-              <a class="text-decoration-none text-dark" th:if="not ${#authorization.expression('isAuthenticated()')}" th:href="@{/login}">Sign In</a>
-            </div>
+          </div>
+          <div>
+              <form
+              th:if=" ${#authorization.expression('isAuthenticated()')}"
+              th:method="post"
+              th:action="@{/logout}"
+      >
+               <label for="sign-out"><i class="fa-solid fa-right-from-bracket"></i></label>
+              <input hidden type="submit" id="sign-out">
+              </form>  
+              <a   class="btn btn-info"   th:href="@{/login}" th:if="not ${#authorization.expression('isAuthenticated()')}" >Sign in</a>
+          </div>
           </div>
         </div>
       </div>
