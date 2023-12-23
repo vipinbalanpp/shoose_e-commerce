@@ -8,16 +8,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/admin/users")
 public class CustomerController {
     @Autowired
     UserService userService;
 
-    @GetMapping("admin/customers-list")
+    @GetMapping("/list")
     public String customerList(Model model){
         List<User> allUsers=userService.getAllUsers();
         List<User>users=new ArrayList<>();
@@ -28,7 +30,7 @@ public class CustomerController {
         }
         model.addAttribute("users",users);
         return "admin/customers-list";
-    } @PostMapping("admin/block-user/{id}")
+    } @PostMapping("/block-user/{id}")
     public String blockUser(@PathVariable("id")Long id, RedirectAttributes redirectAttributes){
         userService.blockUser(id);
         String blocked="user blocked";
@@ -36,7 +38,7 @@ public class CustomerController {
         return "redirect:/admin/customers-list";
     }
 
-    @PostMapping("admin/unblock-user/{id}")
+    @PostMapping("/unblock-user/{id}")
     public String unblockUser(@PathVariable("id")Long id, RedirectAttributes redirectAttributes){
         userService.unBlockUser(id);
         String unBlocked="user unblocked";
