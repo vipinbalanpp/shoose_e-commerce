@@ -13,12 +13,11 @@ font-family: 'Righteous', cursive;
 }
 h6{
 font-size:50px;
-color:
 }
 img{
 width:100vw;
 }
-/* .card{
+.card{
 height:400px;
 width:300px;
 margin-top:20px;
@@ -29,7 +28,7 @@ padding-top-0px;
 padding-left:40px;
 padding-right:40px;
 padding-bottom:40px;
-} */
+}
 .img{
 width:200px;
 height:200px;
