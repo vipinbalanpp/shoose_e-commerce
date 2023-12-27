@@ -125,7 +125,7 @@
         >
           <div style="  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);" class="card mt-5">
             <div class="img">
-              <img
+              <img  style="height: 300px;"
                 class="card-img-top"
                 th:src="@{/img/product-images/__${product.image}__}"
               />
@@ -141,9 +141,9 @@
               <p th:if="${product.isCategoryHavingOffer}" class="price card-text text-danger">
               <span style="text-decoration: line-through;" class="me-3" th:text="${product.actualPrice}"></span>₹<span th:text="${product.discountPrice}"></span>
           </p>
-              <a style="background-color: white;"
+              <a style="background-color: rgb(168, 165, 165);"
                 th:href="@{'/product-details?productId=' + ${product.productId}}"
-                class="cardbutton btn"
+                class="cardbutton btn text-white"
                 >View Details</a
               >
             </div>
