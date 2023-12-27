@@ -334,6 +334,8 @@ function applayCoupon() {
           console.log("fhghf")
             initializePage();
         });
+
+
         function paymentStart (e){
           e.preventDefault()
           var orderForm = document.getElementById("order-form");
@@ -432,6 +434,15 @@ function applayCoupon() {
     icon: 'error',
     title: '',
     text: 'Amount is less than the minimum purchase amount for this coupon',
+    confirmButtonText: 'OK',
+    showCancelButton: false,
+  });
+}
+function addressEmpty() {
+  Swal.fire({
+    icon: 'error',
+    title: '',
+    text: 'Please add Address',
     confirmButtonText: 'OK',
     showCancelButton: false,
   });
