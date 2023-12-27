@@ -15,7 +15,7 @@
     integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" 
     crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link th:rel="stylesheet" th:href="@{/css/home.css}" />
-    <link th:rel="stylesheet" th:href="@{/css/shop.css}" />
+        <link th:rel="stylesheet" th:href="@{/css/shop.css}" />
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
@@ -118,20 +118,19 @@
          
     </div>
  
-    <div class="container-fluid mt-5">
-      <div class="row ms-3">
-        <div
+    <div class="container-fluid">
+      <div class="row"> 
+        <div th:if="${productList}"
           th:each="product : ${productList}"
-          class="col-lg-3 col-md-4 col-sm-6 col-12"
-        >
-          <div style="  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);" class="card mt-5">
-            <div class="img">
-              <img  style="height: 300px;"
-                class="card-img-top img-fluid"
+          class="col-xl-2 col-lg-3 col-md-6  col-12 d-flex justify-content-center align-items-center">
+          <div style="  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);" class="card">
+            <div  class="img">
+              <img
+                class="card-img-top"
                 th:src="@{/img/product-images/__${product.image}__}"
               />
             </div>
-            <div class="card-body d-flex flex-column align-items-center justify-content-center position-relative">
+            <div  class="card-body position-relative">
               <h5 class="card-title">
                 <b><span th:text="${product.brand}"></span></b>
               </h5>
@@ -142,16 +141,14 @@
               <p th:if="${product.isCategoryHavingOffer}" class="price card-text text-danger">
               <span style="text-decoration: line-through;" class="me-3" th:text="${product.actualPrice}"></span>₹<span th:text="${product.discountPrice}"></span>
           </p>
-              <a style="background-color: rgb(168, 165, 165);"
+              <a
                 th:href="@{'/product-details?productId=' + ${product.productId}}"
-                class="cardbutton btn text-white"
+                class="cardbutton btn"
                 >View Details</a
               >
             </div>
           </div>
         </div>
-      </div>
-    </div>
       <div th:include="~{fragment::footer}"></div>
   </body>
 </html>
