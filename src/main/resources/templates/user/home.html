@@ -118,37 +118,6 @@
          
     </div>
  
-    <div class="container-fluid">
-      <div class="row"> 
-        <div th:if="${productList}"
-          th:each="product : ${productList}"
-          class="col-xl-2 col-lg-3 col-md-6  col-12 d-flex justify-content-center align-items-center">
-          <div style="  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);" class="card">
-            <div  class="img">
-              <img
-                class="card-img-top"
-                th:src="@{/img/product-images/__${product.image}__}"
-              />
-            </div>
-            <div  class="card-body position-relative">
-              <h5 class="card-title">
-                <b><span th:text="${product.brand}"></span></b>
-              </h5>
-              <p th:text="${product.productName}" class="card-text"></p>
-              <p th:unless="${product.isCategoryHavingOffer}" class="price card-text text-danger">
-                <span >₹<span th:text="${product.actualPrice}"></span></span>
-            </p>
-              <p th:if="${product.isCategoryHavingOffer}" class="price card-text text-danger">
-              <span style="text-decoration: line-through;" class="me-3" th:text="${product.actualPrice}"></span>₹<span th:text="${product.discountPrice}"></span>
-          </p>
-              <a
-                th:href="@{'/product-details?productId=' + ${product.productId}}"
-                class="cardbutton btn"
-                >View Details</a
-              >
-            </div>
-          </div>
-        </div>
       <div th:include="~{fragment::footer}"></div>
   </body>
 </html>
