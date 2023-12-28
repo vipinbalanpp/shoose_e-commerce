@@ -686,9 +686,7 @@ public class OrderServiceImpl implements OrderService{
             orderInfo.setCurrentStatus(OrderStatusEnum.RETURNED);
             orderInfo.setStatus(OrderStatusEnum.RETURNED,LocalDate.now());
             variantService.updateStockonCancellingOrder(orderId);
-            if(orderInfo.getPaymentMethode().equals(PaymentMethod.WALLET)||orderInfo.getPaymentMethode().equals(PaymentMethod.RAZORPAY)){
-                userService.cancelOrderMoneyReturn(Double.valueOf(orderInfo.getAmountPaid()));
-            }
+            userService.cancelOrderMoneyReturn(Double.valueOf(orderInfo.getAmountPaid()));
             orderRepository.save(orderInfo);
         }catch (Exception e){
             throw new RuntimeException();
